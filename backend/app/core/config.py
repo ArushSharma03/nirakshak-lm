@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     BACKEND_HOST: str = "0.0.0.0"
     BACKEND_PORT: int = 8000
 
+    # --- Database ---
+    DATABASE_URL: str = "postgresql://postgres:postgres@localhost:5432/nirikshak_lm"
+
     # --- CORS ---
     CORS_ORIGINS: list[str] = [
         "http://localhost:3000",  # Next.js dev server

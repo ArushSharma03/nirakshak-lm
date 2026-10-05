@@ -8,6 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.health import router as health_router
+from app.api.inspections import router as inspections_router
 from app.core.config import settings
 
 
@@ -19,7 +20,7 @@ def create_app() -> FastAPI:
             "An Evidence-Calibrated Multiview System for "
             "Explainable Packaged-Commodity Compliance Screening"
         ),
-        version="0.1.0",
+        version="0.2.0",
     )
 
     # --- CORS middleware (allow frontend dev server) ---
@@ -33,6 +34,7 @@ def create_app() -> FastAPI:
 
     # --- Register routers ---
     application.include_router(health_router)
+    application.include_router(inspections_router)
 
     return application
 

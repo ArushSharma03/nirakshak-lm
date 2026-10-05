@@ -1,10 +1,13 @@
 # Nirikshak-LM Backend Dependencies
 # ==================================
-# Step 1: Minimal dependencies only.
-# OCR, OpenCV, DB, auth dependencies will be added in later steps.
-
+# Step 1: Core framework
 fastapi==0.115.12
 uvicorn[standard]==0.34.2
 pydantic==2.11.3
 pydantic-settings==2.9.1
 python-dotenv==1.1.0
+
+# Step 2: Database foundation
+sqlalchemy==2.0.41
+psycopg2-binary==2.9.10
+alembic==1.15.2
