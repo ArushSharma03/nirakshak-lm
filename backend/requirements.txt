@@ -11,3 +11,7 @@ python-dotenv==1.1.0
 sqlalchemy==2.0.41
 psycopg2-binary==2.9.10
 alembic==1.15.2
+
+# Week 2: Guided capture & marker detection
+opencv-python-headless==5.0.0.93
+python-multipart==0.0.32

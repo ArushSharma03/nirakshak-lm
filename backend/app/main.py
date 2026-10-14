@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.health import router as health_router
 from app.api.inspections import router as inspections_router
+from app.api.capture import router as capture_router
 from app.core.config import settings
 
 
@@ -35,6 +36,7 @@ def create_app() -> FastAPI:
     # --- Register routers ---
     application.include_router(health_router)
     application.include_router(inspections_router)
+    application.include_router(capture_router)
 
     return application
 

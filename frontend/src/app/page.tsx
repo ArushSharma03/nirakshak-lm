@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-gray-50">
@@ -9,9 +11,12 @@ export default function Home() {
           An Evidence-Calibrated Multiview System for Explainable
           Packaged-Commodity Compliance Screening
         </p>
-        <div className="inline-block rounded-lg bg-green-100 px-4 py-2 text-sm text-green-800">
-          System Status: Step 1 — Project Setup Complete
-        </div>
+        <Link
+          href="/inspect"
+          className="inline-block rounded-lg bg-blue-600 px-6 py-3 text-white font-medium hover:bg-blue-700 transition-colors"
+        >
+          Start New Inspection
+        </Link>
         <p className="text-sm text-gray-500">
           B.Tech CSE Minor Project (COM-711) — Group 27
         </p>
