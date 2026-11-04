@@ -23,11 +23,29 @@ venv/
 frontend/node_modules/
 frontend/.next/
 frontend/out/
+frontend/.vercel/
+frontend/*.tsbuildinfo
 
-# --- Environment variables ---
+# --- Environment variables & secrets ---
 .env
 .env.local
 .env.*.local
+.env*.local
+*.env
+!.env.example
+*.pem
+*.key
+*.cert
+*.crt
+
+# --- Databases & Local Storage ---
+*.sqlite
+*.sqlite3
+*.db
+backend/data/images/
+backend/data/*.json
+backend/data/**/*.jpg
+backend/data/**/*.png
 
 # --- IDE ---
 .vscode/
@@ -41,10 +59,19 @@ frontend/out/
 Thumbs.db
 desktop.ini
 
-# --- Uploads / generated at runtime ---
+# --- Uploads & Runtime-generated Artifacts ---
 uploads/
 *.pdf
 *.docx
+debug_temp.jpg
+backend/debug_temp.jpg
+temp_marker_*.png
+
+# --- Testing & Coverage ---
+.pytest_cache/
+.coverage
+htmlcov/
+coverage/
 
 # --- Dataset (large files, manage separately) ---
 dataset/images/
@@ -52,3 +79,6 @@ dataset/annotations/
 
 # --- Logs ---
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
