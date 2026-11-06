@@ -15,6 +15,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from app.models.inspection import InspectionStatus, ComplianceOutcome
 from app.models.package_image import ViewType, QualityStatus
 from app.models.product import ProductCategory
+from app.schemas.analysis import Analysis
 
 
 # ---------------------------------------------------------------------------
@@ -109,6 +110,7 @@ class InspectionRecordResponse(BaseModel):
     images: Optional[dict[str, Any]] = None
     database_saved: bool = False
     mode: str = "Demo / Offline Fallback"
+    analysis: Analysis | None = None
 
 
 class InspectionOut(BaseModel):

@@ -12,10 +12,12 @@ import {
   type MarkerDetectionResult,
 } from "@/lib/api";
 import { InspectionRecord, QualityAssessment } from "@/types";
+import { analyzeInspection, removeInspectionView, type ProfileInputs } from "@/lib/analysis";
 
 type ViewType = "front" | "rear" | "side";
 
 interface ViewState {
+  uploaded: boolean;
   blob: Blob | null;
   previewUrl: string | null;
   processedUrl: string | null;
@@ -33,12 +35,18 @@ function InspectCaptureFlow() {
   const [step, setStep] = useState<number>(0);
   const [showMarkerGuide, setShowMarkerGuide] = useState<boolean>(false);
   const [inspection, setInspection] = useState<InspectionRecord | null>(null);
+  const [origin, setOrigin] = useState<ProfileInputs["origin"]>("unknown");
+  const [asOf, setAsOf] = useState(new Date().toISOString().slice(0, 10));
+  const [coplanarViews, setCoplanarViews] = useState<ViewType[]>([]);
+  const [processing, setProcessing] = useState(false);
+  const [useJev, setUseJev] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [, setLoadingRecord] = useState<boolean>(!!inspectionId);
 
   const [views, setViews] = useState<Record<ViewType, ViewState>>({
-    front: { blob: null, previewUrl: null, processedUrl: null, markerResult: null, markerLoading: false, qualityAssessment: null, qualityLoading: false },
-    rear: { blob: null, previewUrl: null, processedUrl: null, markerResult: null, markerLoading: false, qualityAssessment: null, qualityLoading: false },
-    side: { blob: null, previewUrl: null, processedUrl: null, markerResult: null, markerLoading: false, qualityAssessment: null, qualityLoading: false },
+    front: { uploaded: false, blob: null, previewUrl: null, processedUrl: null, markerResult: null, markerLoading: false, qualityAssessment: null, qualityLoading: false },
+    rear: { uploaded: false, blob: null, previewUrl: null, processedUrl: null, markerResult: null, markerLoading: false, qualityAssessment: null, qualityLoading: false },
+    side: { uploaded: false, blob: null, previewUrl: null, processedUrl: null, markerResult: null, markerLoading: false, qualityAssessment: null, qualityLoading: false },
   });
 
   // Load inspection record if ID is provided in query params
@@ -60,6 +68,7 @@ function InspectCaptureFlow() {
               if (rec.images?.[vt]) {
                 const img = rec.images[vt];
                 next[vt] = {
+                  uploaded: true,
                   blob: null,
                   previewUrl: img.previewUrl || null,
                   processedUrl: img.processedUrl || null,
@@ -101,7 +110,10 @@ function InspectCaptureFlow() {
   };
 
   const handleCapture = async (type: ViewType, blob: Blob, previewUrl: string) => {
+    setError(null);
     updateView(type, {
+      uploaded: false,
+      processedUrl: null,
       blob,
       previewUrl,
       markerLoading: true,
@@ -128,6 +140,7 @@ function InspectCaptureFlow() {
     try {
       const uploadRes = await uploadInspectionView(currentId, type, blob);
       updateView(type, {
+        uploaded: uploadRes.record !== null,
         markerResult: uploadRes.markerResult,
         qualityAssessment: uploadRes.qualityAssessment,
         processedUrl: uploadRes.processedUrl,
@@ -139,6 +152,7 @@ function InspectCaptureFlow() {
       }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "Unknown error";
+      setError(errorMessage);
       updateView(type, {
         markerLoading: false,
         qualityLoading: false,
@@ -154,8 +168,19 @@ function InspectCaptureFlow() {
     }
   };
 
-  const handleRetake = (type: ViewType) => {
+  const handleRetake = async (type: ViewType) => {
+    const targetId = inspection?.id || inspectionId;
+    if (targetId) {
+      try {
+        await removeInspectionView(targetId, type);
+      } catch (error) {
+        setError(error instanceof Error ? error.message : "Could not remove stored view. Retry when the backend is available.");
+        return;
+      }
+    }
+    setCoplanarViews((current) => current.filter((view) => view !== type));
     updateView(type, {
+      uploaded: false,
       blob: null,
       previewUrl: null,
       processedUrl: null,
@@ -169,7 +194,16 @@ function InspectCaptureFlow() {
   const handleSubmit = async () => {
     const targetId = inspection?.id || inspectionId;
     if (targetId) {
-      router.push(`/reports?id=${encodeURIComponent(targetId)}`);
+      setProcessing(true);
+      setError(null);
+      try {
+        await analyzeInspection(targetId, { origin, as_of: asOf, coplanar_views: coplanarViews, use_jev: useJev });
+        router.push(`/reports?id=${encodeURIComponent(targetId)}`);
+      } catch (error) {
+        setError(error instanceof Error ? error.message : "Analysis failed. Check backend availability and retry.");
+      } finally {
+        setProcessing(false);
+      }
     } else {
       router.push("/inspections");
     }
@@ -228,6 +262,7 @@ function InspectCaptureFlow() {
       </header>
 
       <main className="flex-grow p-6 flex items-center justify-center">
+        {error && <p role="alert" className="p-3 text-sm text-red-800 bg-red-50 border border-red-200 rounded">{error}</p>}
         {step === 0 && (
           <div className="max-w-xl mx-auto p-8 bg-white rounded-xl shadow-sm border border-gray-100 text-center">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
@@ -309,7 +344,7 @@ function InspectCaptureFlow() {
             onCapture={(blob, url) => handleCapture("front", blob, url)}
             onRetake={() => handleRetake("front")}
             onNext={() => setStep(2)}
-            canProceed={!!views.front.previewUrl && !views.front.markerLoading && !views.front.qualityLoading}
+            canProceed={views.front.uploaded && !!views.front.previewUrl && !views.front.markerLoading && !views.front.qualityLoading}
           />
         )}
 
@@ -328,7 +363,7 @@ function InspectCaptureFlow() {
             onCapture={(blob, url) => handleCapture("rear", blob, url)}
             onRetake={() => handleRetake("rear")}
             onNext={() => setStep(3)}
-            canProceed={!!views.rear.previewUrl && !views.rear.markerLoading && !views.rear.qualityLoading}
+            canProceed={views.rear.uploaded && !!views.rear.previewUrl && !views.rear.markerLoading && !views.rear.qualityLoading}
           />
         )}
 
@@ -347,24 +382,40 @@ function InspectCaptureFlow() {
             onCapture={(blob, url) => handleCapture("side", blob, url)}
             onRetake={() => handleRetake("side")}
             onNext={() => setStep(4)}
-            canProceed={!!views.side.previewUrl && !views.side.markerLoading && !views.side.qualityLoading}
+            canProceed={views.side.uploaded && !!views.side.previewUrl && !views.side.markerLoading && !views.side.qualityLoading}
           />
         )}
 
         {step === 4 && (
+          <div className="w-full max-w-4xl space-y-4">
+            <div className="bg-white border rounded-lg p-4 text-sm space-y-3">
+              <h2 className="font-bold">Analysis inputs</h2>
+              <label className="flex items-center gap-2"><input type="checkbox" checked={useJev} onChange={(event) => setUseJev(event.target.checked)} />Use Jev for evidence recommendations, consumes TypeSafe credits</label>
+              <label className="block">Package origin <select className="border rounded ml-2 p-1" value={origin} onChange={(event) => {
+                const value = event.target.value;
+                if (value === "domestic" || value === "imported" || value === "unknown") setOrigin(value);
+              }}><option value="unknown">Unknown, review required</option><option value="domestic">Domestic</option><option value="imported">Imported</option></select></label>
+              <label className="block">Rule effective date <input className="border rounded ml-2 p-1" type="date" value={asOf} onChange={(event) => setAsOf(event.target.value)} /></label>
+              <p className="text-xs text-slate-600">Confirm each view only if the printed marker measures 50 mm and lies in the same flat plane as the label.</p>
+              {(["front", "rear", "side"] as const).map((view) => <label key={view} className="inline-flex items-center gap-2 mr-4"><input type="checkbox" checked={coplanarViews.includes(view)} onChange={(event) => setCoplanarViews((current) => event.target.checked ? [...current, view] : current.filter((item) => item !== view))} />{view}</label>)}
+              {processing && <p role="status">Running local OCR, extraction, fusion and profile selection. The first run downloads model weights and can take several minutes.</p>}
+            </div>
           <ReviewPanel
+            processing={processing}
             views={[
               { viewType: "front", label: "Front View", previewUrl: views.front.previewUrl, processedUrl: views.front.processedUrl, markerResult: views.front.markerResult, qualityAssessment: views.front.qualityAssessment },
               { viewType: "rear", label: "Rear View", previewUrl: views.rear.previewUrl, processedUrl: views.rear.processedUrl, markerResult: views.rear.markerResult, qualityAssessment: views.rear.qualityAssessment },
               { viewType: "side", label: "Side View", previewUrl: views.side.previewUrl, processedUrl: views.side.processedUrl, markerResult: views.side.markerResult, qualityAssessment: views.side.qualityAssessment },
             ]}
             onRetake={(type) => {
+              if (processing) return;
               if (type === "front") setStep(1);
               if (type === "rear") setStep(2);
               if (type === "side") setStep(3);
             }}
             onSubmit={handleSubmit}
           />
+          </div>
         )}
       </main>
     </div>

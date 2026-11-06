@@ -12,15 +12,32 @@ import os
 import json
 import uuid
 import hashlib
+import tempfile
+from functools import wraps
+from threading import RLock
+from typing import Callable, ParamSpec, TypeVar
 from datetime import datetime, timezone
 from typing import Optional, List, Dict, Any
 
 from app.core.config import settings
+from app.schemas.analysis import Analysis
 
 # In-memory store for fallback/demo mode
 _MEMORY_INSPECTIONS: Dict[str, Dict[str, Any]] = {}
 DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data"))
 FALLBACK_FILE = os.path.join(DATA_DIR, "inspections_store.json")
+_STORE_LOCK = RLock()
+_P = ParamSpec("_P")
+_T = TypeVar("_T")
+
+
+def _serialized(function: Callable[_P, _T]) -> Callable[_P, _T]:
+    """Serialize in-process evidence replacement and analysis publication."""
+    @wraps(function)
+    def call(*args: _P.args, **kwargs: _P.kwargs) -> _T:
+        with _STORE_LOCK:
+            return function(*args, **kwargs)
+    return call
 
 
 def _ensure_data_dir():
@@ -40,10 +57,12 @@ def _load_persisted_fallback():
 def _save_persisted_fallback():
     _ensure_data_dir()
     try:
-        with open(FALLBACK_FILE, "w", encoding="utf-8") as f:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=DATA_DIR, delete=False) as f:
             json.dump(_MEMORY_INSPECTIONS, f, indent=2, default=str)
-    except Exception as e:
-        print(f"Warning: Failed to persist fallback inspections: {e}")
+            temporary_path = f.name
+        os.replace(temporary_path, FALLBACK_FILE)
+    except OSError:
+        raise RuntimeError("Could not persist inspection evidence") from None
 
 
 # Initialize fallback store
@@ -62,6 +81,7 @@ def is_database_available() -> bool:
         return False
 
 
+@_serialized
 def create_inspection_record(payload: Dict[str, Any]) -> Dict[str, Any]:
     """
     Create a new inspection record.
@@ -163,6 +183,7 @@ from app.services.quality_assessor import assess_image_quality
 from app.services.preprocessor import preprocess_package_image
 
 
+@_serialized
 def attach_inspection_image(
     inspection_id: str,
     view_type: str,
@@ -178,6 +199,9 @@ def attach_inspection_image(
        data/images/{inspection_id}_{view_type}_processed.jpg.
     4. Updates inspection record metadata with hashes, metrics, and calibration data.
     """
+    record = _MEMORY_INSPECTIONS.get(inspection_id)
+    if record is None:
+        raise ValueError("Inspection not found")
     _ensure_data_dir()
     images_dir = os.path.join(DATA_DIR, "images")
     os.makedirs(images_dir, exist_ok=True)
@@ -218,9 +242,8 @@ def attach_inspection_image(
             "timestamp": preproc_res["timestamp"],
         }
 
-    record = _MEMORY_INSPECTIONS.get(inspection_id)
-    if not record:
-        record = create_inspection_record({"id": inspection_id})
+    record.pop("analysis", None)
+    record["final_outcome"] = "Manual Review Required"
 
     # Update views_captured
     if "views_captured" not in record or not isinstance(record["views_captured"], dict):
@@ -232,6 +255,7 @@ def attach_inspection_image(
         record["images"] = {}
 
     image_meta = {
+        "media_type": "image/png" if image_bytes.startswith(b"\x89PNG") else "image/jpeg",
         "view_type": view_type,
         "filename": filename,
         "filepath": filepath,
@@ -249,10 +273,10 @@ def attach_inspection_image(
     }
     record["images"][view_type] = image_meta
 
-    if image_meta["marker_detected"]:
-        record["marker_detected"] = True
-        if image_meta["estimated_ppm"]:
-            record["scale_ppm"] = image_meta["estimated_ppm"]
+    record["marker_detected"] = any(v.get("marker_detected") for v in record["images"].values())
+    # Physical scales are per-view; an old view's scale must not apply to a retake.
+    record["scale_ppm"] = None
+    record["status"] = "capturing"
 
     # Check if all views captured
     if (
@@ -265,4 +289,38 @@ def attach_inspection_image(
     _MEMORY_INSPECTIONS[inspection_id] = record
     _save_persisted_fallback()
 
+    return record
+
+
+@_serialized
+def save_analysis(inspection_id: str, analysis: Analysis):
+    record = _MEMORY_INSPECTIONS[inspection_id]
+    for view, result in analysis.views.items():
+        image = record.get("images", {}).get(view)
+        if image is None or image["file_hash"] != result.file_hash:
+            raise ValueError("Evidence changed during analysis. Run analysis again.")
+        with open(image["filepath"], "rb") as file:
+            if hashlib.sha256(file.read()).hexdigest() != result.file_hash:
+                raise ValueError("Evidence changed during analysis. Run analysis again.")
+    if set(record.get("images", {})) != set(analysis.views):
+        raise ValueError("Captured views changed during analysis. Run analysis again.")
+    record["analysis"] = analysis.model_dump(mode="json")
+    record["status"] = "analyzed"
+    record["final_outcome"] = "Manual Review Required"
+    _save_persisted_fallback()
+    return record
+
+
+@_serialized
+def remove_inspection_image(inspection_id: str, view_type: str):
+    record = _MEMORY_INSPECTIONS[inspection_id]
+    # Remove from active evidence, retaining the source file until a replacement capture.
+    record["images"].pop(view_type, None)
+    record["views_captured"][view_type] = False
+    record.pop("analysis", None)
+    record["status"] = "capturing"
+    record["marker_detected"] = any(v.get("marker_detected") for v in record["images"].values())
+    record["scale_ppm"] = None
+    record["final_outcome"] = "Manual Review Required"
+    _save_persisted_fallback()
     return record

@@ -1,0 +1,27 @@
+{
+  "discovered_on": "2026-11-06",
+  "search_url": "https://www.google.com/search?udm=2&q=parle+g+biscuits+back+pack+label",
+  "source_title": "Parle G Gluco Biscuits - Gharstuff",
+  "source_page": "https://gharstuff.com/product/parle-g-gluco-biscuits/",
+  "note": "Google Images cached JPEGs, not photographs captured by this project. Rear and nutrition detail from the same catalog listing. The detail uses the side slot for transport testing; it is not an independent side capture. Product images belong to their respective owners and are retained as attributed evaluation fixtures.",
+  "images": [
+    {
+      "file": "fixtures/parle-g-rear.jpg",
+      "view": "rear",
+      "width": 596,
+      "height": 514,
+      "sha256": "83b7293c3747c67ae2e6ed457c07397d782f1ec51869603455c9c14b80575cd6",
+      "download_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuPZS0ppupVFa4WSS6ru15F8I388kYcNWOSRmw_8fI6g&s=10",
+      "indexed_original_url": "https://gharstuff.com/wp-content/uploads/2018/12/Parle-G-Gluco-Biscuits-70g-2.jpeg"
+    },
+    {
+      "file": "fixtures/parle-g-nutrition-detail.jpg",
+      "view": "side",
+      "width": 529,
+      "height": 578,
+      "sha256": "f50e638de45a50ac7e071d0bcca438fb7f3264d9fd214f897feb8f2069cdc410",
+      "download_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCV-xthlG5IYNvuMm7N98WzXKBF_fVVvCnzYvSqYXAkQ&s=10",
+      "indexed_original_url": "https://gharstuff.com/wp-content/uploads/2018/12/Parle-G-Gluco-Biscuits-70g-3.jpeg"
+    }
+  ]
+}

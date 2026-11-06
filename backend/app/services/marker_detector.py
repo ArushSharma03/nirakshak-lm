@@ -128,8 +128,15 @@ def detect_marker(
             ),
         )
 
-    # Use the first detected marker
-    marker_corners = corners[0].reshape(4, 2)  # shape (4, 2) — four corner points
+    # Tiny packaging patterns can decode as markers; prefer the largest candidate.
+    selected = max(range(len(corners)), key=lambda index: cv2.contourArea(corners[index].reshape(4, 2)))
+    marker_corners = corners[selected].reshape(4, 2)
+    edges = np.linalg.norm(marker_corners - np.roll(marker_corners, -1, axis=0), axis=1)
+    if edges.min() < 40:
+        return MarkerDetectionResult(
+            detected=False,
+            message="Marker candidate is too small to distinguish reliably from packaging patterns. Retake with the marker at least 40 pixels per edge.",
+        )
     flat_box = marker_corners.flatten().tolist()
 
     # Pixel width  = average of top-edge and bottom-edge lengths
@@ -148,7 +155,7 @@ def detect_marker(
     score = round(min(detected_area / ideal_area, 1.0), 3) if ideal_area > 0 else 0.0
 
     flat_ids = np.asarray(ids).flatten()
-    marker_id = int(flat_ids[0])
+    marker_id = int(flat_ids[selected])
 
     # Preliminary pixels-per-millimeter (preliminary scale estimate)
     estimated_ppm = round(px_width / expected_marker_mm, 3) if expected_marker_mm > 0 else None
