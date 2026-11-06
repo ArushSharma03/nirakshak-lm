@@ -18,6 +18,8 @@ export type InspectionStatus =
   | "created"
   | "capturing"
   | "processing"
+  | "images_uploaded"
+  | "analyzed"
   | "completed"
   | "archived";
 
@@ -126,6 +128,7 @@ export interface InspectionRecord {
   mode?: string;
   images?: Record<string, InspectionImageView>;
   ruleResults?: RuleCheckResult[];
+  analysis?: import("@/lib/analysis").Analysis;
 }
 
 export interface ComplianceRule {

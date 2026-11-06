@@ -11,6 +11,7 @@ from app.api.health import router as health_router
 from app.api.inspections import router as inspections_router
 from app.api.capture import router as capture_router
 from app.core.config import settings
+from app.api.profiles import router as profiles_router
 
 
 def create_app() -> FastAPI:
@@ -37,6 +38,7 @@ def create_app() -> FastAPI:
     application.include_router(health_router)
     application.include_router(inspections_router)
     application.include_router(capture_router)
+    application.include_router(profiles_router)
 
     return application
 

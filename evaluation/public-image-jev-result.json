@@ -1,0 +1,33 @@
+{
+  "input": "evaluation/public-image-result.json",
+  "decision": {
+    "status": "ok",
+    "model": "jev-1.14.0",
+    "answers": {
+      "net_quantity": {
+        "type": "choice",
+        "choice": "candidate_0",
+        "confidence": 0.96,
+        "probabilities": {
+          "candidate_0": 0.98,
+          "none": 0.02
+        }
+      },
+      "manufacturer": {
+        "type": "choice",
+        "choice": "candidate_0",
+        "confidence": 0.94,
+        "probabilities": {
+          "candidate_0": 0.97,
+          "none": 0.03
+        }
+      }
+    },
+    "message": "Jev recommendations only. Conflicts and original evidence are retained for inspector review.",
+    "usage": {
+      "input_tokens": 783,
+      "output_tokens": 68
+    }
+  },
+  "note": "One batch. Suggestions only; original evidence and conflicts unchanged."
+}

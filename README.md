@@ -18,8 +18,9 @@ It is **not** an autonomous legal authority. All outcomes are advisory and must 
 |---|---|
 | Frontend | Next.js (React) + TypeScript |
 | Backend | Python FastAPI |
-| Computer Vision | OpenCV (future) |
-| OCR | PaddleOCR (future) |
+| Computer Vision | OpenCV planar calibration and preprocessing |
+| OCR | Xiaomi-OCR-0 transcription + Tesseract geometry |
+| Decisions | Optional TypeSafe Jev candidate selection |
 | Information Extraction | Regex, keyword matching, spatial analysis |
 | Compliance Engine | Versioned rule-as-data (Python) |
 | Database | PostgreSQL / SQLite (future) |
@@ -27,11 +28,15 @@ It is **not** an autonomous legal authority. All outcomes are advisory and must 
 
 ## Current Implementation Status
 
-- [x] **Step 1** — Project setup & environment configuration
-- [ ] Step 2 — Backend/database foundation
-- [ ] Step 3 — Frontend foundation (extended)
-- [ ] Step 4 — Inspection creation & multi-view image upload
-- [ ] Steps 5–21 — See development plan
+Implemented through week 8: capture, image quality, planar calibration, OCR,
+anchored English/Hindi extraction, spatial continuation, multi-view fusion and
+versioned category/origin/date profile selection. Retakes invalidate analysis.
+The UI shows actual source evidence and optional Jev suggestions.
+
+The initial food/grocery rules are drafts requiring legal review. Other categories
+return unsupported. Weeks 9–11 legal checks, classification and report export are
+outside this milestone. See [setup and limitations](docs/week-8-usage.md),
+[model selection](docs/model-selection.md) and [validation](docs/completion-record.md).
 
 ---
 
@@ -39,8 +44,8 @@ It is **not** an autonomous legal authority. All outcomes are advisory and must 
 
 ### Prerequisites
 
-- Python 3.10+
-- Node.js 18+ and npm
+- Python 3.13, Node.js 20.9+ and npm
+- Tesseract with English language data; Hindi data for `eng+hin`
 
 ### Backend Setup
 
@@ -55,6 +60,9 @@ venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
+
+# Optional Xiaomi runtime; install CPU/CUDA torch wheels for your machine first
+pip install -r requirements-ocr.txt
 
 # Run the server
 uvicorn app.main:app --reload --port 8000
@@ -88,10 +96,10 @@ nirakshak lm/
 │   ├── app/
 │   │   ├── api/      # Route handlers
 │   │   ├── core/     # Configuration
-│   │   ├── models/   # DB models (future)
-│   │   ├── schemas/  # Pydantic schemas (future)
-│   │   ├── services/ # CV, OCR, IE, Fusion (future)
-│   │   ├── engine/   # Rule engine (future)
+│   │   ├── models/   # DB models
+│   │   ├── schemas/  # Pydantic evidence contracts
+│   │   ├── services/ # CV, OCR, extraction and fusion
+│   │   ├── engine/   # Versioned profile selection
 │   │   └── main.py   # FastAPI entry point
 │   └── requirements.txt
 ├── frontend/         # Next.js application

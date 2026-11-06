@@ -9,7 +9,6 @@
 
 import {
   InspectionRecord,
-  ComplianceRule,
   ProductRecord,
   AnalyticsSummary,
   SystemStatus,
@@ -22,10 +21,10 @@ import {
 } from "@/types";
 import {
   MOCK_INSPECTIONS,
-  MOCK_RULES,
   MOCK_PRODUCTS,
   MOCK_ANALYTICS,
 } from "./mockData";
+import { analysisSchema } from "./analysis";
 
 export interface MarkerDetectionResult {
   detected: boolean;
@@ -87,43 +86,6 @@ export async function checkBackendStatus(): Promise<SystemStatus> {
   };
 }
 
-/**
- * ArUco reference marker detection
- * Sends image blob to backend; provides mock fallback if backend is offline.
- */
-export async function detectMarker(imageBlob: Blob): Promise<MarkerDetectionResult> {
-  try {
-    const formData = new FormData();
-    formData.append("file", imageBlob, "capture.jpg");
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
-
-    const response = await fetch(`${API_BASE}/capture/detect-marker`, {
-      method: "POST",
-      body: formData,
-      signal: controller.signal,
-    });
-    clearTimeout(timeoutId);
-
-    if (response.ok) {
-      return await response.json();
-    }
-  } catch (err) {
-    console.warn("Backend /capture/detect-marker unreachable or timed out:", err);
-  }
-
-  // Graceful offline fallback: if backend is offline, simulate detection result
-  return {
-    detected: false,
-    bounding_box: null,
-    pixel_width: null,
-    pixel_height: null,
-    score: null,
-    message: "Backend offline — running in local preview mode without calibration.",
-  };
-}
-
 interface BackendImageMeta {
   view_type?: string;
   filename?: string;
@@ -161,6 +123,7 @@ interface BackendInspectionRecord {
   database_saved?: boolean;
   mode?: string;
   images?: Record<string, BackendImageMeta>;
+  analysis?: unknown;
 }
 
 function mapBackendRecord(item: BackendInspectionRecord): InspectionRecord {
@@ -202,12 +165,13 @@ function mapBackendRecord(item: BackendInspectionRecord): InspectionRecord {
     markerDetected: !!item.marker_detected,
     scalePpm: item.scale_ppm ?? null,
     violationsCount: item.violations_count ?? (item.final_outcome === "Potential Non-Compliance" ? 1 : 0),
-    checksPassed: item.checks_passed ?? 5,
-    totalChecks: item.total_checks ?? 7,
-    isMock: !item.database_saved,
+    checksPassed: item.checks_passed ?? 0,
+    totalChecks: item.total_checks ?? 0,
+    isMock: false,
     databaseSaved: !!item.database_saved,
     mode: item.mode || (item.database_saved ? "Live PostgreSQL" : "Demo / Offline Fallback"),
     images: Object.keys(imagesMapped).length > 0 ? imagesMapped : undefined,
+    analysis: item.analysis ? analysisSchema.parse(item.analysis) : undefined,
   };
 }
 
@@ -369,48 +333,6 @@ export async function createInspection(
 }
 
 /**
- * Standalone Image Quality Assessment
- */
-export async function assessQuality(imageBlob: Blob): Promise<QualityAssessment> {
-  try {
-    const formData = new FormData();
-    formData.append("file", imageBlob, "capture.jpg");
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000);
-
-    const response = await fetch(`${API_BASE}/capture/assess-quality`, {
-      method: "POST",
-      body: formData,
-      signal: controller.signal,
-    });
-    clearTimeout(timeoutId);
-
-    if (response.ok) {
-      return await response.json();
-    }
-  } catch (err) {
-    console.warn("Backend /capture/assess-quality unreachable:", err);
-  }
-
-  // Graceful offline fallback
-  return {
-    overall_status: "Pass",
-    is_acceptable: true,
-    composite_score: 85.0,
-    metrics: {
-      sharpness: { metric: "sharpness", name: "Sharpness (Focus)", score: 88.0, status: "Pass", message: "Preview focus estimated sharp." },
-      exposure: { metric: "exposure", name: "Lighting & Exposure", score: 82.0, status: "Pass", message: "Balanced illumination in preview." },
-      contrast: { metric: "contrast", name: "Contrast & Readability", score: 85.0, status: "Pass", message: "Adequate declaration contrast." },
-      resolution: { metric: "resolution", name: "Resolution & Dimensions", score: 90.0, status: "Pass", message: "Camera resolution suitable." },
-      glare: { metric: "glare", name: "Glare & Specular Reflections", score: 95.0, status: "Pass", message: "No significant glare hotspot." },
-    },
-    recommendations: ["Ensure lighting remains even across packaging surface."],
-    disclaimer: "Image quality assessment evaluates optical clarity and capture fidelity. It does not constitute a determination of legal compliance under the Legal Metrology Act, 2009 or the Packaged Commodities Rules, 2011.",
-  };
-}
-
-/**
  * Upload captured package view image to inspection
  */
 export async function uploadInspectionView(
@@ -448,7 +370,7 @@ export async function uploadInspectionView(
         score: viewMeta?.marker_score ?? null,
         estimated_ppm: viewMeta?.estimated_ppm ?? null,
         message: viewMeta?.marker_detected
-          ? "Reference marker detected and planar scale calibrated."
+          ? "Reference marker detected. Confirm coplanarity before physical measurement."
           : "Reference marker not detected — calibration unavailable.",
       };
 
@@ -460,54 +382,10 @@ export async function uploadInspectionView(
       updateLocalStorageRecord(mapped);
       return { record: mapped, markerResult, qualityAssessment, processedUrl };
     }
-  } catch (err) {
-    console.warn("Backend view upload failed, using offline fallback:", err);
+    throw new Error(`Image upload failed (${response.status}). Retake or retry with the backend available.`);
+  } catch (error) {
+    throw error instanceof Error ? error : new Error("Image upload failed. Check backend availability.");
   }
-
-  // Offline fallback
-  const [detection, quality] = await Promise.all([
-    detectMarker(imageBlob),
-    assessQuality(imageBlob),
-  ]);
-
-  let updatedRecord: InspectionRecord | null = null;
-  if (typeof window !== "undefined") {
-    try {
-      const stored = localStorage.getItem("nirikshak_inspections");
-      if (stored) {
-        const list: InspectionRecord[] = JSON.parse(stored);
-        const idx = list.findIndex((r) => r.id === inspectionId);
-        if (idx !== -1) {
-          list[idx].viewsCaptured[viewType] = true;
-          if (detection.detected) {
-            list[idx].markerDetected = true;
-            list[idx].scalePpm = detection.estimated_ppm ? Math.round(detection.estimated_ppm) : 4950;
-          }
-          if (!list[idx].images) {
-            list[idx].images = {};
-          }
-          list[idx].images![viewType] = {
-            view_type: viewType,
-            marker_detected: detection.detected,
-            quality_assessment: quality,
-          };
-          localStorage.setItem("nirikshak_inspections", JSON.stringify(list));
-          updatedRecord = list[idx];
-        }
-      }
-    } catch {
-      // Storage error
-    }
-  }
-
-  return { record: updatedRecord, markerResult: detection, qualityAssessment: quality, processedUrl: null };
-}
-
-/**
- * Retrieve verified compliance rules
- */
-export async function getComplianceRules(): Promise<ComplianceRule[]> {
-  return MOCK_RULES;
 }
 
 /**

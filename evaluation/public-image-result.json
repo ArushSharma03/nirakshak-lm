@@ -1,0 +1,3991 @@
+{
+  "inspection_id": "INS-2026-F1215202",
+  "elapsed_seconds": 185.45,
+  "checks": [
+    "Both JPEG uploads preserved source SHA-256 hashes",
+    "Recovered visible NET WEIGHT: 70g without confusing nutrition per-100g values",
+    "Jev disabled with no usage or recommendations",
+    "Real Xiaomi and Tesseract completed for both images; no invented physical scale",
+    "Dated domestic draft profile selected; manual-review outcome and GET reload preserved"
+  ],
+  "analysis": {
+    "version": "1.0.0",
+    "views": {
+      "rear": {
+        "file_hash": "83b7293c3747c67ae2e6ed457c07397d782f1ec51869603455c9c14b80575cd6",
+        "calibration": {
+          "status": "unavailable",
+          "reason": "Reference marker not detected.",
+          "marker_mm": 50.0,
+          "pixels_per_mm": null,
+          "homography": null
+        },
+        "ocr": [
+          {
+            "provider": "xiaomi",
+            "model": "xiaomi-research/Xiaomi-OCR-0@bbd8cf8d21f256b3644b44cb860f3a7cecb93c30",
+            "status": "ok",
+            "lines": [
+              {
+                "text": "Parle-G Gluco BISCUITS",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "INGREDIENTS: WHEAT FLOUR (57%), SUGAR, EDIBLE VEGETABLE OIL (PALM OIL), WHEAT SUGAR, SUGAR CITRUS, RASING AGENT (SAL 20.0), EDIBLE COMMON SALOIDS (0.6 %), EMBULDERED LACTIC TARBIC ACID OR CORN AND GLUCOSIDE OF EMBLATE VEGETABLE OIL DOUGH CONDITIONER (225)",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "CONTAINS 2000 FLAVORS / ARTIFICIAL FLAVOURING SUBSTANCES - V(D)-GLUCOSE / LEVELOIS)",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "8 901719 255144",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "NUTRITION FACTS / INFORMATION",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "AMOUNT PER 100g",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "CARBOHYDRATE 78.2g",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "OF WHICH SUGARS 23.9g",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "PROTEIN 1.8g",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "FAT 451 kJ",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "ENERGY 450 kcal",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "*TOTAL NUTRIENT CONTENT MUST BE TAKEN EXCEPT BY WEIGHT",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "*ALL FLAVOURING CONTENT NOT MORE THAN 2.5% (OF TOTAL NUTRIENT CONTENT)",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "CAUTION: UNDER CARE FROM",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "MANUFACTURER",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "MANUFACTURED FOR:",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "(P) PARLE PRODUCTS PVT LTD",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "NORTHELL CROSSING, VILE PARLE EAST, MUMBAI, MH - 400057",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "(B) PARLE BISCUITS PVT LTD**",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "NORTHELL CROSSING, VILE PARLE EAST, MUMBAI, MH - 400057",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "LIE. No.: 10013022002253",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "MANUFACTURED BY:",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "(MF) FOODS PVT LTD. A. S. KANKALPURI INDUL AREA",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "BALLARI ROAD, KARNIGOR, KA - 583231",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "(MY) KOEL FOOD PRODUCTS' 33/8, HOOTAGALLI",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "INDUL AREA, K.R.S. ROAD, BELARADAL, KA - 570016",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "LIE. No.: 10012643000064",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "(HI) ELVEETY INDUSTRIES PVT LTD., MA-1516",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "INDUL AREA, OUKU ROAD, HUBBALLI, KA - 580030",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "(IE) SHASHI SINDAL FOODS PVT LTD",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "SANGAR, MAHARASHTRA - 401125",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "LIE. No.: 10012643000064",
+                "box": null,
+                "confidence": null,
+                "words": []
+              }
+            ],
+            "message": "Generative transcription. No calibrated confidence or text boxes supplied."
+          },
+          {
+            "provider": "tesseract",
+            "model": "tesseract/eng",
+            "status": "ok",
+            "lines": [
+              {
+                "text": "=",
+                "box": {
+                  "x0": 223.0,
+                  "y0": 17.0,
+                  "x1": 285.0,
+                  "y1": 46.0
+                },
+                "confidence": 0.0,
+                "words": [
+                  {
+                    "text": "=",
+                    "box": {
+                      "x0": 223.0,
+                      "y0": 17.0,
+                      "x1": 285.0,
+                      "y1": 46.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "X\\",
+                "box": {
+                  "x0": 133.0,
+                  "y0": 58.0,
+                  "x1": 195.0,
+                  "y1": 66.0
+                },
+                "confidence": 0.15652609,
+                "words": [
+                  {
+                    "text": "X\\",
+                    "box": {
+                      "x0": 133.0,
+                      "y0": 58.0,
+                      "x1": 195.0,
+                      "y1": 66.0
+                    },
+                    "confidence": 0.15652609
+                  }
+                ]
+              },
+              {
+                "text": "-",
+                "box": {
+                  "x0": 212.0,
+                  "y0": 62.0,
+                  "x1": 226.0,
+                  "y1": 65.0
+                },
+                "confidence": 0.91215302,
+                "words": [
+                  {
+                    "text": "-",
+                    "box": {
+                      "x0": 212.0,
+                      "y0": 62.0,
+                      "x1": 226.0,
+                      "y1": 65.0
+                    },
+                    "confidence": 0.91215302
+                  }
+                ]
+              },
+              {
+                "text": "& &4",
+                "box": {
+                  "x0": 235.0,
+                  "y0": 62.0,
+                  "x1": 284.0,
+                  "y1": 67.0
+                },
+                "confidence": 0.56636269,
+                "words": [
+                  {
+                    "text": "&",
+                    "box": {
+                      "x0": 235.0,
+                      "y0": 62.0,
+                      "x1": 245.0,
+                      "y1": 67.0
+                    },
+                    "confidence": 0.56636269
+                  },
+                  {
+                    "text": "&4",
+                    "box": {
+                      "x0": 254.0,
+                      "y0": 62.0,
+                      "x1": 284.0,
+                      "y1": 67.0
+                    },
+                    "confidence": 0.56636269
+                  }
+                ]
+              },
+              {
+                "text": "geacn.",
+                "box": {
+                  "x0": 34.0,
+                  "y0": 86.0,
+                  "x1": 73.0,
+                  "y1": 93.0
+                },
+                "confidence": 0.0,
+                "words": [
+                  {
+                    "text": "geacn.",
+                    "box": {
+                      "x0": 34.0,
+                      "y0": 86.0,
+                      "x1": 73.0,
+                      "y1": 93.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "Gnis",
+                "box": {
+                  "x0": 34.0,
+                  "y0": 84.0,
+                  "x1": 74.0,
+                  "y1": 100.0
+                },
+                "confidence": 0.0,
+                "words": [
+                  {
+                    "text": "Gnis",
+                    "box": {
+                      "x0": 34.0,
+                      "y0": 84.0,
+                      "x1": 74.0,
+                      "y1": 100.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "L CxFan o7 s pac",
+                "box": {
+                  "x0": 123.0,
+                  "y0": 90.0,
+                  "x1": 229.0,
+                  "y1": 100.0
+                },
+                "confidence": 0.128526822,
+                "words": [
+                  {
+                    "text": "L",
+                    "box": {
+                      "x0": 123.0,
+                      "y0": 94.0,
+                      "x1": 135.0,
+                      "y1": 100.0
+                    },
+                    "confidence": 0.0
+                  },
+                  {
+                    "text": "CxFan",
+                    "box": {
+                      "x0": 138.0,
+                      "y0": 94.0,
+                      "x1": 170.0,
+                      "y1": 100.0
+                    },
+                    "confidence": 0.0
+                  },
+                  {
+                    "text": "o7",
+                    "box": {
+                      "x0": 173.0,
+                      "y0": 90.0,
+                      "x1": 185.0,
+                      "y1": 100.0
+                    },
+                    "confidence": 0.2696505
+                  },
+                  {
+                    "text": "s",
+                    "box": {
+                      "x0": 186.0,
+                      "y0": 90.0,
+                      "x1": 205.0,
+                      "y1": 100.0
+                    },
+                    "confidence": 0.08836622
+                  },
+                  {
+                    "text": "pac",
+                    "box": {
+                      "x0": 208.0,
+                      "y0": 94.0,
+                      "x1": 229.0,
+                      "y1": 100.0
+                    },
+                    "confidence": 0.28461739
+                  }
+                ]
+              },
+              {
+                "text": "STRIGTLY PROMEHED D (L FOR FAOSECU.",
+                "box": {
+                  "x0": 29.0,
+                  "y0": 90.0,
+                  "x1": 240.0,
+                  "y1": 118.0
+                },
+                "confidence": 0.12578774499999998,
+                "words": [
+                  {
+                    "text": "STRIGTLY",
+                    "box": {
+                      "x0": 29.0,
+                      "y0": 90.0,
+                      "x1": 74.0,
+                      "y1": 118.0
+                    },
+                    "confidence": 0.4727924
+                  },
+                  {
+                    "text": "PROMEHED",
+                    "box": {
+                      "x0": 78.0,
+                      "y0": 90.0,
+                      "x1": 125.0,
+                      "y1": 118.0
+                    },
+                    "confidence": 0.0
+                  },
+                  {
+                    "text": "D",
+                    "box": {
+                      "x0": 129.0,
+                      "y0": 102.0,
+                      "x1": 146.0,
+                      "y1": 109.0
+                    },
+                    "confidence": 0.0
+                  },
+                  {
+                    "text": "(L",
+                    "box": {
+                      "x0": 149.0,
+                      "y0": 102.0,
+                      "x1": 177.0,
+                      "y1": 109.0
+                    },
+                    "confidence": 0.28193407
+                  },
+                  {
+                    "text": "FOR",
+                    "box": {
+                      "x0": 180.0,
+                      "y0": 102.0,
+                      "x1": 196.0,
+                      "y1": 109.0
+                    },
+                    "confidence": 0.0
+                  },
+                  {
+                    "text": "FAOSECU.",
+                    "box": {
+                      "x0": 199.0,
+                      "y0": 101.0,
+                      "x1": 240.0,
+                      "y1": 109.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "\\ §",
+                "box": {
+                  "x0": 9.0,
+                  "y0": 107.0,
+                  "x1": 26.0,
+                  "y1": 129.0
+                },
+                "confidence": 0.731762775,
+                "words": [
+                  {
+                    "text": "\\",
+                    "box": {
+                      "x0": 9.0,
+                      "y0": 122.0,
+                      "x1": 11.0,
+                      "y1": 127.0
+                    },
+                    "confidence": 0.88671181
+                  },
+                  {
+                    "text": "§",
+                    "box": {
+                      "x0": 18.0,
+                      "y0": 107.0,
+                      "x1": 26.0,
+                      "y1": 129.0
+                    },
+                    "confidence": 0.57681374
+                  }
+                ]
+              },
+              {
+                "text": "“USE OFTRADEVARKS PACK DESIGN URDER.",
+                "box": {
+                  "x0": 30.0,
+                  "y0": 102.0,
+                  "x1": 216.0,
+                  "y1": 130.0
+                },
+                "confidence": 0.5274947499999999,
+                "words": [
+                  {
+                    "text": "“USE",
+                    "box": {
+                      "x0": 30.0,
+                      "y0": 113.0,
+                      "x1": 41.0,
+                      "y1": 121.0
+                    },
+                    "confidence": 0.51215286
+                  },
+                  {
+                    "text": "OFTRADEVARKS",
+                    "box": {
+                      "x0": 42.0,
+                      "y0": 112.0,
+                      "x1": 127.0,
+                      "y1": 121.0
+                    },
+                    "confidence": 0.49341759
+                  },
+                  {
+                    "text": "PACK",
+                    "box": {
+                      "x0": 131.0,
+                      "y0": 102.0,
+                      "x1": 152.0,
+                      "y1": 130.0
+                    },
+                    "confidence": 0.80185966
+                  },
+                  {
+                    "text": "DESIGN",
+                    "box": {
+                      "x0": 156.0,
+                      "y0": 102.0,
+                      "x1": 185.0,
+                      "y1": 130.0
+                    },
+                    "confidence": 0.27312812999999997
+                  },
+                  {
+                    "text": "URDER.",
+                    "box": {
+                      "x0": 187.0,
+                      "y0": 112.0,
+                      "x1": 216.0,
+                      "y1": 120.0
+                    },
+                    "confidence": 0.55691551
+                  }
+                ]
+              },
+              {
+                "text": "LIGENGE FrOM PARLE mnu:vswv . W",
+                "box": {
+                  "x0": 36.0,
+                  "y0": 112.0,
+                  "x1": 240.0,
+                  "y1": 140.0
+                },
+                "confidence": 0.48945678,
+                "words": [
+                  {
+                    "text": "LIGENGE",
+                    "box": {
+                      "x0": 36.0,
+                      "y0": 112.0,
+                      "x1": 70.0,
+                      "y1": 140.0
+                    },
+                    "confidence": 0.51745495
+                  },
+                  {
+                    "text": "FrOM",
+                    "box": {
+                      "x0": 74.0,
+                      "y0": 122.0,
+                      "x1": 95.0,
+                      "y1": 131.0
+                    },
+                    "confidence": 0.59026802
+                  },
+                  {
+                    "text": "PARLE",
+                    "box": {
+                      "x0": 99.0,
+                      "y0": 122.0,
+                      "x1": 125.0,
+                      "y1": 131.0
+                    },
+                    "confidence": 0.72161507
+                  },
+                  {
+                    "text": "mnu:vswv",
+                    "box": {
+                      "x0": 128.0,
+                      "y0": 122.0,
+                      "x1": 192.0,
+                      "y1": 131.0
+                    },
+                    "confidence": 0.71037292
+                  },
+                  {
+                    "text": ".",
+                    "box": {
+                      "x0": 196.0,
+                      "y0": 122.0,
+                      "x1": 216.0,
+                      "y1": 131.0
+                    },
+                    "confidence": 0.39702972000000003
+                  },
+                  {
+                    "text": "W",
+                    "box": {
+                      "x0": 219.0,
+                      "y0": 122.0,
+                      "x1": 240.0,
+                      "y1": 131.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "y Parle:G Gluco'",
+                "box": {
+                  "x0": 22.0,
+                  "y0": 134.0,
+                  "x1": 147.0,
+                  "y1": 149.0
+                },
+                "confidence": 0.4304092666666667,
+                "words": [
+                  {
+                    "text": "y",
+                    "box": {
+                      "x0": 22.0,
+                      "y0": 134.0,
+                      "x1": 25.0,
+                      "y1": 140.0
+                    },
+                    "confidence": 0.0
+                  },
+                  {
+                    "text": "Parle:G",
+                    "box": {
+                      "x0": 33.0,
+                      "y0": 134.0,
+                      "x1": 100.0,
+                      "y1": 149.0
+                    },
+                    "confidence": 0.52541023
+                  },
+                  {
+                    "text": "Gluco'",
+                    "box": {
+                      "x0": 104.0,
+                      "y0": 138.0,
+                      "x1": 147.0,
+                      "y1": 148.0
+                    },
+                    "confidence": 0.76581757
+                  }
+                ]
+              },
+              {
+                "text": "/&",
+                "box": {
+                  "x0": 263.0,
+                  "y0": 144.0,
+                  "x1": 275.0,
+                  "y1": 150.0
+                },
+                "confidence": 0.49264534,
+                "words": [
+                  {
+                    "text": "/&",
+                    "box": {
+                      "x0": 263.0,
+                      "y0": 144.0,
+                      "x1": 275.0,
+                      "y1": 150.0
+                    },
+                    "confidence": 0.49264534
+                  }
+                ]
+              },
+              {
+                "text": "&",
+                "box": {
+                  "x0": 271.0,
+                  "y0": 139.0,
+                  "x1": 281.0,
+                  "y1": 144.0
+                },
+                "confidence": 0.7061086299999999,
+                "words": [
+                  {
+                    "text": "&",
+                    "box": {
+                      "x0": 271.0,
+                      "y0": 139.0,
+                      "x1": 281.0,
+                      "y1": 144.0
+                    },
+                    "confidence": 0.7061086299999999
+                  }
+                ]
+              },
+              {
+                "text": "MRy m-\"‘\"\"nlucm",
+                "box": {
+                  "x0": 88.0,
+                  "y0": 150.0,
+                  "x1": 241.0,
+                  "y1": 174.0
+                },
+                "confidence": 0.295394895,
+                "words": [
+                  {
+                    "text": "MRy",
+                    "box": {
+                      "x0": 88.0,
+                      "y0": 150.0,
+                      "x1": 141.0,
+                      "y1": 158.0
+                    },
+                    "confidence": 0.0
+                  },
+                  {
+                    "text": "m-\"‘\"\"nlucm",
+                    "box": {
+                      "x0": 148.0,
+                      "y0": 150.0,
+                      "x1": 241.0,
+                      "y1": 174.0
+                    },
+                    "confidence": 0.59078979
+                  }
+                ]
+              },
+              {
+                "text": "7",
+                "box": {
+                  "x0": 280.0,
+                  "y0": 156.0,
+                  "x1": 293.0,
+                  "y1": 161.0
+                },
+                "confidence": 0.50778561,
+                "words": [
+                  {
+                    "text": "7",
+                    "box": {
+                      "x0": 280.0,
+                      "y0": 156.0,
+                      "x1": 293.0,
+                      "y1": 161.0
+                    },
+                    "confidence": 0.50778561
+                  }
+                ]
+              },
+              {
+                "text": "Parle-G",
+                "box": {
+                  "x0": 356.0,
+                  "y0": 125.0,
+                  "x1": 565.0,
+                  "y1": 164.0
+                },
+                "confidence": 0.8840529600000001,
+                "words": [
+                  {
+                    "text": "Parle-G",
+                    "box": {
+                      "x0": 356.0,
+                      "y0": 125.0,
+                      "x1": 565.0,
+                      "y1": 164.0
+                    },
+                    "confidence": 0.8840529600000001
+                  }
+                ]
+              },
+              {
+                "text": "S BT",
+                "box": {
+                  "x0": 16.0,
+                  "y0": 151.0,
+                  "x1": 119.0,
+                  "y1": 169.0
+                },
+                "confidence": 0.08046889,
+                "words": [
+                  {
+                    "text": "S",
+                    "box": {
+                      "x0": 16.0,
+                      "y0": 157.0,
+                      "x1": 25.0,
+                      "y1": 169.0
+                    },
+                    "confidence": 0.0123908
+                  },
+                  {
+                    "text": "BT",
+                    "box": {
+                      "x0": 33.0,
+                      "y0": 151.0,
+                      "x1": 119.0,
+                      "y1": 169.0
+                    },
+                    "confidence": 0.14854698
+                  }
+                ]
+              },
+              {
+                "text": "&",
+                "box": {
+                  "x0": 267.0,
+                  "y0": 159.0,
+                  "x1": 293.0,
+                  "y1": 172.0
+                },
+                "confidence": 0.5714344,
+                "words": [
+                  {
+                    "text": "&",
+                    "box": {
+                      "x0": 267.0,
+                      "y0": 159.0,
+                      "x1": 293.0,
+                      "y1": 172.0
+                    },
+                    "confidence": 0.5714344
+                  }
+                ]
+              },
+              {
+                "text": "=",
+                "box": {
+                  "x0": 270.0,
+                  "y0": 169.0,
+                  "x1": 295.0,
+                  "y1": 174.0
+                },
+                "confidence": 0.00057812,
+                "words": [
+                  {
+                    "text": "=",
+                    "box": {
+                      "x0": 270.0,
+                      "y0": 169.0,
+                      "x1": 295.0,
+                      "y1": 174.0
+                    },
+                    "confidence": 0.00057812
+                  }
+                ]
+              },
+              {
+                "text": "Y",
+                "box": {
+                  "x0": 297.0,
+                  "y0": 156.0,
+                  "x1": 322.0,
+                  "y1": 170.0
+                },
+                "confidence": 0.31545324,
+                "words": [
+                  {
+                    "text": "Y",
+                    "box": {
+                      "x0": 297.0,
+                      "y0": 156.0,
+                      "x1": 322.0,
+                      "y1": 170.0
+                    },
+                    "confidence": 0.31545324
+                  }
+                ]
+              },
+              {
+                "text": "2858",
+                "box": {
+                  "x0": 275.0,
+                  "y0": 175.0,
+                  "x1": 315.0,
+                  "y1": 182.0
+                },
+                "confidence": 0.09714241,
+                "words": [
+                  {
+                    "text": "2858",
+                    "box": {
+                      "x0": 275.0,
+                      "y0": 175.0,
+                      "x1": 315.0,
+                      "y1": 182.0
+                    },
+                    "confidence": 0.09714241
+                  }
+                ]
+              },
+              {
+                "text": "S",
+                "box": {
+                  "x0": 33.0,
+                  "y0": 159.0,
+                  "x1": 241.0,
+                  "y1": 201.0
+                },
+                "confidence": 0.0,
+                "words": [
+                  {
+                    "text": "S",
+                    "box": {
+                      "x0": 33.0,
+                      "y0": 159.0,
+                      "x1": 241.0,
+                      "y1": 201.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "T",
+                "box": {
+                  "x0": 34.0,
+                  "y0": 176.0,
+                  "x1": 144.0,
+                  "y1": 201.0
+                },
+                "confidence": 0.15856428,
+                "words": [
+                  {
+                    "text": "T",
+                    "box": {
+                      "x0": 34.0,
+                      "y0": 176.0,
+                      "x1": 144.0,
+                      "y1": 201.0
+                    },
+                    "confidence": 0.15856428
+                  }
+                ]
+              },
+              {
+                "text": "wee S,",
+                "box": {
+                  "x0": 415.0,
+                  "y0": 189.0,
+                  "x1": 455.0,
+                  "y1": 202.0
+                },
+                "confidence": 0.33089281,
+                "words": [
+                  {
+                    "text": "wee",
+                    "box": {
+                      "x0": 415.0,
+                      "y0": 194.0,
+                      "x1": 435.0,
+                      "y1": 202.0
+                    },
+                    "confidence": 0.21850245999999998
+                  },
+                  {
+                    "text": "S,",
+                    "box": {
+                      "x0": 440.0,
+                      "y0": 189.0,
+                      "x1": 455.0,
+                      "y1": 202.0
+                    },
+                    "confidence": 0.44328316
+                  }
+                ]
+              },
+              {
+                "text": "ssai",
+                "box": {
+                  "x0": 526.0,
+                  "y0": 176.0,
+                  "x1": 556.0,
+                  "y1": 194.0
+                },
+                "confidence": 0.33752879999999996,
+                "words": [
+                  {
+                    "text": "ssai",
+                    "box": {
+                      "x0": 526.0,
+                      "y0": 176.0,
+                      "x1": 556.0,
+                      "y1": 194.0
+                    },
+                    "confidence": 0.33752879999999996
+                  }
+                ]
+              },
+              {
+                "text": "NN O AT AT ARGROG 1S |",
+                "box": {
+                  "x0": 34.0,
+                  "y0": 194.0,
+                  "x1": 242.0,
+                  "y1": 222.0
+                },
+                "confidence": 0.25455412,
+                "words": [
+                  {
+                    "text": "NN",
+                    "box": {
+                      "x0": 34.0,
+                      "y0": 194.0,
+                      "x1": 61.0,
+                      "y1": 222.0
+                    },
+                    "confidence": 0.31968731
+                  },
+                  {
+                    "text": "O",
+                    "box": {
+                      "x0": 67.0,
+                      "y0": 205.0,
+                      "x1": 79.0,
+                      "y1": 213.0
+                    },
+                    "confidence": 0.29996214
+                  },
+                  {
+                    "text": "AT",
+                    "box": {
+                      "x0": 90.0,
+                      "y0": 194.0,
+                      "x1": 110.0,
+                      "y1": 222.0
+                    },
+                    "confidence": 0.07576027
+                  },
+                  {
+                    "text": "AT",
+                    "box": {
+                      "x0": 123.0,
+                      "y0": 205.0,
+                      "x1": 147.0,
+                      "y1": 214.0
+                    },
+                    "confidence": 0.41010914
+                  },
+                  {
+                    "text": "ARGROG",
+                    "box": {
+                      "x0": 160.0,
+                      "y0": 194.0,
+                      "x1": 194.0,
+                      "y1": 222.0
+                    },
+                    "confidence": 0.0
+                  },
+                  {
+                    "text": "1S",
+                    "box": {
+                      "x0": 200.0,
+                      "y0": 204.0,
+                      "x1": 222.0,
+                      "y1": 212.0
+                    },
+                    "confidence": 0.07226887
+                  },
+                  {
+                    "text": "|",
+                    "box": {
+                      "x0": 236.0,
+                      "y0": 204.0,
+                      "x1": 242.0,
+                      "y1": 210.0
+                    },
+                    "confidence": 0.60409111
+                  }
+                ]
+              },
+              {
+                "text": "HCL o Al xeS",
+                "box": {
+                  "x0": 415.0,
+                  "y0": 193.0,
+                  "x1": 492.0,
+                  "y1": 221.0
+                },
+                "confidence": 0.2427026575,
+                "words": [
+                  {
+                    "text": "HCL",
+                    "box": {
+                      "x0": 415.0,
+                      "y0": 204.0,
+                      "x1": 492.0,
+                      "y1": 212.0
+                    },
+                    "confidence": 0.10542355
+                  },
+                  {
+                    "text": "o",
+                    "box": {
+                      "x0": 439.0,
+                      "y0": 193.0,
+                      "x1": 446.0,
+                      "y1": 221.0
+                    },
+                    "confidence": 0.33936684
+                  },
+                  {
+                    "text": "Al",
+                    "box": {
+                      "x0": 453.0,
+                      "y0": 193.0,
+                      "x1": 463.0,
+                      "y1": 221.0
+                    },
+                    "confidence": 0.38675803999999997
+                  },
+                  {
+                    "text": "xeS",
+                    "box": {
+                      "x0": 471.0,
+                      "y0": 204.0,
+                      "x1": 492.0,
+                      "y1": 212.0
+                    },
+                    "confidence": 0.1392622
+                  }
+                ]
+              },
+              {
+                "text": "e o",
+                "box": {
+                  "x0": 497.0,
+                  "y0": 197.0,
+                  "x1": 536.0,
+                  "y1": 205.0
+                },
+                "confidence": 0.271950135,
+                "words": [
+                  {
+                    "text": "e",
+                    "box": {
+                      "x0": 497.0,
+                      "y0": 197.0,
+                      "x1": 521.0,
+                      "y1": 205.0
+                    },
+                    "confidence": 0.04743443
+                  },
+                  {
+                    "text": "o",
+                    "box": {
+                      "x0": 529.0,
+                      "y0": 197.0,
+                      "x1": 536.0,
+                      "y1": 204.0
+                    },
+                    "confidence": 0.49646584
+                  }
+                ]
+              },
+              {
+                "text": "- R",
+                "box": {
+                  "x0": 33.0,
+                  "y0": 215.0,
+                  "x1": 120.0,
+                  "y1": 224.0
+                },
+                "confidence": 0.148647785,
+                "words": [
+                  {
+                    "text": "-",
+                    "box": {
+                      "x0": 33.0,
+                      "y0": 216.0,
+                      "x1": 80.0,
+                      "y1": 224.0
+                    },
+                    "confidence": 0.11625527999999999
+                  },
+                  {
+                    "text": "R",
+                    "box": {
+                      "x0": 85.0,
+                      "y0": 215.0,
+                      "x1": 120.0,
+                      "y1": 223.0
+                    },
+                    "confidence": 0.18104029
+                  }
+                ]
+              },
+              {
+                "text": "e EEE",
+                "box": {
+                  "x0": 267.0,
+                  "y0": 218.0,
+                  "x1": 328.0,
+                  "y1": 223.0
+                },
+                "confidence": 0.126832485,
+                "words": [
+                  {
+                    "text": "e",
+                    "box": {
+                      "x0": 267.0,
+                      "y0": 218.0,
+                      "x1": 289.0,
+                      "y1": 223.0
+                    },
+                    "confidence": 0.25366497
+                  },
+                  {
+                    "text": "EEE",
+                    "box": {
+                      "x0": 295.0,
+                      "y0": 218.0,
+                      "x1": 328.0,
+                      "y1": 222.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "a4",
+                "box": {
+                  "x0": 278.0,
+                  "y0": 213.0,
+                  "x1": 328.0,
+                  "y1": 217.0
+                },
+                "confidence": 0.0,
+                "words": [
+                  {
+                    "text": "a4",
+                    "box": {
+                      "x0": 278.0,
+                      "y0": 213.0,
+                      "x1": 328.0,
+                      "y1": 217.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "o",
+                "box": {
+                  "x0": 258.0,
+                  "y0": 229.0,
+                  "x1": 316.0,
+                  "y1": 243.0
+                },
+                "confidence": 0.0,
+                "words": [
+                  {
+                    "text": "o",
+                    "box": {
+                      "x0": 258.0,
+                      "y0": 229.0,
+                      "x1": 316.0,
+                      "y1": 243.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "——",
+                "box": {
+                  "x0": 262.0,
+                  "y0": 223.0,
+                  "x1": 303.0,
+                  "y1": 228.0
+                },
+                "confidence": 0.24636717,
+                "words": [
+                  {
+                    "text": "——",
+                    "box": {
+                      "x0": 262.0,
+                      "y0": 223.0,
+                      "x1": 303.0,
+                      "y1": 228.0
+                    },
+                    "confidence": 0.24636717
+                  }
+                ]
+              },
+              {
+                "text": "s",
+                "box": {
+                  "x0": 271.0,
+                  "y0": 228.0,
+                  "x1": 328.0,
+                  "y1": 233.0
+                },
+                "confidence": 0.0,
+                "words": [
+                  {
+                    "text": "s",
+                    "box": {
+                      "x0": 271.0,
+                      "y0": 228.0,
+                      "x1": 328.0,
+                      "y1": 233.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "=",
+                "box": {
+                  "x0": 273.0,
+                  "y0": 239.0,
+                  "x1": 304.0,
+                  "y1": 248.0
+                },
+                "confidence": 0.52202888,
+                "words": [
+                  {
+                    "text": "=",
+                    "box": {
+                      "x0": 273.0,
+                      "y0": 239.0,
+                      "x1": 304.0,
+                      "y1": 248.0
+                    },
+                    "confidence": 0.52202888
+                  }
+                ]
+              },
+              {
+                "text": "MANUFACTURED FOR:",
+                "box": {
+                  "x0": 342.0,
+                  "y0": 240.0,
+                  "x1": 441.0,
+                  "y1": 248.0
+                },
+                "confidence": 0.552674655,
+                "words": [
+                  {
+                    "text": "MANUFACTURED",
+                    "box": {
+                      "x0": 342.0,
+                      "y0": 240.0,
+                      "x1": 417.0,
+                      "y1": 248.0
+                    },
+                    "confidence": 0.25774303
+                  },
+                  {
+                    "text": "FOR:",
+                    "box": {
+                      "x0": 420.0,
+                      "y0": 240.0,
+                      "x1": 441.0,
+                      "y1": 248.0
+                    },
+                    "confidence": 0.8476062799999999
+                  }
+                ]
+              },
+              {
+                "text": "nerweicHr 70g",
+                "box": {
+                  "x0": 432.0,
+                  "y0": 223.0,
+                  "x1": 522.0,
+                  "y1": 239.0
+                },
+                "confidence": 0.036390349999999995,
+                "words": [
+                  {
+                    "text": "nerweicHr",
+                    "box": {
+                      "x0": 432.0,
+                      "y0": 228.0,
+                      "x1": 488.0,
+                      "y1": 236.0
+                    },
+                    "confidence": 0.0
+                  },
+                  {
+                    "text": "70g",
+                    "box": {
+                      "x0": 492.0,
+                      "y0": 223.0,
+                      "x1": 522.0,
+                      "y1": 239.0
+                    },
+                    "confidence": 0.07278069999999999
+                  }
+                ]
+              },
+              {
+                "text": "e",
+                "box": {
+                  "x0": 273.0,
+                  "y0": 249.0,
+                  "x1": 303.0,
+                  "y1": 253.0
+                },
+                "confidence": 0.26764645000000004,
+                "words": [
+                  {
+                    "text": "e",
+                    "box": {
+                      "x0": 273.0,
+                      "y0": 249.0,
+                      "x1": 303.0,
+                      "y1": 253.0
+                    },
+                    "confidence": 0.26764645000000004
+                  }
+                ]
+              },
+              {
+                "text": "=",
+                "box": {
+                  "x0": 272.0,
+                  "y0": 254.0,
+                  "x1": 303.0,
+                  "y1": 264.0
+                },
+                "confidence": 0.33759949,
+                "words": [
+                  {
+                    "text": "=",
+                    "box": {
+                      "x0": 272.0,
+                      "y0": 254.0,
+                      "x1": 303.0,
+                      "y1": 264.0
+                    },
+                    "confidence": 0.33759949
+                  }
+                ]
+              },
+              {
+                "text": "T",
+                "box": {
+                  "x0": 262.0,
+                  "y0": 260.0,
+                  "x1": 302.0,
+                  "y1": 269.0
+                },
+                "confidence": 0.00944071,
+                "words": [
+                  {
+                    "text": "T",
+                    "box": {
+                      "x0": 262.0,
+                      "y0": 260.0,
+                      "x1": 302.0,
+                      "y1": 269.0
+                    },
+                    "confidence": 0.00944071
+                  }
+                ]
+              },
+              {
+                "text": "ARLE PRODUCTS BT LT",
+                "box": {
+                  "x0": 382.0,
+                  "y0": 257.0,
+                  "x1": 513.0,
+                  "y1": 275.0
+                },
+                "confidence": 0.5801717024999999,
+                "words": [
+                  {
+                    "text": "ARLE",
+                    "box": {
+                      "x0": 382.0,
+                      "y0": 258.0,
+                      "x1": 411.0,
+                      "y1": 274.0
+                    },
+                    "confidence": 0.6894637299999999
+                  },
+                  {
+                    "text": "PRODUCTS",
+                    "box": {
+                      "x0": 412.0,
+                      "y0": 258.0,
+                      "x1": 479.0,
+                      "y1": 275.0
+                    },
+                    "confidence": 0.80420265
+                  },
+                  {
+                    "text": "BT",
+                    "box": {
+                      "x0": 471.0,
+                      "y0": 257.0,
+                      "x1": 489.0,
+                      "y1": 266.0
+                    },
+                    "confidence": 0.5097866799999999
+                  },
+                  {
+                    "text": "LT",
+                    "box": {
+                      "x0": 494.0,
+                      "y0": 257.0,
+                      "x1": 513.0,
+                      "y1": 266.0
+                    },
+                    "confidence": 0.31723375
+                  }
+                ]
+              },
+              {
+                "text": "- o7",
+                "box": {
+                  "x0": 512.0,
+                  "y0": 255.0,
+                  "x1": 555.0,
+                  "y1": 283.0
+                },
+                "confidence": 0.44152406499999997,
+                "words": [
+                  {
+                    "text": "-",
+                    "box": {
+                      "x0": 512.0,
+                      "y0": 267.0,
+                      "x1": 527.0,
+                      "y1": 274.0
+                    },
+                    "confidence": 0.57811935
+                  },
+                  {
+                    "text": "o7",
+                    "box": {
+                      "x0": 533.0,
+                      "y0": 255.0,
+                      "x1": 555.0,
+                      "y1": 283.0
+                    },
+                    "confidence": 0.30492878
+                  }
+                ]
+              },
+              {
+                "text": "@ E»-Ls ulcmw puTLD",
+                "box": {
+                  "x0": 342.0,
+                  "y0": 267.0,
+                  "x1": 522.0,
+                  "y1": 298.0
+                },
+                "confidence": 0.547243795,
+                "words": [
+                  {
+                    "text": "@",
+                    "box": {
+                      "x0": 342.0,
+                      "y0": 282.0,
+                      "x1": 352.0,
+                      "y1": 291.0
+                    },
+                    "confidence": 0.78938354
+                  },
+                  {
+                    "text": "E»-Ls",
+                    "box": {
+                      "x0": 358.0,
+                      "y0": 267.0,
+                      "x1": 424.0,
+                      "y1": 291.0
+                    },
+                    "confidence": 0.59632111
+                  },
+                  {
+                    "text": "ulcmw",
+                    "box": {
+                      "x0": 412.0,
+                      "y0": 283.0,
+                      "x1": 459.0,
+                      "y1": 291.0
+                    },
+                    "confidence": 0.74986763
+                  },
+                  {
+                    "text": "puTLD",
+                    "box": {
+                      "x0": 463.0,
+                      "y0": 281.0,
+                      "x1": 522.0,
+                      "y1": 298.0
+                    },
+                    "confidence": 0.0534029
+                  }
+                ]
+              },
+              {
+                "text": "e do0130002203",
+                "box": {
+                  "x0": 342.0,
+                  "y0": 292.0,
+                  "x1": 449.0,
+                  "y1": 314.0
+                },
+                "confidence": 0.12448377499999999,
+                "words": [
+                  {
+                    "text": "e",
+                    "box": {
+                      "x0": 342.0,
+                      "y0": 292.0,
+                      "x1": 378.0,
+                      "y1": 307.0
+                    },
+                    "confidence": 0.24896754999999998
+                  },
+                  {
+                    "text": "do0130002203",
+                    "box": {
+                      "x0": 381.0,
+                      "y0": 292.0,
+                      "x1": 449.0,
+                      "y1": 314.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "o",
+                "box": {
+                  "x0": 478.0,
+                  "y0": 297.0,
+                  "x1": 480.0,
+                  "y1": 300.0
+                },
+                "confidence": 0.09036607999999999,
+                "words": [
+                  {
+                    "text": "o",
+                    "box": {
+                      "x0": 478.0,
+                      "y0": 297.0,
+                      "x1": 480.0,
+                      "y1": 300.0
+                    },
+                    "confidence": 0.09036607999999999
+                  }
+                ]
+              },
+              {
+                "text": "-7",
+                "box": {
+                  "x0": 512.0,
+                  "y0": 291.0,
+                  "x1": 551.0,
+                  "y1": 299.0
+                },
+                "confidence": 0.0,
+                "words": [
+                  {
+                    "text": "-7",
+                    "box": {
+                      "x0": 512.0,
+                      "y0": 291.0,
+                      "x1": 551.0,
+                      "y1": 299.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "Il i",
+                "box": {
+                  "x0": 18.0,
+                  "y0": 235.0,
+                  "x1": 189.0,
+                  "y1": 316.0
+                },
+                "confidence": 0.6695944800000001,
+                "words": [
+                  {
+                    "text": "Il",
+                    "box": {
+                      "x0": 18.0,
+                      "y0": 236.0,
+                      "x1": 119.0,
+                      "y1": 316.0
+                    },
+                    "confidence": 0.81629372
+                  },
+                  {
+                    "text": "i",
+                    "box": {
+                      "x0": 129.0,
+                      "y0": 235.0,
+                      "x1": 189.0,
+                      "y1": 315.0
+                    },
+                    "confidence": 0.52289524
+                  }
+                ]
+              },
+              {
+                "text": "mnmmvs,mmm",
+                "box": {
+                  "x0": 49.0,
+                  "y0": 319.0,
+                  "x1": 178.0,
+                  "y1": 328.0
+                },
+                "confidence": 0.68738647,
+                "words": [
+                  {
+                    "text": "mnmmvs,mmm",
+                    "box": {
+                      "x0": 49.0,
+                      "y0": 319.0,
+                      "x1": 178.0,
+                      "y1": 328.0
+                    },
+                    "confidence": 0.68738647
+                  }
+                ]
+              },
+              {
+                "text": "o o A",
+                "box": {
+                  "x0": 341.0,
+                  "y0": 308.0,
+                  "x1": 538.0,
+                  "y1": 341.0
+                },
+                "confidence": 0.23644275666666667,
+                "words": [
+                  {
+                    "text": "o",
+                    "box": {
+                      "x0": 341.0,
+                      "y0": 308.0,
+                      "x1": 432.0,
+                      "y1": 331.0
+                    },
+                    "confidence": 0.17486744
+                  },
+                  {
+                    "text": "o",
+                    "box": {
+                      "x0": 433.0,
+                      "y0": 316.0,
+                      "x1": 442.0,
+                      "y1": 332.0
+                    },
+                    "confidence": 0.33362141
+                  },
+                  {
+                    "text": "A",
+                    "box": {
+                      "x0": 442.0,
+                      "y0": 316.0,
+                      "x1": 538.0,
+                      "y1": 341.0
+                    },
+                    "confidence": 0.20083942
+                  }
+                ]
+              },
+              {
+                "text": "‘ot e 105",
+                "box": {
+                  "x0": 81.0,
+                  "y0": 319.0,
+                  "x1": 147.0,
+                  "y1": 347.0
+                },
+                "confidence": 0.36434976,
+                "words": [
+                  {
+                    "text": "‘ot",
+                    "box": {
+                      "x0": 81.0,
+                      "y0": 330.0,
+                      "x1": 147.0,
+                      "y1": 339.0
+                    },
+                    "confidence": 0.033783150000000005
+                  },
+                  {
+                    "text": "e",
+                    "box": {
+                      "x0": 116.0,
+                      "y0": 319.0,
+                      "x1": 126.0,
+                      "y1": 347.0
+                    },
+                    "confidence": 0.47310059000000004
+                  },
+                  {
+                    "text": "105",
+                    "box": {
+                      "x0": 130.0,
+                      "y0": 330.0,
+                      "x1": 147.0,
+                      "y1": 339.0
+                    },
+                    "confidence": 0.58616554
+                  }
+                ]
+              },
+              {
+                "text": "di",
+                "box": {
+                  "x0": 394.0,
+                  "y0": 324.0,
+                  "x1": 407.0,
+                  "y1": 339.0
+                },
+                "confidence": 0.0,
+                "words": [
+                  {
+                    "text": "di",
+                    "box": {
+                      "x0": 394.0,
+                      "y0": 324.0,
+                      "x1": 407.0,
+                      "y1": 339.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "‘CARBONTDRATE",
+                "box": {
+                  "x0": 49.0,
+                  "y0": 340.0,
+                  "x1": 110.0,
+                  "y1": 349.0
+                },
+                "confidence": 0.11199045,
+                "words": [
+                  {
+                    "text": "‘CARBONTDRATE",
+                    "box": {
+                      "x0": 49.0,
+                      "y0": 340.0,
+                      "x1": 110.0,
+                      "y1": 349.0
+                    },
+                    "confidence": 0.11199045
+                  }
+                ]
+              },
+              {
+                "text": "Smacious",
+                "box": {
+                  "x0": 88.0,
+                  "y0": 349.0,
+                  "x1": 148.0,
+                  "y1": 357.0
+                },
+                "confidence": 0.0,
+                "words": [
+                  {
+                    "text": "Smacious",
+                    "box": {
+                      "x0": 88.0,
+                      "y0": 349.0,
+                      "x1": 148.0,
+                      "y1": 357.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "-l",
+                "box": {
+                  "x0": 340.0,
+                  "y0": 332.0,
+                  "x1": 382.0,
+                  "y1": 348.0
+                },
+                "confidence": 0.39891289,
+                "words": [
+                  {
+                    "text": "-l",
+                    "box": {
+                      "x0": 340.0,
+                      "y0": 332.0,
+                      "x1": 382.0,
+                      "y1": 348.0
+                    },
+                    "confidence": 0.39891289
+                  }
+                ]
+              },
+              {
+                "text": "et",
+                "box": {
+                  "x0": 360.0,
+                  "y0": 348.0,
+                  "x1": 384.0,
+                  "y1": 355.0
+                },
+                "confidence": 0.0,
+                "words": [
+                  {
+                    "text": "et",
+                    "box": {
+                      "x0": 360.0,
+                      "y0": 348.0,
+                      "x1": 384.0,
+                      "y1": 355.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "s s W",
+                "box": {
+                  "x0": 403.0,
+                  "y0": 334.0,
+                  "x1": 531.0,
+                  "y1": 365.0
+                },
+                "confidence": 0.29093111000000005,
+                "words": [
+                  {
+                    "text": "s",
+                    "box": {
+                      "x0": 403.0,
+                      "y0": 341.0,
+                      "x1": 421.0,
+                      "y1": 356.0
+                    },
+                    "confidence": 0.23028631
+                  },
+                  {
+                    "text": "s",
+                    "box": {
+                      "x0": 428.0,
+                      "y0": 341.0,
+                      "x1": 453.0,
+                      "y1": 365.0
+                    },
+                    "confidence": 0.31589432
+                  },
+                  {
+                    "text": "W",
+                    "box": {
+                      "x0": 442.0,
+                      "y0": 334.0,
+                      "x1": 531.0,
+                      "y1": 358.0
+                    },
+                    "confidence": 0.32661270000000003
+                  }
+                ]
+              },
+              {
+                "text": "]",
+                "box": {
+                  "x0": 16.0,
+                  "y0": 337.0,
+                  "x1": 24.0,
+                  "y1": 364.0
+                },
+                "confidence": 0.64428841,
+                "words": [
+                  {
+                    "text": "]",
+                    "box": {
+                      "x0": 16.0,
+                      "y0": 337.0,
+                      "x1": 24.0,
+                      "y1": 364.0
+                    },
+                    "confidence": 0.64428841
+                  }
+                ]
+              },
+              {
+                "text": "\"SR",
+                "box": {
+                  "x0": 102.0,
+                  "y0": 358.0,
+                  "x1": 148.0,
+                  "y1": 365.0
+                },
+                "confidence": 0.0,
+                "words": [
+                  {
+                    "text": "\"SR",
+                    "box": {
+                      "x0": 102.0,
+                      "y0": 358.0,
+                      "x1": 148.0,
+                      "y1": 365.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "il",
+                "box": {
+                  "x0": 166.0,
+                  "y0": 357.0,
+                  "x1": 180.0,
+                  "y1": 366.0
+                },
+                "confidence": 0.24582809,
+                "words": [
+                  {
+                    "text": "il",
+                    "box": {
+                      "x0": 166.0,
+                      "y0": 357.0,
+                      "x1": 180.0,
+                      "y1": 366.0
+                    },
+                    "confidence": 0.24582809
+                  }
+                ]
+              },
+              {
+                "text": "oot",
+                "box": {
+                  "x0": 402.0,
+                  "y0": 357.0,
+                  "x1": 427.0,
+                  "y1": 365.0
+                },
+                "confidence": 0.35906204,
+                "words": [
+                  {
+                    "text": "oot",
+                    "box": {
+                      "x0": 402.0,
+                      "y0": 357.0,
+                      "x1": 427.0,
+                      "y1": 365.0
+                    },
+                    "confidence": 0.35906204
+                  }
+                ]
+              },
+              {
+                "text": "o T",
+                "box": {
+                  "x0": 339.0,
+                  "y0": 357.0,
+                  "x1": 400.0,
+                  "y1": 380.0
+                },
+                "confidence": 0.39473701499999997,
+                "words": [
+                  {
+                    "text": "o",
+                    "box": {
+                      "x0": 339.0,
+                      "y0": 365.0,
+                      "x1": 358.0,
+                      "y1": 373.0
+                    },
+                    "confidence": 0.48538089999999995
+                  },
+                  {
+                    "text": "T",
+                    "box": {
+                      "x0": 359.0,
+                      "y0": 357.0,
+                      "x1": 400.0,
+                      "y1": 380.0
+                    },
+                    "confidence": 0.30409313
+                  }
+                ]
+              },
+              {
+                "text": "o",
+                "box": {
+                  "x0": 359.0,
+                  "y0": 373.0,
+                  "x1": 388.0,
+                  "y1": 389.0
+                },
+                "confidence": 0.33433128,
+                "words": [
+                  {
+                    "text": "o",
+                    "box": {
+                      "x0": 359.0,
+                      "y0": 373.0,
+                      "x1": 388.0,
+                      "y1": 389.0
+                    },
+                    "confidence": 0.33433128
+                  }
+                ]
+              },
+              {
+                "text": "uummmw e",
+                "box": {
+                  "x0": 401.0,
+                  "y0": 356.0,
+                  "x1": 504.0,
+                  "y1": 382.0
+                },
+                "confidence": 0.38113754,
+                "words": [
+                  {
+                    "text": "uummmw",
+                    "box": {
+                      "x0": 401.0,
+                      "y0": 356.0,
+                      "x1": 468.0,
+                      "y1": 382.0
+                    },
+                    "confidence": 0.7447057300000001
+                  },
+                  {
+                    "text": "e",
+                    "box": {
+                      "x0": 474.0,
+                      "y0": 367.0,
+                      "x1": 504.0,
+                      "y1": 374.0
+                    },
+                    "confidence": 0.017569349999999997
+                  }
+                ]
+              },
+              {
+                "text": "k- sve",
+                "box": {
+                  "x0": 490.0,
+                  "y0": 363.0,
+                  "x1": 535.0,
+                  "y1": 391.0
+                },
+                "confidence": 0.0,
+                "words": [
+                  {
+                    "text": "k-",
+                    "box": {
+                      "x0": 490.0,
+                      "y0": 375.0,
+                      "x1": 508.0,
+                      "y1": 383.0
+                    },
+                    "confidence": 0.0
+                  },
+                  {
+                    "text": "sve",
+                    "box": {
+                      "x0": 511.0,
+                      "y0": 363.0,
+                      "x1": 535.0,
+                      "y1": 391.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "53",
+                "box": {
+                  "x0": 50.0,
+                  "y0": 376.0,
+                  "x1": 64.0,
+                  "y1": 384.0
+                },
+                "confidence": 0.263936,
+                "words": [
+                  {
+                    "text": "53",
+                    "box": {
+                      "x0": 50.0,
+                      "y0": 376.0,
+                      "x1": 64.0,
+                      "y1": 384.0
+                    },
+                    "confidence": 0.263936
+                  }
+                ]
+              },
+              {
+                "text": "ssthes,",
+                "box": {
+                  "x0": 151.0,
+                  "y0": 383.0,
+                  "x1": 180.0,
+                  "y1": 391.0
+                },
+                "confidence": 0.0,
+                "words": [
+                  {
+                    "text": "ssthes,",
+                    "box": {
+                      "x0": 151.0,
+                      "y0": 383.0,
+                      "x1": 180.0,
+                      "y1": 391.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "i",
+                "box": {
+                  "x0": 376.0,
+                  "y0": 374.0,
+                  "x1": 417.0,
+                  "y1": 390.0
+                },
+                "confidence": 0.0,
+                "words": [
+                  {
+                    "text": "i",
+                    "box": {
+                      "x0": 376.0,
+                      "y0": 374.0,
+                      "x1": 417.0,
+                      "y1": 390.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "M)",
+                "box": {
+                  "x0": 13.0,
+                  "y0": 392.0,
+                  "x1": 26.0,
+                  "y1": 404.0
+                },
+                "confidence": 0.07507172,
+                "words": [
+                  {
+                    "text": "M)",
+                    "box": {
+                      "x0": 13.0,
+                      "y0": 392.0,
+                      "x1": 26.0,
+                      "y1": 404.0
+                    },
+                    "confidence": 0.07507172
+                  }
+                ]
+              },
+              {
+                "text": "i",
+                "box": {
+                  "x0": 169.0,
+                  "y0": 393.0,
+                  "x1": 221.0,
+                  "y1": 401.0
+                },
+                "confidence": 0.34179653000000004,
+                "words": [
+                  {
+                    "text": "i",
+                    "box": {
+                      "x0": 169.0,
+                      "y0": 393.0,
+                      "x1": 221.0,
+                      "y1": 401.0
+                    },
+                    "confidence": 0.34179653000000004
+                  }
+                ]
+              },
+              {
+                "text": "o mmmnmm",
+                "box": {
+                  "x0": 338.0,
+                  "y0": 390.0,
+                  "x1": 442.0,
+                  "y1": 414.0
+                },
+                "confidence": 0.607448655,
+                "words": [
+                  {
+                    "text": "o",
+                    "box": {
+                      "x0": 338.0,
+                      "y0": 390.0,
+                      "x1": 353.0,
+                      "y1": 398.0
+                    },
+                    "confidence": 0.52975372
+                  },
+                  {
+                    "text": "mmmnmm",
+                    "box": {
+                      "x0": 358.0,
+                      "y0": 391.0,
+                      "x1": 442.0,
+                      "y1": 414.0
+                    },
+                    "confidence": 0.68514359
+                  }
+                ]
+              },
+              {
+                "text": "R s",
+                "box": {
+                  "x0": 73.0,
+                  "y0": 402.0,
+                  "x1": 156.0,
+                  "y1": 410.0
+                },
+                "confidence": 0.34631967499999994,
+                "words": [
+                  {
+                    "text": "R",
+                    "box": {
+                      "x0": 73.0,
+                      "y0": 404.0,
+                      "x1": 93.0,
+                      "y1": 410.0
+                    },
+                    "confidence": 0.04526806
+                  },
+                  {
+                    "text": "s",
+                    "box": {
+                      "x0": 148.0,
+                      "y0": 402.0,
+                      "x1": 156.0,
+                      "y1": 410.0
+                    },
+                    "confidence": 0.6473712899999999
+                  }
+                ]
+              },
+              {
+                "text": "e",
+                "box": {
+                  "x0": 173.0,
+                  "y0": 400.0,
+                  "x1": 234.0,
+                  "y1": 408.0
+                },
+                "confidence": 0.17841759,
+                "words": [
+                  {
+                    "text": "e",
+                    "box": {
+                      "x0": 173.0,
+                      "y0": 400.0,
+                      "x1": 234.0,
+                      "y1": 408.0
+                    },
+                    "confidence": 0.17841759
+                  }
+                ]
+              },
+              {
+                "text": "ek",
+                "box": {
+                  "x0": 358.0,
+                  "y0": 399.0,
+                  "x1": 385.0,
+                  "y1": 413.0
+                },
+                "confidence": 0.08366213,
+                "words": [
+                  {
+                    "text": "ek",
+                    "box": {
+                      "x0": 358.0,
+                      "y0": 399.0,
+                      "x1": 385.0,
+                      "y1": 413.0
+                    },
+                    "confidence": 0.08366213
+                  }
+                ]
+              },
+              {
+                "text": "4 um?’.‘.‘.’,‘:",
+                "box": {
+                  "x0": 386.0,
+                  "y0": 399.0,
+                  "x1": 452.0,
+                  "y1": 419.0
+                },
+                "confidence": 0.45607217499999997,
+                "words": [
+                  {
+                    "text": "4",
+                    "box": {
+                      "x0": 386.0,
+                      "y0": 399.0,
+                      "x1": 399.0,
+                      "y1": 419.0
+                    },
+                    "confidence": 0.31978664
+                  },
+                  {
+                    "text": "um?’.‘.‘.’,‘:",
+                    "box": {
+                      "x0": 395.0,
+                      "y0": 399.0,
+                      "x1": 452.0,
+                      "y1": 415.0
+                    },
+                    "confidence": 0.59235771
+                  }
+                ]
+              },
+              {
+                "text": "Sinzs",
+                "box": {
+                  "x0": 464.0,
+                  "y0": 392.0,
+                  "x1": 496.0,
+                  "y1": 408.0
+                },
+                "confidence": 0.0,
+                "words": [
+                  {
+                    "text": "Sinzs",
+                    "box": {
+                      "x0": 464.0,
+                      "y0": 392.0,
+                      "x1": 496.0,
+                      "y1": 408.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "con",
+                "box": {
+                  "x0": 39.0,
+                  "y0": 414.0,
+                  "x1": 57.0,
+                  "y1": 421.0
+                },
+                "confidence": 0.60712124,
+                "words": [
+                  {
+                    "text": "con",
+                    "box": {
+                      "x0": 39.0,
+                      "y0": 414.0,
+                      "x1": 57.0,
+                      "y1": 421.0
+                    },
+                    "confidence": 0.60712124
+                  }
+                ]
+              },
+              {
+                "text": "R CARE CELL",
+                "box": {
+                  "x0": 79.0,
+                  "y0": 412.0,
+                  "x1": 144.0,
+                  "y1": 420.0
+                },
+                "confidence": 0.40138750666666667,
+                "words": [
+                  {
+                    "text": "R",
+                    "box": {
+                      "x0": 79.0,
+                      "y0": 414.0,
+                      "x1": 91.0,
+                      "y1": 420.0
+                    },
+                    "confidence": 0.1516901
+                  },
+                  {
+                    "text": "CARE",
+                    "box": {
+                      "x0": 94.0,
+                      "y0": 413.0,
+                      "x1": 119.0,
+                      "y1": 420.0
+                    },
+                    "confidence": 0.48290092
+                  },
+                  {
+                    "text": "CELL",
+                    "box": {
+                      "x0": 122.0,
+                      "y0": 412.0,
+                      "x1": 144.0,
+                      "y1": 420.0
+                    },
+                    "confidence": 0.5695715
+                  }
+                ]
+              },
+              {
+                "text": "/",
+                "box": {
+                  "x0": 208.0,
+                  "y0": 426.0,
+                  "x1": 213.0,
+                  "y1": 429.0
+                },
+                "confidence": 0.43780579000000003,
+                "words": [
+                  {
+                    "text": "/",
+                    "box": {
+                      "x0": 208.0,
+                      "y0": 426.0,
+                      "x1": 213.0,
+                      "y1": 429.0
+                    },
+                    "confidence": 0.43780579000000003
+                  }
+                ]
+              },
+              {
+                "text": "ook",
+                "box": {
+                  "x0": 333.0,
+                  "y0": 414.0,
+                  "x1": 372.0,
+                  "y1": 420.0
+                },
+                "confidence": 0.0,
+                "words": [
+                  {
+                    "text": "ook",
+                    "box": {
+                      "x0": 333.0,
+                      "y0": 414.0,
+                      "x1": 372.0,
+                      "y1": 420.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "ok",
+                "box": {
+                  "x0": 338.0,
+                  "y0": 421.0,
+                  "x1": 362.0,
+                  "y1": 425.0
+                },
+                "confidence": 0.11989098000000001,
+                "words": [
+                  {
+                    "text": "ok",
+                    "box": {
+                      "x0": 338.0,
+                      "y0": 421.0,
+                      "x1": 362.0,
+                      "y1": 425.0
+                    },
+                    "confidence": 0.11989098000000001
+                  }
+                ]
+              },
+              {
+                "text": "e N W",
+                "box": {
+                  "x0": 408.0,
+                  "y0": 415.0,
+                  "x1": 500.0,
+                  "y1": 425.0
+                },
+                "confidence": 0.30826146,
+                "words": [
+                  {
+                    "text": "e",
+                    "box": {
+                      "x0": 408.0,
+                      "y0": 415.0,
+                      "x1": 459.0,
+                      "y1": 424.0
+                    },
+                    "confidence": 0.32644825
+                  },
+                  {
+                    "text": "N",
+                    "box": {
+                      "x0": 466.0,
+                      "y0": 417.0,
+                      "x1": 469.0,
+                      "y1": 419.0
+                    },
+                    "confidence": 0.25127783000000004
+                  },
+                  {
+                    "text": "W",
+                    "box": {
+                      "x0": 480.0,
+                      "y0": 416.0,
+                      "x1": 500.0,
+                      "y1": 425.0
+                    },
+                    "confidence": 0.3470583
+                  }
+                ]
+              },
+              {
+                "text": "%",
+                "box": {
+                  "x0": 526.0,
+                  "y0": 422.0,
+                  "x1": 560.0,
+                  "y1": 428.0
+                },
+                "confidence": 0.18238659,
+                "words": [
+                  {
+                    "text": "%",
+                    "box": {
+                      "x0": 526.0,
+                      "y0": 422.0,
+                      "x1": 560.0,
+                      "y1": 428.0
+                    },
+                    "confidence": 0.18238659
+                  }
+                ]
+              },
+              {
+                "text": "i",
+                "box": {
+                  "x0": 65.0,
+                  "y0": 429.0,
+                  "x1": 72.0,
+                  "y1": 432.0
+                },
+                "confidence": 0.55588646,
+                "words": [
+                  {
+                    "text": "i",
+                    "box": {
+                      "x0": 65.0,
+                      "y0": 429.0,
+                      "x1": 72.0,
+                      "y1": 432.0
+                    },
+                    "confidence": 0.55588646
+                  }
+                ]
+              },
+              {
+                "text": "st",
+                "box": {
+                  "x0": 119.0,
+                  "y0": 425.0,
+                  "x1": 134.0,
+                  "y1": 431.0
+                },
+                "confidence": 0.31814412999999997,
+                "words": [
+                  {
+                    "text": "st",
+                    "box": {
+                      "x0": 119.0,
+                      "y0": 425.0,
+                      "x1": 134.0,
+                      "y1": 431.0
+                    },
+                    "confidence": 0.31814412999999997
+                  }
+                ]
+              },
+              {
+                "text": "L—",
+                "box": {
+                  "x0": 233.0,
+                  "y0": 478.0,
+                  "x1": 283.0,
+                  "y1": 485.0
+                },
+                "confidence": 0.0,
+                "words": [
+                  {
+                    "text": "L—",
+                    "box": {
+                      "x0": 233.0,
+                      "y0": 478.0,
+                      "x1": 283.0,
+                      "y1": 485.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              }
+            ],
+            "message": "Original-image line boxes; confidence is an OCR heuristic, not legal certainty."
+          },
+          {
+            "provider": "xiaomi_detail_0",
+            "model": "xiaomi-research/Xiaomi-OCR-0@bbd8cf8d21f256b3644b44cb860f3a7cecb93c30",
+            "status": "ok",
+            "lines": [
+              {
+                "text": "Parle-G Guco BISCUITS",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "INGREDIENTS: WHEAT FLOUR (CT), SUGAR, EXABLE VEGETABLE OIL, PALM OIL, INVERT SUGAR SYRUP, 'SUGAR, CITRIC RISING AGENTS, SODIUM PHOSPHATE, CALCIUM PHOSPHATE, SOLIDS (SUGAR), LEBEBEPER, DIOCTEYL TARTARIC ACID OF MONO AND DIGLYCERIDES OF EXIBLE VEGETABLE OIL, DIOXIDE OF SODIUM, CONTAINS ADDED FLAVOURS (ARTIFICIAL FLAVOURING SUBSTANCES) - 'D- GLUCOSE (LEVULOSE)",
+                "box": null,
+                "confidence": null,
+                "words": []
+              }
+            ],
+            "message": "Detail scan of original-image region [0, 0, 357, 308]. Generative transcription. No calibrated confidence or text boxes supplied."
+          },
+          {
+            "provider": "xiaomi_detail_1",
+            "model": "xiaomi-research/Xiaomi-OCR-0@bbd8cf8d21f256b3644b44cb860f3a7cecb93c30",
+            "status": "ok",
+            "lines": [
+              {
+                "text": "Parle-G",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "MRP Rs. INCL. OF ALL TAXES",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "NET WEIGHT: 70g",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "MANUFACTURED FOR:",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "(P) PARLE PRODUCTS PVT LTD.",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "NORTH LEVEL CROSSING, VILE PARLE EAST, MUMBAI, MH - 400057",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "(B) PARLE BISCUITS PVT LTD.",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "NORTH LEVEL CROSSING, VILE PARLE EAST, MUMBAI, MH - 400057",
+                "box": null,
+                "confidence": null,
+                "words": []
+              }
+            ],
+            "message": "Detail scan of original-image region [238, 0, 596, 308]. Generative transcription. No calibrated confidence or text boxes supplied."
+          }
+        ]
+      },
+      "side": {
+        "file_hash": "f50e638de45a50ac7e071d0bcca438fb7f3264d9fd214f897feb8f2069cdc410",
+        "calibration": {
+          "status": "unavailable",
+          "reason": "Reference marker not detected.",
+          "marker_mm": 50.0,
+          "pixels_per_mm": null,
+          "homography": null
+        },
+        "ocr": [
+          {
+            "provider": "xiaomi",
+            "model": "xiaomi-research/Xiaomi-OCR-0@bbd8cf8d21f256b3644b44cb860f3a7cecb93c30",
+            "status": "ok",
+            "lines": [
+              {
+                "text": "fssai",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "LIC. No.: 10013022002245",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "NUTRITION FACTS / INFORMATION",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "AMOUNT PER 100g (approx.)",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "CARBOHYDRATE 78.2g",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "OF WHICH SUGARS 25.5g",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "DIETARY FIBRE 1.8g",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "PROTEIN 6.5g",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "FAT 12.5g",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "ENERGY 451 kcal",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "INGREDIENTS: WHEAT FLOUR (67%), SUGAR, EDIBLE VEG",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "OIL (PALM OIL), INVERT SUGAR SYRUP * [SUGAR, CITRIC",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "RAISING AGENTS [503 (ii), 500 (ii)], EDIBLE COMMON SAL",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "SOLIDS (0.6 %), EMULSIFIER [DI-ACETYL TARTARIC ACID",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "OF MONO AND DI-GLYCERIDES OF EDIBLE VEGETABLE OIL",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "DOUGH CONDITIONER [223].",
+                "box": null,
+                "confidence": null,
+                "words": []
+              },
+              {
+                "text": "CONTAINS ADDED FLAVOURS (ARTIFICIAL FLAVOURING SUBSTANCES -",
+                "box": null,
+                "confidence": null,
+                "words": []
+              }
+            ],
+            "message": "Generative transcription. No calibrated confidence or text boxes supplied."
+          },
+          {
+            "provider": "tesseract",
+            "model": "tesseract/eng",
+            "status": "ok",
+            "lines": [
+              {
+                "text": "LIC. No.: 1013022002245",
+                "box": {
+                  "x0": 137.0,
+                  "y0": 60.0,
+                  "x1": 390.0,
+                  "y1": 90.0
+                },
+                "confidence": 0.65145725,
+                "words": [
+                  {
+                    "text": "LIC.",
+                    "box": {
+                      "x0": 137.0,
+                      "y0": 60.0,
+                      "x1": 166.0,
+                      "y1": 83.0
+                    },
+                    "confidence": 0.92087585
+                  },
+                  {
+                    "text": "No.:",
+                    "box": {
+                      "x0": 180.0,
+                      "y0": 62.0,
+                      "x1": 205.0,
+                      "y1": 85.0
+                    },
+                    "confidence": 0.8710449199999999
+                  },
+                  {
+                    "text": "1013022002245",
+                    "box": {
+                      "x0": 227.0,
+                      "y0": 64.0,
+                      "x1": 390.0,
+                      "y1": 90.0
+                    },
+                    "confidence": 0.16245098
+                  }
+                ]
+              },
+              {
+                "text": "NUTRITION FACTS / INFORMATION",
+                "box": {
+                  "x0": 54.0,
+                  "y0": 152.0,
+                  "x1": 471.0,
+                  "y1": 179.0
+                },
+                "confidence": 0.88267628,
+                "words": [
+                  {
+                    "text": "NUTRITION",
+                    "box": {
+                      "x0": 54.0,
+                      "y0": 154.0,
+                      "x1": 184.0,
+                      "y1": 179.0
+                    },
+                    "confidence": 0.9272004699999999
+                  },
+                  {
+                    "text": "FACTS",
+                    "box": {
+                      "x0": 193.0,
+                      "y0": 153.0,
+                      "x1": 274.0,
+                      "y1": 176.0
+                    },
+                    "confidence": 0.8679267900000001
+                  },
+                  {
+                    "text": "/",
+                    "box": {
+                      "x0": 280.0,
+                      "y0": 153.0,
+                      "x1": 289.0,
+                      "y1": 176.0
+                    },
+                    "confidence": 0.86778893
+                  },
+                  {
+                    "text": "INFORMATION",
+                    "box": {
+                      "x0": 295.0,
+                      "y0": 152.0,
+                      "x1": 471.0,
+                      "y1": 177.0
+                    },
+                    "confidence": 0.86778893
+                  }
+                ]
+              },
+              {
+                "text": "AMOUNT PER 100g (approx )",
+                "box": {
+                  "x0": 152.0,
+                  "y0": 185.0,
+                  "x1": 474.0,
+                  "y1": 215.0
+                },
+                "confidence": 0.8927074119999999,
+                "words": [
+                  {
+                    "text": "AMOUNT",
+                    "box": {
+                      "x0": 152.0,
+                      "y0": 185.0,
+                      "x1": 253.0,
+                      "y1": 210.0
+                    },
+                    "confidence": 0.92264954
+                  },
+                  {
+                    "text": "PER",
+                    "box": {
+                      "x0": 261.0,
+                      "y0": 185.0,
+                      "x1": 306.0,
+                      "y1": 208.0
+                    },
+                    "confidence": 0.90357559
+                  },
+                  {
+                    "text": "100g",
+                    "box": {
+                      "x0": 314.0,
+                      "y0": 186.0,
+                      "x1": 366.0,
+                      "y1": 214.0
+                    },
+                    "confidence": 0.86515373
+                  },
+                  {
+                    "text": "(approx",
+                    "box": {
+                      "x0": 373.0,
+                      "y0": 185.0,
+                      "x1": 465.0,
+                      "y1": 214.0
+                    },
+                    "confidence": 0.82170654
+                  },
+                  {
+                    "text": ")",
+                    "box": {
+                      "x0": 466.0,
+                      "y0": 185.0,
+                      "x1": 474.0,
+                      "y1": 215.0
+                    },
+                    "confidence": 0.9504516599999999
+                  }
+                ]
+              },
+              {
+                "text": "CARBOHYDRATE",
+                "box": {
+                  "x0": 53.0,
+                  "y0": 217.0,
+                  "x1": 245.0,
+                  "y1": 243.0
+                },
+                "confidence": 0.91630875,
+                "words": [
+                  {
+                    "text": "CARBOHYDRATE",
+                    "box": {
+                      "x0": 53.0,
+                      "y0": 217.0,
+                      "x1": 245.0,
+                      "y1": 243.0
+                    },
+                    "confidence": 0.91630875
+                  }
+                ]
+              },
+              {
+                "text": "OF WHICH SUGARS",
+                "box": {
+                  "x0": 176.0,
+                  "y0": 246.0,
+                  "x1": 371.0,
+                  "y1": 269.0
+                },
+                "confidence": 0.9158662166666667,
+                "words": [
+                  {
+                    "text": "OF",
+                    "box": {
+                      "x0": 176.0,
+                      "y0": 248.0,
+                      "x1": 203.0,
+                      "y1": 269.0
+                    },
+                    "confidence": 0.9018617999999999
+                  },
+                  {
+                    "text": "WHICH",
+                    "box": {
+                      "x0": 209.0,
+                      "y0": 247.0,
+                      "x1": 279.0,
+                      "y1": 268.0
+                    },
+                    "confidence": 0.9236127500000001
+                  },
+                  {
+                    "text": "SUGARS",
+                    "box": {
+                      "x0": 284.0,
+                      "y0": 246.0,
+                      "x1": 371.0,
+                      "y1": 267.0
+                    },
+                    "confidence": 0.9221241
+                  }
+                ]
+              },
+              {
+                "text": "2559",
+                "box": {
+                  "x0": 413.0,
+                  "y0": 223.0,
+                  "x1": 475.0,
+                  "y1": 272.0
+                },
+                "confidence": 0.7481536900000001,
+                "words": [
+                  {
+                    "text": "2559",
+                    "box": {
+                      "x0": 413.0,
+                      "y0": 223.0,
+                      "x1": 475.0,
+                      "y1": 272.0
+                    },
+                    "confidence": 0.7481536900000001
+                  }
+                ]
+              },
+              {
+                "text": "DIETARY FIBRE",
+                "box": {
+                  "x0": 219.0,
+                  "y0": 270.0,
+                  "x1": 371.0,
+                  "y1": 306.0
+                },
+                "confidence": 0.92887089,
+                "words": [
+                  {
+                    "text": "DIETARY",
+                    "box": {
+                      "x0": 219.0,
+                      "y0": 270.0,
+                      "x1": 299.0,
+                      "y1": 306.0
+                    },
+                    "confidence": 0.92794884
+                  },
+                  {
+                    "text": "FIBRE",
+                    "box": {
+                      "x0": 311.0,
+                      "y0": 270.0,
+                      "x1": 371.0,
+                      "y1": 306.0
+                    },
+                    "confidence": 0.92979294
+                  }
+                ]
+              },
+              {
+                "text": "139",
+                "box": {
+                  "x0": 425.0,
+                  "y0": 271.0,
+                  "x1": 475.0,
+                  "y1": 323.0
+                },
+                "confidence": 0.6619089499999999,
+                "words": [
+                  {
+                    "text": "139",
+                    "box": {
+                      "x0": 425.0,
+                      "y0": 271.0,
+                      "x1": 475.0,
+                      "y1": 323.0
+                    },
+                    "confidence": 0.6619089499999999
+                  }
+                ]
+              },
+              {
+                "text": "PROTEIN",
+                "box": {
+                  "x0": 53.0,
+                  "y0": 299.0,
+                  "x1": 152.0,
+                  "y1": 323.0
+                },
+                "confidence": 0.9318788100000001,
+                "words": [
+                  {
+                    "text": "PROTEIN",
+                    "box": {
+                      "x0": 53.0,
+                      "y0": 299.0,
+                      "x1": 152.0,
+                      "y1": 323.0
+                    },
+                    "confidence": 0.9318788100000001
+                  }
+                ]
+              },
+              {
+                "text": "FAT",
+                "box": {
+                  "x0": 53.0,
+                  "y0": 332.0,
+                  "x1": 96.0,
+                  "y1": 356.0
+                },
+                "confidence": 0.93128502,
+                "words": [
+                  {
+                    "text": "FAT",
+                    "box": {
+                      "x0": 53.0,
+                      "y0": 332.0,
+                      "x1": 96.0,
+                      "y1": 356.0
+                    },
+                    "confidence": 0.93128502
+                  }
+                ]
+              },
+              {
+                "text": "125",
+                "box": {
+                  "x0": 413.0,
+                  "y0": 305.0,
+                  "x1": 475.0,
+                  "y1": 352.0
+                },
+                "confidence": 0.80921211,
+                "words": [
+                  {
+                    "text": "125",
+                    "box": {
+                      "x0": 413.0,
+                      "y0": 305.0,
+                      "x1": 475.0,
+                      "y1": 352.0
+                    },
+                    "confidence": 0.80921211
+                  }
+                ]
+              },
+              {
+                "text": "ENERGY",
+                "box": {
+                  "x0": 53.0,
+                  "y0": 360.0,
+                  "x1": 147.0,
+                  "y1": 385.0
+                },
+                "confidence": 0.9285743,
+                "words": [
+                  {
+                    "text": "ENERGY",
+                    "box": {
+                      "x0": 53.0,
+                      "y0": 360.0,
+                      "x1": 147.0,
+                      "y1": 385.0
+                    },
+                    "confidence": 0.9285743
+                  }
+                ]
+              },
+              {
+                "text": "451 kcal",
+                "box": {
+                  "x0": 377.0,
+                  "y0": 359.0,
+                  "x1": 474.0,
+                  "y1": 384.0
+                },
+                "confidence": 0.675256595,
+                "words": [
+                  {
+                    "text": "451",
+                    "box": {
+                      "x0": 377.0,
+                      "y0": 359.0,
+                      "x1": 414.0,
+                      "y1": 380.0
+                    },
+                    "confidence": 0.92655006
+                  },
+                  {
+                    "text": "kcal",
+                    "box": {
+                      "x0": 426.0,
+                      "y0": 360.0,
+                      "x1": 474.0,
+                      "y1": 384.0
+                    },
+                    "confidence": 0.42396312999999997
+                  }
+                ]
+              },
+              {
+                "text": "INGREDIENTS Wl‘lﬁr",
+                "box": {
+                  "x0": 4.0,
+                  "y0": 421.0,
+                  "x1": 234.0,
+                  "y1": 481.0
+                },
+                "confidence": 0.5656373600000001,
+                "words": [
+                  {
+                    "text": "INGREDIENTS",
+                    "box": {
+                      "x0": 4.0,
+                      "y0": 421.0,
+                      "x1": 134.0,
+                      "y1": 440.0
+                    },
+                    "confidence": 0.72225784
+                  },
+                  {
+                    "text": "Wl‘lﬁr",
+                    "box": {
+                      "x0": 105.0,
+                      "y0": 421.0,
+                      "x1": 234.0,
+                      "y1": 481.0
+                    },
+                    "confidence": 0.40901688
+                  }
+                ]
+              },
+              {
+                "text": "Y’I SUGAR EDIBLE Vg",
+                "box": {
+                  "x0": 293.0,
+                  "y0": 420.0,
+                  "x1": 527.0,
+                  "y1": 462.0
+                },
+                "confidence": 0.615742465,
+                "words": [
+                  {
+                    "text": "Y’I",
+                    "box": {
+                      "x0": 293.0,
+                      "y0": 421.0,
+                      "x1": 355.0,
+                      "y1": 460.0
+                    },
+                    "confidence": 0.54837799
+                  },
+                  {
+                    "text": "SUGAR",
+                    "box": {
+                      "x0": 343.0,
+                      "y0": 422.0,
+                      "x1": 413.0,
+                      "y1": 461.0
+                    },
+                    "confidence": 0.75601242
+                  },
+                  {
+                    "text": "EDIBLE",
+                    "box": {
+                      "x0": 418.0,
+                      "y0": 422.0,
+                      "x1": 485.0,
+                      "y1": 441.0
+                    },
+                    "confidence": 0.70801888
+                  },
+                  {
+                    "text": "Vg",
+                    "box": {
+                      "x0": 459.0,
+                      "y0": 420.0,
+                      "x1": 527.0,
+                      "y1": 462.0
+                    },
+                    "confidence": 0.45056057000000005
+                  }
+                ]
+              },
+              {
+                "text": "RAISlNﬁ AG",
+                "box": {
+                  "x0": 5.0,
+                  "y0": 442.0,
+                  "x1": 161.0,
+                  "y1": 482.0
+                },
+                "confidence": 0.709563335,
+                "words": [
+                  {
+                    "text": "RAISlNﬁ",
+                    "box": {
+                      "x0": 5.0,
+                      "y0": 442.0,
+                      "x1": 80.0,
+                      "y1": 482.0
+                    },
+                    "confidence": 0.67818169
+                  },
+                  {
+                    "text": "AG",
+                    "box": {
+                      "x0": 85.0,
+                      "y0": 442.0,
+                      "x1": 161.0,
+                      "y1": 482.0
+                    },
+                    "confidence": 0.74094498
+                  }
+                ]
+              },
+              {
+                "text": ".",
+                "box": {
+                  "x0": 177.0,
+                  "y0": 420.0,
+                  "x1": 305.0,
+                  "y1": 502.0
+                },
+                "confidence": 0.13655901,
+                "words": [
+                  {
+                    "text": ".",
+                    "box": {
+                      "x0": 177.0,
+                      "y0": 420.0,
+                      "x1": 305.0,
+                      "y1": 502.0
+                    },
+                    "confidence": 0.13655901
+                  }
+                ]
+              },
+              {
+                "text": "l) EDlB{.E OOHMON",
+                "box": {
+                  "x0": 282.0,
+                  "y0": 434.0,
+                  "x1": 486.0,
+                  "y1": 502.0
+                },
+                "confidence": 0.65989254,
+                "words": [
+                  {
+                    "text": "l)",
+                    "box": {
+                      "x0": 282.0,
+                      "y0": 462.0,
+                      "x1": 331.0,
+                      "y1": 502.0
+                    },
+                    "confidence": 0.76341034
+                  },
+                  {
+                    "text": "EDlB{.E",
+                    "box": {
+                      "x0": 330.0,
+                      "y0": 434.0,
+                      "x1": 436.0,
+                      "y1": 481.0
+                    },
+                    "confidence": 0.6001463300000001
+                  },
+                  {
+                    "text": "OOHMON",
+                    "box": {
+                      "x0": 401.0,
+                      "y0": 457.0,
+                      "x1": 486.0,
+                      "y1": 482.0
+                    },
+                    "confidence": 0.61612095
+                  }
+                ]
+              },
+              {
+                "text": "RTARIC AC|",
+                "box": {
+                  "x0": 405.0,
+                  "y0": 484.0,
+                  "x1": 502.0,
+                  "y1": 503.0
+                },
+                "confidence": 0.294701995,
+                "words": [
+                  {
+                    "text": "RTARIC",
+                    "box": {
+                      "x0": 405.0,
+                      "y0": 484.0,
+                      "x1": 472.0,
+                      "y1": 502.0
+                    },
+                    "confidence": 0.58940399
+                  },
+                  {
+                    "text": "AC|",
+                    "box": {
+                      "x0": 477.0,
+                      "y0": 484.0,
+                      "x1": 502.0,
+                      "y1": 503.0
+                    },
+                    "confidence": 0.0
+                  }
+                ]
+              },
+              {
+                "text": "NS AND bl—GLYCEﬂIDEg OF EDIBLE VEG",
+                "box": {
+                  "x0": 6.0,
+                  "y0": 462.0,
+                  "x1": 424.0,
+                  "y1": 534.0
+                },
+                "confidence": 0.74110827,
+                "words": [
+                  {
+                    "text": "NS",
+                    "box": {
+                      "x0": 6.0,
+                      "y0": 483.0,
+                      "x1": 115.0,
+                      "y1": 523.0
+                    },
+                    "confidence": 0.50360451
+                  },
+                  {
+                    "text": "AND",
+                    "box": {
+                      "x0": 93.0,
+                      "y0": 501.0,
+                      "x1": 135.0,
+                      "y1": 534.0
+                    },
+                    "confidence": 0.93042549
+                  },
+                  {
+                    "text": "bl—GLYCEﬂIDEg",
+                    "box": {
+                      "x0": 119.0,
+                      "y0": 462.0,
+                      "x1": 331.0,
+                      "y1": 523.0
+                    },
+                    "confidence": 0.47608238
+                  },
+                  {
+                    "text": "OF",
+                    "box": {
+                      "x0": 286.0,
+                      "y0": 504.0,
+                      "x1": 312.0,
+                      "y1": 523.0
+                    },
+                    "confidence": 0.8931270600000001
+                  },
+                  {
+                    "text": "EDIBLE",
+                    "box": {
+                      "x0": 317.0,
+                      "y0": 505.0,
+                      "x1": 381.0,
+                      "y1": 523.0
+                    },
+                    "confidence": 0.81912849
+                  },
+                  {
+                    "text": "VEG",
+                    "box": {
+                      "x0": 385.0,
+                      "y0": 505.0,
+                      "x1": 424.0,
+                      "y1": 523.0
+                    },
+                    "confidence": 0.82428169
+                  }
+                ]
+              },
+              {
+                "text": "ETABLE (",
+                "box": {
+                  "x0": 425.0,
+                  "y0": 501.0,
+                  "x1": 501.0,
+                  "y1": 533.0
+                },
+                "confidence": 0.69001526,
+                "words": [
+                  {
+                    "text": "ETABLE",
+                    "box": {
+                      "x0": 425.0,
+                      "y0": 505.0,
+                      "x1": 498.0,
+                      "y1": 523.0
+                    },
+                    "confidence": 0.69001526
+                  },
+                  {
+                    "text": "(",
+                    "box": {
+                      "x0": 495.0,
+                      "y0": 501.0,
+                      "x1": 501.0,
+                      "y1": 533.0
+                    },
+                    "confidence": 0.69001526
+                  }
+                ]
+              },
+              {
+                "text": "WNTAIHS ADDED RAV(IIIIS ( M'I’IFIGIAI. FLAVOURING SUBSTANCES - \\",
+                "box": {
+                  "x0": 9.0,
+                  "y0": 546.0,
+                  "x1": 527.0,
+                  "y1": 578.0
+                },
+                "confidence": 0.7079628800000001,
+                "words": [
+                  {
+                    "text": "WNTAIHS",
+                    "box": {
+                      "x0": 9.0,
+                      "y0": 556.0,
+                      "x1": 82.0,
+                      "y1": 575.0
+                    },
+                    "confidence": 0.69552521
+                  },
+                  {
+                    "text": "ADDED",
+                    "box": {
+                      "x0": 82.0,
+                      "y0": 553.0,
+                      "x1": 135.0,
+                      "y1": 578.0
+                    },
+                    "confidence": 0.84930016
+                  },
+                  {
+                    "text": "RAV(IIIIS",
+                    "box": {
+                      "x0": 140.0,
+                      "y0": 556.0,
+                      "x1": 217.0,
+                      "y1": 575.0
+                    },
+                    "confidence": 0.75198219
+                  },
+                  {
+                    "text": "(",
+                    "box": {
+                      "x0": 221.0,
+                      "y0": 557.0,
+                      "x1": 227.0,
+                      "y1": 577.0
+                    },
+                    "confidence": 0.40690800000000005
+                  },
+                  {
+                    "text": "M'I’IFIGIAI.",
+                    "box": {
+                      "x0": 231.0,
+                      "y0": 556.0,
+                      "x1": 310.0,
+                      "y1": 574.0
+                    },
+                    "confidence": 0.73893417
+                  },
+                  {
+                    "text": "FLAVOURING",
+                    "box": {
+                      "x0": 314.0,
+                      "y0": 556.0,
+                      "x1": 408.0,
+                      "y1": 574.0
+                    },
+                    "confidence": 0.69286514
+                  },
+                  {
+                    "text": "SUBSTANCES",
+                    "box": {
+                      "x0": 412.0,
+                      "y0": 556.0,
+                      "x1": 518.0,
+                      "y1": 574.0
+                    },
+                    "confidence": 0.62714714
+                  },
+                  {
+                    "text": "-",
+                    "box": {
+                      "x0": 509.0,
+                      "y0": 552.0,
+                      "x1": 523.0,
+                      "y1": 578.0
+                    },
+                    "confidence": 0.9075224300000001
+                  },
+                  {
+                    "text": "\\",
+                    "box": {
+                      "x0": 518.0,
+                      "y0": 546.0,
+                      "x1": 527.0,
+                      "y1": 576.0
+                    },
+                    "confidence": 0.7014814800000001
+                  }
+                ]
+              }
+            ],
+            "message": "Original-image line boxes; confidence is an OCR heuristic, not legal certainty."
+          }
+        ]
+      }
+    },
+    "fields": [
+      {
+        "field": "generic_name",
+        "status": "missing",
+        "value": null,
+        "evidence": [],
+        "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+      },
+      {
+        "field": "net_quantity",
+        "status": "observed",
+        "value": "70g",
+        "evidence": [
+          {
+            "field": "net_quantity",
+            "value": "70g",
+            "view": "rear",
+            "provider": "xiaomi_detail_1",
+            "source_text": "NET WEIGHT: 70g",
+            "box": null,
+            "confidence": null,
+            "height_mm": null
+          }
+        ],
+        "reason": "Matching source readings; OCR confidence ranks evidence without asserting legal validity."
+      },
+      {
+        "field": "mrp",
+        "status": "missing",
+        "value": null,
+        "evidence": [],
+        "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+      },
+      {
+        "field": "manufacturer",
+        "status": "observed",
+        "value": "(MF) FOODS PVT LTD. A. S. KANKALPURI INDUL AREA",
+        "evidence": [
+          {
+            "field": "manufacturer",
+            "value": "(MF) FOODS PVT LTD. A. S. KANKALPURI INDUL AREA",
+            "view": "rear",
+            "provider": "xiaomi",
+            "source_text": "MANUFACTURED BY:\n(MF) FOODS PVT LTD. A. S. KANKALPURI INDUL AREA",
+            "box": null,
+            "confidence": null,
+            "height_mm": null
+          }
+        ],
+        "reason": "Matching source readings; OCR confidence ranks evidence without asserting legal validity."
+      },
+      {
+        "field": "date",
+        "status": "missing",
+        "value": null,
+        "evidence": [],
+        "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+      },
+      {
+        "field": "consumer_care",
+        "status": "missing",
+        "value": null,
+        "evidence": [],
+        "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+      },
+      {
+        "field": "country_of_origin",
+        "status": "missing",
+        "value": null,
+        "evidence": [],
+        "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+      }
+    ],
+    "profile": {
+      "status": "selected",
+      "id": "lmpc-food-grocery",
+      "version": "0.1.0-draft",
+      "reason": "Selected by category, declared origin and date. Rule data review status: MVP declaration inventory. Historical amendments and exceptions need qualified legal review before enforcement use..",
+      "inputs": {
+        "category": "food_grocery",
+        "origin": "domestic",
+        "as_of": "2026-11-06"
+      },
+      "rules": [
+        {
+          "id": "manufacturer",
+          "version": "2011-base",
+          "citation": "LMPC Rule 6(1)(a)",
+          "field": "manufacturer",
+          "requirement": "Name and address of manufacturer, packer or importer as applicable.",
+          "effective_from": "2011-04-01",
+          "effective_to": null,
+          "origins": [
+            "domestic",
+            "imported"
+          ],
+          "source_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act"
+        },
+        {
+          "id": "generic-name",
+          "version": "2011-base",
+          "citation": "LMPC Rule 6(1)(b)",
+          "field": "generic_name",
+          "requirement": "Common or generic name of the commodity.",
+          "effective_from": "2011-04-01",
+          "effective_to": null,
+          "origins": [
+            "domestic",
+            "imported"
+          ],
+          "source_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act"
+        },
+        {
+          "id": "net-quantity",
+          "version": "2011-base",
+          "citation": "LMPC Rule 6(1)(c)",
+          "field": "net_quantity",
+          "requirement": "Net quantity in standard units or number, as applicable.",
+          "effective_from": "2011-04-01",
+          "effective_to": null,
+          "origins": [
+            "domestic",
+            "imported"
+          ],
+          "source_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act"
+        },
+        {
+          "id": "manufacture-date",
+          "version": "2011-base",
+          "citation": "LMPC Rule 6(1)(d)",
+          "field": "date",
+          "requirement": "Month and year of manufacture, packing or import, subject to applicable exceptions.",
+          "effective_from": "2011-04-01",
+          "effective_to": null,
+          "origins": [
+            "domestic",
+            "imported"
+          ],
+          "source_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act"
+        },
+        {
+          "id": "retail-price",
+          "version": "2011-base",
+          "citation": "LMPC Rule 6(1)(e)",
+          "field": "mrp",
+          "requirement": "Retail sale price, inclusive of all taxes.",
+          "effective_from": "2011-04-01",
+          "effective_to": null,
+          "origins": [
+            "domestic",
+            "imported"
+          ],
+          "source_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act"
+        },
+        {
+          "id": "consumer-care",
+          "version": "2011-base",
+          "citation": "LMPC Rule 6(2)",
+          "field": "consumer_care",
+          "requirement": "Consumer complaint contact particulars.",
+          "effective_from": "2011-04-01",
+          "effective_to": null,
+          "origins": [
+            "domestic",
+            "imported"
+          ],
+          "source_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act"
+        }
+      ],
+      "advisory": "Profile selection only. Declarations have not been legally verified."
+    },
+    "warnings": [
+      "front: no captured evidence.",
+      "rear: Reference marker not detected.",
+      "side: Reference marker not detected."
+    ],
+    "decision": {
+      "status": "unavailable",
+      "model": "jev-1.14.0",
+      "answers": {},
+      "message": "Jev disabled for this run to avoid API charges.",
+      "usage": {}
+    }
+  }
+}
