@@ -19,6 +19,7 @@ Test 9 executes integration tests against the running FastAPI service.
 import os
 import sys
 import unittest
+import shutil
 import hashlib
 import cv2
 import numpy as np
@@ -231,7 +232,7 @@ class TestApiIntegration(unittest.TestCase):
 
         try:
             cmd = [
-                "curl.exe", "-s", "-X", "POST",
+                shutil.which("curl") or "curl.exe", "-s", "-X", "POST",
                 "http://127.0.0.1:8000/capture/assess-quality",
                 "-F", f"file=@{test_file}",
             ]
@@ -287,7 +288,7 @@ class TestApiIntegration(unittest.TestCase):
 
             try:
                 cmd = [
-                    "curl.exe", "-s", "-X", "POST",
+                    shutil.which("curl") or "curl.exe", "-s", "-X", "POST",
                     f"http://127.0.0.1:8000/inspections/{ins_id}/images",
                     "-F", f"view_type={vt}",
                     "-F", f"file=@{test_file}",

@@ -1,0 +1,107 @@
+{
+  "id": "lmpc-food-grocery",
+  "version": "0.1.0-draft",
+  "category": "food_grocery",
+  "effective_from": "2011-04-01",
+  "effective_to": null,
+  "review_status": "MVP declaration inventory. Historical amendments and exceptions need qualified legal review before enforcement use.",
+  "rules": [
+    {
+      "id": "manufacturer",
+      "version": "2011-base",
+      "citation": "LMPC Rule 6(1)(a)",
+      "field": "manufacturer",
+      "requirement": "Name and address of manufacturer, packer or importer as applicable.",
+      "effective_from": "2011-04-01",
+      "effective_to": null,
+      "origins": [
+        "domestic",
+        "imported"
+      ],
+      "source_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act"
+    },
+    {
+      "id": "generic-name",
+      "version": "2011-base",
+      "citation": "LMPC Rule 6(1)(b)",
+      "field": "generic_name",
+      "requirement": "Common or generic name of the commodity.",
+      "effective_from": "2011-04-01",
+      "effective_to": null,
+      "origins": [
+        "domestic",
+        "imported"
+      ],
+      "source_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act"
+    },
+    {
+      "id": "net-quantity",
+      "version": "2011-base",
+      "citation": "LMPC Rule 6(1)(c)",
+      "field": "net_quantity",
+      "requirement": "Net quantity in standard units or number, as applicable.",
+      "effective_from": "2011-04-01",
+      "effective_to": null,
+      "origins": [
+        "domestic",
+        "imported"
+      ],
+      "source_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act"
+    },
+    {
+      "id": "manufacture-date",
+      "version": "2011-base",
+      "citation": "LMPC Rule 6(1)(d)",
+      "field": "date",
+      "requirement": "Month and year of manufacture, packing or import, subject to applicable exceptions.",
+      "effective_from": "2011-04-01",
+      "effective_to": null,
+      "origins": [
+        "domestic",
+        "imported"
+      ],
+      "source_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act"
+    },
+    {
+      "id": "retail-price",
+      "version": "2011-base",
+      "citation": "LMPC Rule 6(1)(e)",
+      "field": "mrp",
+      "requirement": "Retail sale price, inclusive of all taxes.",
+      "effective_from": "2011-04-01",
+      "effective_to": null,
+      "origins": [
+        "domestic",
+        "imported"
+      ],
+      "source_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act"
+    },
+    {
+      "id": "consumer-care",
+      "version": "2011-base",
+      "citation": "LMPC Rule 6(2)",
+      "field": "consumer_care",
+      "requirement": "Consumer complaint contact particulars.",
+      "effective_from": "2011-04-01",
+      "effective_to": null,
+      "origins": [
+        "domestic",
+        "imported"
+      ],
+      "source_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act"
+    },
+    {
+      "id": "import-origin",
+      "version": "2017-amendment",
+      "citation": "LMPC Rule 6(1)(aa)",
+      "field": "country_of_origin",
+      "requirement": "Country of origin, manufacture or assembly for imported products.",
+      "effective_from": "2018-01-01",
+      "effective_to": null,
+      "origins": [
+        "imported"
+      ],
+      "source_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act"
+    }
+  ]
+}

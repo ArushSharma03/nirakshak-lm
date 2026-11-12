@@ -1,0 +1,574 @@
+{
+  "sample": "Generated English label, not a real packaging benchmark",
+  "elapsed_seconds": 33.85,
+  "analysis": {
+    "version": "1.0.0",
+    "views": {
+      "front": {
+        "file_hash": "2122e845bf019ce018cc57dcc1dbbf88aed0bd393808f6f61c0ff5888168fa53",
+        "calibration": {
+          "status": "available",
+          "reason": "Planar estimate, assumes actual printed marker measures 50 mm.",
+          "marker_mm": 50.0,
+          "pixels_per_mm": 4.996000289916992,
+          "homography": [
+            [
+              0.20016008897741475,
+              1.2312530177705338e-18,
+              -233.10643473637631
+            ],
+            [
+              5.023633508875636e-18,
+              0.200160131770458,
+              -20.93674947776979
+            ],
+            [
+              6.044448813011268e-19,
+              -3.5211491885165185e-34,
+              1.0
+            ]
+          ]
+        },
+        "ocr": [
+          {
+            "provider": "xiaomi",
+            "model": "xiaomi-research/Xiaomi-OCR-0@bbd8cf8d21f256b3644b44cb860f3a7cecb93c30",
+            "status": "ok",
+            "lines": [
+              {
+                "text": "Product name: Butter Cookies",
+                "box": null,
+                "confidence": null
+              },
+              {
+                "text": "Net quantity: 100 g",
+                "box": null,
+                "confidence": null
+              },
+              {
+                "text": "MRP: Rs. 50.00",
+                "box": null,
+                "confidence": null
+              },
+              {
+                "text": "Manufactured by: Sample Foods, Jammu",
+                "box": null,
+                "confidence": null
+              },
+              {
+                "text": "Mfg date: 10/2026",
+                "box": null,
+                "confidence": null
+              },
+              {
+                "text": "Consumer care: care@example.test",
+                "box": null,
+                "confidence": null
+              },
+              {
+                "text": "Made in India",
+                "box": null,
+                "confidence": null
+              }
+            ],
+            "message": "Generative transcription. No calibrated confidence or text boxes supplied."
+          },
+          {
+            "provider": "tesseract",
+            "model": "tesseract/eng",
+            "status": "ok",
+            "lines": [
+              {
+                "text": "Product name: Butter Cookies",
+                "box": {
+                  "x0": 43.0,
+                  "y0": 43.0,
+                  "x1": 577.0,
+                  "y1": 70.0
+                },
+                "confidence": 0.9128862749999999
+              },
+              {
+                "text": "Net quantity: 100 g",
+                "box": {
+                  "x0": 43.0,
+                  "y0": 123.0,
+                  "x1": 386.0,
+                  "y1": 158.0
+                },
+                "confidence": 0.9312088975
+              },
+              {
+                "text": "MRP: Rs. 50.00",
+                "box": {
+                  "x0": 43.0,
+                  "y0": 203.0,
+                  "x1": 307.0,
+                  "y1": 230.0
+                },
+                "confidence": 0.9145132433333333
+              },
+              {
+                "text": "Manufactured by: Sample Foods, Jammu",
+                "box": {
+                  "x0": 43.0,
+                  "y0": 282.0,
+                  "x1": 766.0,
+                  "y1": 317.0
+                },
+                "confidence": 0.9149792019999999
+              },
+              {
+                "text": "Mfg date: 10/2026",
+                "box": {
+                  "x0": 43.0,
+                  "y0": 361.0,
+                  "x1": 379.0,
+                  "y1": 398.0
+                },
+                "confidence": 0.9156907666666666
+              },
+              {
+                "text": "Consumer care: care@example.test",
+                "box": {
+                  "x0": 42.0,
+                  "y0": 443.0,
+                  "x1": 673.0,
+                  "y1": 477.0
+                },
+                "confidence": 0.9189900966666666
+              },
+              {
+                "text": "Made in India",
+                "box": {
+                  "x0": 43.0,
+                  "y0": 523.0,
+                  "x1": 273.0,
+                  "y1": 550.0
+                },
+                "confidence": 0.8696074433333333
+              }
+            ],
+            "message": "Original-image line boxes; confidence is an OCR heuristic, not legal certainty."
+          }
+        ]
+      }
+    },
+    "fields": [
+      {
+        "field": "generic_name",
+        "status": "observed",
+        "value": "Butter Cookies",
+        "evidence": [
+          {
+            "field": "generic_name",
+            "value": "Butter Cookies",
+            "view": "front",
+            "provider": "tesseract",
+            "source_text": "Product name: Butter Cookies",
+            "box": {
+              "x0": 43.0,
+              "y0": 43.0,
+              "x1": 577.0,
+              "y1": 70.0
+            },
+            "confidence": 0.9128862749999999,
+            "height_mm": 5.404
+          },
+          {
+            "field": "generic_name",
+            "value": "Butter Cookies",
+            "view": "front",
+            "provider": "xiaomi",
+            "source_text": "Product name: Butter Cookies",
+            "box": null,
+            "confidence": null,
+            "height_mm": null
+          }
+        ],
+        "reason": "Matching source readings; OCR confidence ranks evidence without asserting legal validity."
+      },
+      {
+        "field": "net_quantity",
+        "status": "observed",
+        "value": "100 g",
+        "evidence": [
+          {
+            "field": "net_quantity",
+            "value": "100 g",
+            "view": "front",
+            "provider": "tesseract",
+            "source_text": "Net quantity: 100 g",
+            "box": {
+              "x0": 43.0,
+              "y0": 123.0,
+              "x1": 386.0,
+              "y1": 158.0
+            },
+            "confidence": 0.9312088975,
+            "height_mm": 7.006
+          },
+          {
+            "field": "net_quantity",
+            "value": "100 g",
+            "view": "front",
+            "provider": "xiaomi",
+            "source_text": "Net quantity: 100 g",
+            "box": null,
+            "confidence": null,
+            "height_mm": null
+          }
+        ],
+        "reason": "Matching source readings; OCR confidence ranks evidence without asserting legal validity."
+      },
+      {
+        "field": "mrp",
+        "status": "observed",
+        "value": "rs. 50.00",
+        "evidence": [
+          {
+            "field": "mrp",
+            "value": "rs. 50.00",
+            "view": "front",
+            "provider": "tesseract",
+            "source_text": "MRP: Rs. 50.00",
+            "box": {
+              "x0": 43.0,
+              "y0": 203.0,
+              "x1": 307.0,
+              "y1": 230.0
+            },
+            "confidence": 0.9145132433333333,
+            "height_mm": 5.404
+          },
+          {
+            "field": "mrp",
+            "value": "rs. 50.00",
+            "view": "front",
+            "provider": "xiaomi",
+            "source_text": "MRP: Rs. 50.00",
+            "box": null,
+            "confidence": null,
+            "height_mm": null
+          }
+        ],
+        "reason": "Matching source readings; OCR confidence ranks evidence without asserting legal validity."
+      },
+      {
+        "field": "manufacturer",
+        "status": "observed",
+        "value": "Sample Foods, Jammu",
+        "evidence": [
+          {
+            "field": "manufacturer",
+            "value": "Sample Foods, Jammu",
+            "view": "front",
+            "provider": "tesseract",
+            "source_text": "Manufactured by: Sample Foods, Jammu",
+            "box": {
+              "x0": 43.0,
+              "y0": 282.0,
+              "x1": 766.0,
+              "y1": 317.0
+            },
+            "confidence": 0.9149792019999999,
+            "height_mm": 7.006
+          },
+          {
+            "field": "manufacturer",
+            "value": "Sample Foods, Jammu",
+            "view": "front",
+            "provider": "xiaomi",
+            "source_text": "Manufactured by: Sample Foods, Jammu",
+            "box": null,
+            "confidence": null,
+            "height_mm": null
+          }
+        ],
+        "reason": "Matching source readings; OCR confidence ranks evidence without asserting legal validity."
+      },
+      {
+        "field": "date",
+        "status": "observed",
+        "value": "10/2026",
+        "evidence": [
+          {
+            "field": "date",
+            "value": "10/2026",
+            "view": "front",
+            "provider": "tesseract",
+            "source_text": "Mfg date: 10/2026",
+            "box": {
+              "x0": 43.0,
+              "y0": 361.0,
+              "x1": 379.0,
+              "y1": 398.0
+            },
+            "confidence": 0.9156907666666666,
+            "height_mm": 7.406
+          },
+          {
+            "field": "date",
+            "value": "10/2026",
+            "view": "front",
+            "provider": "xiaomi",
+            "source_text": "Mfg date: 10/2026",
+            "box": null,
+            "confidence": null,
+            "height_mm": null
+          }
+        ],
+        "reason": "Matching source readings; OCR confidence ranks evidence without asserting legal validity."
+      },
+      {
+        "field": "consumer_care",
+        "status": "observed",
+        "value": "care@example.test",
+        "evidence": [
+          {
+            "field": "consumer_care",
+            "value": "care@example.test",
+            "view": "front",
+            "provider": "tesseract",
+            "source_text": "Consumer care: care@example.test",
+            "box": {
+              "x0": 42.0,
+              "y0": 443.0,
+              "x1": 673.0,
+              "y1": 477.0
+            },
+            "confidence": 0.9189900966666666,
+            "height_mm": 6.805
+          },
+          {
+            "field": "consumer_care",
+            "value": "care@example.test",
+            "view": "front",
+            "provider": "xiaomi",
+            "source_text": "Consumer care: care@example.test",
+            "box": null,
+            "confidence": null,
+            "height_mm": null
+          }
+        ],
+        "reason": "Matching source readings; OCR confidence ranks evidence without asserting legal validity."
+      },
+      {
+        "field": "country_of_origin",
+        "status": "observed",
+        "value": "India",
+        "evidence": [
+          {
+            "field": "country_of_origin",
+            "value": "India",
+            "view": "front",
+            "provider": "tesseract",
+            "source_text": "Made in India",
+            "box": {
+              "x0": 43.0,
+              "y0": 523.0,
+              "x1": 273.0,
+              "y1": 550.0
+            },
+            "confidence": 0.8696074433333333,
+            "height_mm": 5.404
+          },
+          {
+            "field": "country_of_origin",
+            "value": "India",
+            "view": "front",
+            "provider": "xiaomi",
+            "source_text": "Made in India",
+            "box": null,
+            "confidence": null,
+            "height_mm": null
+          }
+        ],
+        "reason": "Matching source readings; OCR confidence ranks evidence without asserting legal validity."
+      }
+    ],
+    "profile": {
+      "status": "selected",
+      "id": "lmpc-food-grocery",
+      "version": "0.1.0-draft",
+      "reason": "Selected by category, declared origin and date. Rule data review status: MVP declaration inventory. Historical amendments and exceptions need qualified legal review before enforcement use..",
+      "inputs": {
+        "category": "food_grocery",
+        "origin": "domestic",
+        "as_of": "2026-11-06"
+      },
+      "rules": [
+        {
+          "id": "manufacturer",
+          "version": "2011-base",
+          "citation": "LMPC Rule 6(1)(a)",
+          "field": "manufacturer",
+          "requirement": "Name and address of manufacturer, packer or importer as applicable.",
+          "effective_from": "2011-04-01",
+          "effective_to": null,
+          "origins": [
+            "domestic",
+            "imported"
+          ],
+          "source_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act"
+        },
+        {
+          "id": "generic-name",
+          "version": "2011-base",
+          "citation": "LMPC Rule 6(1)(b)",
+          "field": "generic_name",
+          "requirement": "Common or generic name of the commodity.",
+          "effective_from": "2011-04-01",
+          "effective_to": null,
+          "origins": [
+            "domestic",
+            "imported"
+          ],
+          "source_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act"
+        },
+        {
+          "id": "net-quantity",
+          "version": "2011-base",
+          "citation": "LMPC Rule 6(1)(c)",
+          "field": "net_quantity",
+          "requirement": "Net quantity in standard units or number, as applicable.",
+          "effective_from": "2011-04-01",
+          "effective_to": null,
+          "origins": [
+            "domestic",
+            "imported"
+          ],
+          "source_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act"
+        },
+        {
+          "id": "manufacture-date",
+          "version": "2011-base",
+          "citation": "LMPC Rule 6(1)(d)",
+          "field": "date",
+          "requirement": "Month and year of manufacture, packing or import, subject to applicable exceptions.",
+          "effective_from": "2011-04-01",
+          "effective_to": null,
+          "origins": [
+            "domestic",
+            "imported"
+          ],
+          "source_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act"
+        },
+        {
+          "id": "retail-price",
+          "version": "2011-base",
+          "citation": "LMPC Rule 6(1)(e)",
+          "field": "mrp",
+          "requirement": "Retail sale price, inclusive of all taxes.",
+          "effective_from": "2011-04-01",
+          "effective_to": null,
+          "origins": [
+            "domestic",
+            "imported"
+          ],
+          "source_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act"
+        },
+        {
+          "id": "consumer-care",
+          "version": "2011-base",
+          "citation": "LMPC Rule 6(2)",
+          "field": "consumer_care",
+          "requirement": "Consumer complaint contact particulars.",
+          "effective_from": "2011-04-01",
+          "effective_to": null,
+          "origins": [
+            "domestic",
+            "imported"
+          ],
+          "source_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act"
+        }
+      ],
+      "advisory": "Profile selection only. Declarations have not been legally verified."
+    },
+    "warnings": [
+      "rear: no captured evidence.",
+      "side: no captured evidence."
+    ],
+    "decision": {
+      "status": "ok",
+      "model": "jev-1.14.0",
+      "answers": {
+        "generic_name": {
+          "type": "choice",
+          "choice": "candidate_0",
+          "confidence": 0.6,
+          "probabilities": {
+            "candidate_0": 0.73,
+            "candidate_1": 0.22,
+            "none": 0.05
+          }
+        },
+        "net_quantity": {
+          "type": "choice",
+          "choice": "candidate_0",
+          "confidence": 0.49,
+          "probabilities": {
+            "candidate_0": 0.66,
+            "candidate_1": 0.31,
+            "none": 0.03
+          }
+        },
+        "mrp": {
+          "type": "choice",
+          "choice": "candidate_0",
+          "confidence": 0.55,
+          "probabilities": {
+            "candidate_0": 0.7,
+            "candidate_1": 0.25,
+            "none": 0.05
+          }
+        },
+        "manufacturer": {
+          "type": "choice",
+          "choice": "candidate_0",
+          "confidence": 0.56,
+          "probabilities": {
+            "candidate_0": 0.71,
+            "candidate_1": 0.26,
+            "none": 0.03
+          }
+        },
+        "date": {
+          "type": "choice",
+          "choice": "candidate_0",
+          "confidence": 0.48,
+          "probabilities": {
+            "candidate_0": 0.65,
+            "candidate_1": 0.29,
+            "none": 0.06
+          }
+        },
+        "consumer_care": {
+          "type": "choice",
+          "choice": "candidate_0",
+          "confidence": 0.4,
+          "probabilities": {
+            "candidate_0": 0.6,
+            "candidate_1": 0.3,
+            "none": 0.1
+          }
+        },
+        "country_of_origin": {
+          "type": "choice",
+          "choice": "candidate_0",
+          "confidence": 0.66,
+          "probabilities": {
+            "candidate_0": 0.77,
+            "candidate_1": 0.19,
+            "none": 0.04
+          }
+        }
+      },
+      "message": "Jev recommendations only. Conflicts and original evidence are retained for inspector review.",
+      "usage": {
+        "input_tokens": 3144,
+        "output_tokens": 297
+      }
+    }
+  }
+}

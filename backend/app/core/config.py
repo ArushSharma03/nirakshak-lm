@@ -4,6 +4,7 @@ Application settings loaded from environment variables.
 Uses pydantic-settings to provide typed, validated configuration.
 """
 
+from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -20,6 +21,12 @@ class Settings(BaseSettings):
     APP_NAME: str = "Nirikshak-LM"
     APP_ENV: str = "development"
     DEBUG: bool = True
+    XIAOMI_OCR_ENABLED: bool = True
+    OCR_DEVICE: str = "cpu"
+    OCR_MAX_TOKENS: int = 1024
+    TESSERACT_LANGUAGES: str = "eng"
+    TYPESAFE_API_KEY: SecretStr | None = None
+    TYPESAFE_MODEL: str = "jev-1.14.0"
 
     # --- Server ---
     BACKEND_HOST: str = "0.0.0.0"

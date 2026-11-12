@@ -9,6 +9,10 @@ GET  /inspections/{inspection_id}/images/{view_type} — Serve the stored view i
 """
 
 import os
+import copy
+from threading import Lock
+import cv2
+import numpy as np
 from typing import List, Optional
 from fastapi import APIRouter, File, Form, UploadFile, HTTPException, Response, status
 from fastapi.responses import FileResponse
@@ -21,8 +25,12 @@ from app.services.inspection_store import (
     attach_inspection_image,
 )
 from app.services.marker_detector import detect_marker
+from app.schemas.analysis import AnalysisRequest
+from app.services.analysis import analyze_record
+from app.services.inspection_store import save_analysis, remove_inspection_image
 
 router = APIRouter(prefix="/inspections", tags=["Inspections"])
+_ANALYSIS_LOCK = Lock()
 
 
 @router.post(
@@ -88,12 +96,22 @@ async def upload_inspection_view(
             detail=f"Invalid view_type '{view_type}'. Expected 'front', 'rear', or 'side'.",
         )
 
-    image_bytes = await file.read()
+    if get_inspection_record(inspection_id) is None:
+        raise HTTPException(status_code=404, detail="Inspection not found.")
+
+    image_bytes = await file.read(20 * 1024 * 1024 + 1)
+    if len(image_bytes) > 20 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="Image exceeds 20 MiB.")
     if len(image_bytes) == 0:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Uploaded image file is empty.",
         )
+    decoded = cv2.imdecode(np.frombuffer(image_bytes, np.uint8), cv2.IMREAD_COLOR)
+    if decoded is None or not (image_bytes.startswith(b"\x89PNG\r\n\x1a\n") or image_bytes.startswith(b"\xff\xd8\xff")):
+        raise HTTPException(status_code=422, detail="Upload a decodable JPEG or PNG image.")
+    if decoded.shape[0] * decoded.shape[1] > 25_000_000:
+        raise HTTPException(status_code=413, detail="Image exceeds 25 megapixels.")
 
     # Automatically analyze marker detection on the captured image
     detection_res = detect_marker(image_bytes)
@@ -119,6 +137,36 @@ async def upload_inspection_view(
     return updated_record
 
 
+@router.post("/{inspection_id}/analyze", response_model=InspectionRecordResponse)
+def analyze_inspection(inspection_id: str, request: AnalysisRequest):
+    record = get_inspection_record(inspection_id)
+    if record is None:
+        raise HTTPException(status_code=404, detail="Inspection not found.")
+    if not record.get("images"):
+        raise HTTPException(status_code=409, detail="Capture at least one package view before analysis.")
+    if not _ANALYSIS_LOCK.acquire(blocking=False):
+        raise HTTPException(status_code=409, detail="Analysis already running. Wait before retrying.")
+    try:
+        snapshot = copy.deepcopy(record)
+        analysis = analyze_record(snapshot, request)
+        return save_analysis(inspection_id, analysis)
+    except FileNotFoundError:
+        raise HTTPException(status_code=409, detail="Stored image missing. Retake the affected view.")
+    except ValueError as error:
+        raise HTTPException(status_code=409, detail=str(error))
+    finally:
+        _ANALYSIS_LOCK.release()
+
+
+@router.delete("/{inspection_id}/images/{view_type}", response_model=InspectionRecordResponse)
+def delete_inspection_view(inspection_id: str, view_type: str):
+    if view_type not in ("front", "rear", "side"):
+        raise HTTPException(status_code=422, detail="Invalid view type.")
+    if get_inspection_record(inspection_id) is None:
+        raise HTTPException(status_code=404, detail="Inspection not found.")
+    return remove_inspection_image(inspection_id, view_type)
+
+
 @router.get(
     "/{inspection_id}/images/{view_type}",
     summary="Download or view captured package image",
@@ -137,7 +185,7 @@ def get_inspection_view_image(inspection_id: str, view_type: str):
             detail=f"Image for view '{view_type}' not found on inspection '{inspection_id}'.",
         )
 
-    return FileResponse(image_meta["filepath"], media_type="image/jpeg")
+    return FileResponse(image_meta["filepath"], media_type=image_meta.get("media_type", "image/jpeg"))
 
 
 @router.get(

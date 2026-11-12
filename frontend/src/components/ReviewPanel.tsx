@@ -14,12 +14,13 @@ interface ViewReview {
 }
 
 interface ReviewPanelProps {
+  processing?: boolean;
   views: ViewReview[];
   onRetake: (viewType: string) => void;
   onSubmit: () => void;
 }
 
-export default function ReviewPanel({ views, onRetake, onSubmit }: ReviewPanelProps) {
+export default function ReviewPanel({ views, onRetake, onSubmit, processing = false }: ReviewPanelProps) {
   const allCaptured = views.every((v) => v.previewUrl !== null);
   const viewsNeedingRetake = views.filter(
     (v) => v.qualityAssessment?.overall_status === "Retake Recommended"
@@ -117,6 +118,7 @@ export default function ReviewPanel({ views, onRetake, onSubmit }: ReviewPanelPr
 
               <button
                 type="button"
+                disabled={processing}
                 onClick={() => onRetake(view.viewType)}
                 className="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded transition-colors text-xs font-semibold"
               >
@@ -129,18 +131,18 @@ export default function ReviewPanel({ views, onRetake, onSubmit }: ReviewPanelPr
 
       <div className="flex flex-col sm:flex-row items-center justify-between border-t border-gray-100 pt-6 gap-3">
         <span className="text-xs text-slate-500">
-          Once finalized, evidence plates and calibration metrics are locked into the audit memorandum.
+          Analysis keeps source evidence and flags conflicting readings for inspector review.
         </span>
         <button
           onClick={onSubmit}
-          disabled={!allCaptured}
+          disabled={!allCaptured || processing}
           className={`px-8 py-3 rounded-lg font-bold text-sm transition-colors ${
             allCaptured
               ? "bg-blue-600 text-white hover:bg-blue-700 shadow-md"
               : "bg-gray-200 text-gray-400 cursor-not-allowed"
           }`}
         >
-          Complete Inspection & Generate Memo &rarr;
+          {processing ? "Analyzing evidence…" : "Analyze evidence and select profile →"}
         </button>
       </div>
     </div>
