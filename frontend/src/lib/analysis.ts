@@ -51,6 +51,17 @@ export type Profile = z.infer<typeof profileSchema>;
 export type RuleSet = z.infer<typeof rulesetSchema>;
 export type View = z.infer<typeof view>;
 
+const regulationIndexSchema = z.object({
+  retrieved_on: z.string(), purpose: z.string(),
+  sources: z.array(z.object({
+    id: z.string(), title: z.string(), publisher: z.string().optional(), official_index_url: z.url(), reference_text_url: z.url(),
+    sections_reviewed: z.array(z.string()), consolidation_status: z.string(),
+  })),
+  documents: z.array(z.object({ source_id: z.string().optional(), title: z.string(), url: z.url(), verification_status: z.string() })),
+  unknowns: z.array(z.string()),
+});
+export type RegulationIndex = z.infer<typeof regulationIndexSchema>;
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 async function checkedResponse(response: Response): Promise<unknown> {
@@ -69,12 +80,14 @@ export async function analyzeInspection(id: string, input: Omit<ProfileInputs, "
   return z.object({ analysis: analysisSchema }).parse(await checkedResponse(response)).analysis;
 }
 
-export async function removeInspectionView(id: string, view: View): Promise<void> {
-  await checkedResponse(await fetch(`${API_BASE}/inspections/${encodeURIComponent(id)}/images/${view}`, { method: "DELETE" }));
-}
-
 export async function getRuleSet(): Promise<RuleSet> {
   return rulesetSchema.parse(await checkedResponse(await fetch(`${API_BASE}/profiles/`)));
+}
+
+export async function getRegulationIndex(query: string): Promise<RegulationIndex> {
+  return regulationIndexSchema.parse(await checkedResponse(await fetch(
+    `${API_BASE}/profiles/regulations?q=${encodeURIComponent(query)}`,
+  )));
 }
 
 export async function selectProfile(input: ProfileInputs): Promise<Profile> {

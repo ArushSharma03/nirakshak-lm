@@ -1,432 +1,228 @@
 "use client";
 
-import React, { useEffect, useState, Suspense } from "react";
+import { TopBarContent } from "@/components/layout/TopBarContent";
+
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { getInspections } from "@/lib/api";
-import { InspectionRecord } from "@/types";
-import ComplianceBadge from "@/components/common/ComplianceBadge";
-import CategoryBadge from "@/components/common/CategoryBadge";
-import LegalDisclaimer from "@/components/common/LegalDisclaimer";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { CategoryTag, InspectionTable, LoadError, ProgressBadge, nextAction, progressOf, useInspections, type Progress } from "@/components/InspectionLedger";
+import { Badge, ButtonLink, Card, EmptyState, Field, Icon, Loading, buttonClass, inputClass, qualityTone } from "@/components/ui";
+import { CATEGORY_LABEL, VIEWS, VIEW_LABEL, fieldLabel, formatDate, storageLabel } from "@/lib/format";
+import type { InspectionRecord, ProductCategory } from "@/types";
 
-function InspectionsHistoryContent() {
-  const searchParams = useSearchParams();
-  const highlightId = searchParams.get("highlight");
+const FILTERS: { id: "all" | Progress; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "analyzed", label: "Analyzed" },
+  { id: "awaiting", label: "Awaiting analysis" },
+  { id: "empty", label: "No photos" },
+];
 
-  const [records, setRecords] = useState<InspectionRecord[]>([]);
-  const [isLiveRepo, setIsLiveRepo] = useState<boolean>(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedOutcome, setSelectedOutcome] = useState<string>("ALL");
-  const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
-  const [activeRecord, setActiveRecord] = useState<InspectionRecord | null>(null);
+function QuickLook({ record, onClose }: { record: InspectionRecord; onClose: () => void }) {
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const action = nextAction(record);
 
   useEffect(() => {
-    async function loadData() {
-      const { records: list, isLive } = await getInspections();
-      setRecords(list);
-      setIsLiveRepo(isLive);
+    closeRef.current?.focus();
+    const onKey = (event: KeyboardEvent) => event.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
 
-      if (highlightId) {
-        const found = list.find((r) => r.id === highlightId);
-        if (found) {
-          setActiveRecord(found);
-        }
-      }
-    }
-    loadData();
-  }, [highlightId]);
-
-  const filteredRecords = records.filter((r) => {
-    const matchesSearch =
-      r.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      r.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      r.brand.toLowerCase().includes(searchTerm.toLowerCase());
-
-    const matchesOutcome =
-      selectedOutcome === "ALL" || r.outcome === selectedOutcome;
-
-    const matchesCategory =
-      selectedCategory === "ALL" || r.productCategory === selectedCategory;
-
-    return matchesSearch && matchesOutcome && matchesCategory;
-  });
+  const fields = record.analysis?.fields ?? [];
+  const read = fields.filter((f) => f.status === "observed").length;
 
   return (
-    <div className="space-y-6">
-      {/* Page Title & Action Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
-        <div>
-          <div className="flex items-center space-x-2">
-            <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-              Inspection History & Audit Repository
-            </h1>
-            <span
-              className={`text-[10px] px-2 py-0.5 rounded font-mono font-bold uppercase tracking-wider ${
-                isLiveRepo
-                  ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
-                  : "bg-amber-100 text-amber-800 border border-amber-300"
-              }`}
-            >
-              {isLiveRepo ? "Live Repository" : "Demo / Offline Fallback"}
-            </span>
+    <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true" aria-labelledby="quick-look-title">
+      <button type="button" aria-label="Close" onClick={onClose} className="absolute inset-0 bg-slate-900/40" />
+      <div className="relative flex h-full w-full max-w-md flex-col bg-sheet shadow-[-8px_0_24px_rgb(15_23_42/0.12)]">
+        <div className="flex items-start justify-between gap-3 border-b border-rule px-5 py-4">
+          <div className="min-w-0">
+            <p className="serial text-xs text-ink-3">{record.id}</p>
+            <h2 id="quick-look-title" className="text-lg font-semibold text-ink">{record.productName}</h2>
+            <p className="text-xs text-ink-3">{formatDate(record.timestamp, true)} · {storageLabel(record)}</p>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
-            Searchable regulatory archive of multi-view packaged-commodity screenings under Legal Metrology Rules.
-          </p>
+          <button ref={closeRef} type="button" onClick={onClose} aria-label="Close quick look" className="grid size-9 shrink-0 place-items-center rounded-md text-ink-2 hover:bg-ground">
+            <Icon name="close" />
+          </button>
         </div>
 
-        <Link
-          href="/inspections/new"
-          className="inline-flex items-center space-x-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-sm transition-colors shadow-xs"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          <span>New Inspection</span>
-        </Link>
-      </div>
+        <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5">
+          <div className="flex flex-wrap items-center gap-2">
+            <ProgressBadge record={record} full />
+            <CategoryTag category={record.productCategory} />
+          </div>
 
-      <LegalDisclaimer compact />
-
-      {/* Filter and Search Controls */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs flex flex-col md:flex-row items-stretch md:items-center gap-4">
-        {/* Search */}
-        <div className="flex-1 relative">
-          <svg className="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search by ID, product, or brand (e.g. Britannia, Amul, INS-2026)..."
-            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500/20"
-          />
-        </div>
-
-        {/* Outcome Filter */}
-        <div className="shrink-0 flex items-center space-x-2">
-          <span className="text-xs font-semibold text-slate-500">Outcome:</span>
-          <select
-            value={selectedOutcome}
-            onChange={(e) => setSelectedOutcome(e.target.value)}
-            className="px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium text-slate-800"
-          >
-            <option value="ALL">All Outcomes</option>
-            <option value="Compliant within Implemented Checks">Compliant</option>
-            <option value="Potential Non-Compliance">Potential Non-Compliance</option>
-            <option value="Manual Review Required">Manual Review</option>
-          </select>
-        </div>
-
-        {/* Category Filter */}
-        <div className="shrink-0 flex items-center space-x-2">
-          <span className="text-xs font-semibold text-slate-500">Category:</span>
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-medium text-slate-800"
-          >
-            <option value="ALL">All Categories</option>
-            <option value="food_grocery">Food and Grocery</option>
-            <option value="beverage">Beverages</option>
-            <option value="personal_care">Personal Care</option>
-            <option value="household">Household</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[11px]">
-              <tr>
-                <th className="py-3 px-4">Inspection ID</th>
-                <th className="py-3 px-4">Commodity / Brand</th>
-                <th className="py-3 px-4">Category</th>
-                <th className="py-3 px-4">Scale / Marker</th>
-                <th className="py-3 px-4 text-center">Panels (F/R/S)</th>
-                <th className="py-3 px-4">Compliance Outcome</th>
-                <th className="py-3 px-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 font-normal">
-              {filteredRecords.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="py-8 text-center text-slate-500 text-sm">
-                    No inspections found matching your search and filter criteria.
-                  </td>
-                </tr>
-              ) : (
-                filteredRecords.map((r) => (
-                  <tr
-                    key={r.id}
-                    className={`hover:bg-slate-50/80 transition-colors ${
-                      highlightId === r.id ? "bg-blue-50/50" : ""
-                    }`}
-                  >
-                    <td className="py-3.5 px-4 font-mono font-medium text-slate-900">
-                      <div className="flex items-center space-x-1.5">
-                        <span>{r.id}</span>
-                        {r.mode && (
-                          <span
-                            className="text-[9px] px-1 py-0.2 rounded bg-slate-100 text-slate-600 border border-slate-200"
-                            title={r.mode}
-                          >
-                            {r.databaseSaved ? "DB" : "Local"}
-                          </span>
-                        )}
-                      </div>
-                      <span className="block text-[10px] text-slate-400 font-sans mt-0.5">
-                        {new Date(r.timestamp).toLocaleDateString()}
-                      </span>
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <div className="font-semibold text-slate-900">{r.productName}</div>
-                      <div className="text-[11px] text-slate-500">
-                        {r.brand} &bull; Net: {r.declaredNetQty} &bull; MRP: ₹{r.declaredMRP}
-                      </div>
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <CategoryBadge category={r.productCategory} />
-                    </td>
-                    <td className="py-3.5 px-4">
-                      {r.markerDetected ? (
-                        <span className="inline-flex items-center text-emerald-700 text-[11px] font-medium">
-                          <svg className="w-3.5 h-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                          {r.scalePpm ? `${r.scalePpm} px/mm` : "Calibrated"}
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center text-amber-700 text-[11px] font-medium">
-                          <svg className="w-3.5 h-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                              fillRule="evenodd"
-                              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                          No Scale
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-3.5 px-4 text-center">
-                      <span className="inline-flex space-x-1 font-mono text-[11px]">
-                        <span className={r.viewsCaptured.front ? "text-emerald-600 font-bold" : "text-slate-300"}>
-                          F
-                        </span>
-                        <span className="text-slate-300">/</span>
-                        <span className={r.viewsCaptured.rear ? "text-emerald-600 font-bold" : "text-slate-300"}>
-                          R
-                        </span>
-                        <span className="text-slate-300">/</span>
-                        <span className={r.viewsCaptured.side ? "text-emerald-600 font-bold" : "text-slate-300"}>
-                          S
-                        </span>
-                      </span>
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <ComplianceBadge outcome={r.outcome} size="sm" />
-                    </td>
-                    <td className="py-3.5 px-4 text-right space-x-1.5">
-                      <button
-                        onClick={() => setActiveRecord(r)}
-                        className="px-2.5 py-1 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded transition-colors"
-                      >
-                        Inspect
-                      </button>
-                      <Link
-                        href={`/reports?id=${encodeURIComponent(r.id)}`}
-                        className="px-2.5 py-1 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded transition-colors"
-                      >
-                        Memo
-                      </Link>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Slide-over Inspection Detail Drawer */}
-      {activeRecord && (
-        <div className="fixed inset-0 z-50 overflow-hidden flex justify-end">
-          <div
-            className="fixed inset-0 bg-slate-900/50 backdrop-blur-2xs transition-opacity"
-            onClick={() => setActiveRecord(null)}
-          />
-
-          <div className="relative w-full max-w-lg bg-white shadow-2xl z-10 p-6 flex flex-col justify-between overflow-y-auto">
-            <div className="space-y-6">
-              <div className="flex items-center justify-between pb-4 border-b border-slate-200">
-                <div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs font-mono font-medium text-slate-500">
-                      {activeRecord.id}
-                    </span>
-                    <span
-                      className={`text-[9px] px-1.5 py-0.5 rounded font-mono font-bold ${
-                        activeRecord.databaseSaved
-                          ? "bg-emerald-100 text-emerald-800"
-                          : "bg-amber-100 text-amber-800"
-                      }`}
-                    >
-                      {activeRecord.mode || (activeRecord.databaseSaved ? "Live DB" : "Demo Store")}
-                    </span>
+          <div className="grid grid-cols-3 gap-2">
+            {VIEWS.map((view) => {
+              const img = record.images[view];
+              const quality = img?.quality_assessment;
+              return (
+                <figure key={view} className="overflow-hidden rounded-lg border border-rule">
+                  <div className="aspect-square bg-ground">
+                    {img?.previewUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={img.previewUrl} alt={`${VIEW_LABEL[view]} panel`} className="size-full object-contain" />
+                    ) : (
+                      <span className="grid size-full place-items-center text-xs text-ink-3">No photo</span>
+                    )}
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 mt-0.5">
-                    {activeRecord.productName}
-                  </h3>
-                </div>
-                <button
-                  onClick={() => setActiveRecord(null)}
-                  className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100"
-                >
-                  &times;
-                </button>
-              </div>
+                  <figcaption className="flex items-center justify-between gap-1 px-2 py-1.5 text-xs">
+                    <span className="font-medium text-ink">{VIEW_LABEL[view]}</span>
+                    {quality && <Badge tone={qualityTone(quality.overall_status)}>{quality.composite_score}</Badge>}
+                  </figcaption>
+                </figure>
+              );
+            })}
+          </div>
+          <p className="text-xs text-ink-3">Numbers are optical scores of the original photo (0–100). They are not OCR accuracy or compliance.</p>
 
-              {/* Status & Outcome */}
-              <div className="space-y-2">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
-                  Preliminary Compliance Verdict
-                </span>
-                <ComplianceBadge outcome={activeRecord.outcome} size="md" />
-              </div>
-
-              {/* Optical Evidence Plates (Real Captured Thumbnails) */}
-              <div className="space-y-2">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
-                  Captured Multi-View Optical Evidence
-                </span>
-                <div className="grid grid-cols-3 gap-2">
-                  {(["front", "rear", "side"] as const).map((vt) => {
-                    const img = activeRecord.images?.[vt];
-                    const isCaptured = activeRecord.viewsCaptured[vt] || !!img;
-                    return (
-                      <div key={vt} className="border border-slate-200 rounded-lg p-2 bg-slate-50 text-center space-y-1">
-                        <div className="aspect-[4/3] bg-slate-200 rounded overflow-hidden flex items-center justify-center relative">
-                          {img?.previewUrl ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={img.previewUrl} alt={`${vt} view`} className="w-full h-full object-cover" />
-                          ) : isCaptured ? (
-                            <span className="text-[10px] text-emerald-700 font-semibold">Captured</span>
-                          ) : (
-                            <span className="text-[10px] text-slate-400">Missing</span>
-                          )}
-                        </div>
-                        <span className="text-[10px] font-bold text-slate-700 uppercase block">
-                          {vt} View
-                        </span>
-                        <div className="flex flex-col text-[9px] text-slate-500 space-y-0.5">
-                          <span>{img?.marker_detected ? "Marker Calibrated" : isCaptured ? "Uploaded" : "Pending"}</span>
-                          {img?.quality_assessment && (
-                            <span
-                              className={`font-semibold ${
-                                img.quality_assessment.overall_status === "Pass"
-                                  ? "text-emerald-700"
-                                  : img.quality_assessment.overall_status === "Warning"
-                                  ? "text-amber-700"
-                                  : "text-rose-700"
-                              }`}
-                            >
-                              Quality: {img.quality_assessment.overall_status}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Details Grid */}
-              <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 space-y-2.5 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Brand / Manufacturer:</span>
-                  <span className="font-semibold text-slate-800">{activeRecord.brand}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Declared Net Quantity:</span>
-                  <span className="font-semibold text-slate-800">{activeRecord.declaredNetQty}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Declared MRP:</span>
-                  <span className="font-semibold text-slate-800">₹{activeRecord.declaredMRP.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Scale Calibration:</span>
-                  <span className="font-semibold text-slate-800">
-                    {activeRecord.scalePpm ? `${activeRecord.scalePpm} px/mm (ArUco 50mm)` : "Unavailable"}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Designated Inspector:</span>
-                  <span className="font-semibold text-slate-800">{activeRecord.inspectorName}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Screening Timestamp:</span>
-                  <span className="font-semibold text-slate-800">
-                    {new Date(activeRecord.timestamp).toLocaleString()}
-                  </span>
-                </div>
-              </div>
-
-              {/* Verified Checks List */}
-              <div className="space-y-2">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
-                  Screening Summary
-                </span>
-                <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
-                  <div className="flex justify-between font-medium">
-                    <span>Passed Implemented Checks:</span>
-                    <span className="text-emerald-600 font-bold">
-                      {activeRecord.checksPassed} / {activeRecord.totalChecks}
+          {record.analysis && (
+            <div className="space-y-2">
+              <h3 className="text-sm font-semibold text-ink">Declarations read: {read} of {fields.length}</h3>
+              <ul className="divide-y divide-rule rounded-lg border border-rule text-sm">
+                {fields.map((field) => (
+                  <li key={field.field} className="flex items-baseline justify-between gap-3 px-3 py-2">
+                    <span className="shrink-0 text-ink-2">{fieldLabel(field.field)}</span>
+                    <span className={`truncate text-right ${field.value ? "font-medium text-ink" : "text-ink-3"}`}>
+                      {field.status === "conflict" ? "Conflicting" : field.value ?? "Not found"}
                     </span>
-                  </div>
-                  <div className="flex justify-between font-medium">
-                    <span>Flagged Non-Compliances:</span>
-                    <span className="text-rose-600 font-bold">{activeRecord.violationsCount}</span>
-                  </div>
-                </div>
-              </div>
-
-              <LegalDisclaimer compact />
+                  </li>
+                ))}
+              </ul>
             </div>
+          )}
 
-            <div className="pt-4 border-t border-slate-200 flex gap-3">
-              <Link
-                href={`/reports?id=${encodeURIComponent(activeRecord.id)}`}
-                className="flex-1 py-2 text-center bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold"
-              >
-                Generate Audit Memo &rarr;
-              </Link>
-              <button
-                onClick={() => setActiveRecord(null)}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium"
-              >
-                Close
-              </button>
+          <div className="space-y-2">
+            <h3 className="text-sm font-semibold text-ink">Setup notes</h3>
+            <p className="text-xs text-ink-3">Typed at setup, unverified and not read from the label. Older records may hold server placeholders.</p>
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Photo source">{record.notes || "Blank"}</Field>
+              <Field label="Brand">{record.brand || "Blank"}</Field>
+              <Field label="Net quantity">{record.declaredNetQty || "Blank"}</Field>
+              <Field label="MRP">{record.declaredMRP !== null ? `₹${record.declaredMRP.toFixed(2)}` : "Blank"}</Field>
             </div>
           </div>
         </div>
-      )}
+
+        <div className="flex gap-2 border-t border-rule px-5 py-4">
+          <ButtonLink href={action.href}>
+            {action.label}
+            <Icon name="arrowRight" />
+          </ButtonLink>
+          {record.analysis && (
+            <Link href={`/inspect?id=${encodeURIComponent(record.id)}`} className={buttonClass.secondary}>
+              Photos and re-run
+            </Link>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
 
-export default function InspectionsHistoryPage() {
+function History() {
+  const router = useRouter();
+  const params = useSearchParams();
+  const urlFilter = params.get("filter");
+  const filter = (FILTERS.some((f) => f.id === urlFilter) ? urlFilter : "all") as (typeof FILTERS)[number]["id"];
+  const { records, error, reload } = useInspections();
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState<"all" | ProductCategory>("all");
+  const [open, setOpen] = useState<InspectionRecord | null>(null);
+  const close = useCallback(() => setOpen(null), []);
+
+  const setFilter = (id: string) => router.replace(id === "all" ? "/inspections" : `/inspections?filter=${id}`, { scroll: false });
+
+  const visible = useMemo(() => {
+    if (!records) return [];
+    const needle = query.trim().toLowerCase();
+    return records.filter(
+      (r) =>
+        (filter === "all" || progressOf(r) === filter) &&
+        (category === "all" || r.productCategory === category) &&
+        (!needle || r.id.toLowerCase().includes(needle) || r.productName.toLowerCase().includes(needle) || r.notes.toLowerCase().includes(needle)),
+    );
+  }, [records, query, filter, category]);
+
   return (
-    <Suspense fallback={<div className="p-8 text-center text-slate-500 text-sm">Loading inspection archive...</div>}>
-      <InspectionsHistoryContent />
+    <div className="page-stack">
+      <TopBarContent
+        title="Inspection history"
+        lede="Every inspection stored on the API. Analyzed records open as reports; the rest continue in guided capture."
+        actions={
+          <ButtonLink href="/inspections/new">
+            <Icon name="plus" />
+            New inspection
+          </ButtonLink>
+        }
+      />
+
+      {error && <LoadError error={error} onRetry={reload} />}
+      {!error && records === null && <Loading label="Loading inspections from the API" />}
+
+      {records && (
+        <Card bodyClass="">
+          <div className="flex flex-col gap-3 border-b border-rule p-4 lg:flex-row lg:items-center lg:justify-between">
+            <div role="group" aria-label="Filter by progress" className="flex flex-wrap gap-1">
+              {FILTERS.map((f) => {
+                const count = f.id === "all" ? records.length : records.filter((r) => progressOf(r) === f.id).length;
+                const active = filter === f.id;
+                return (
+                  <button
+                    key={f.id}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => setFilter(f.id)}
+                    className={`min-h-9 rounded-lg px-3 text-sm font-medium transition-colors ${active ? "bg-rail text-white" : "text-ink-2 hover:bg-slate-100 hover:text-ink"}`}
+                  >
+                    {f.label} <span className={`tabular ml-0.5 ${active ? "text-slate-300" : "text-ink-3"}`}>{count}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <label className="block sm:w-48">
+                <span className="sr-only">Category</span>
+                <select value={category} onChange={(e) => setCategory(e.target.value as typeof category)} className={`${inputClass} mt-0`}>
+                  <option value="all">All categories</option>
+                  {Object.entries(CATEGORY_LABEL).map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="relative block sm:w-64">
+                <span className="sr-only">Search inspections</span>
+                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-3">
+                  <Icon name="search" />
+                </span>
+                <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="ID, package or photo source" className={`${inputClass} mt-0 pl-9`} />
+              </label>
+            </div>
+          </div>
+
+          {visible.length > 0 ? (
+            <InspectionTable records={visible} onQuickLook={setOpen} />
+          ) : (
+            <div className="p-4">
+              <EmptyState title={records.length === 0 ? "No inspections yet" : "Nothing matches"}>
+                {records.length === 0 ? "Start one to photograph a package." : "Clear the search or pick another filter."}
+              </EmptyState>
+            </div>
+          )}
+        </Card>
+      )}
+
+      {open && <QuickLook record={open} onClose={close} />}
+    </div>
+  );
+}
+
+export default function InspectionsPage() {
+  return (
+    <Suspense fallback={<Loading label="Loading inspections" />}>
+      <History />
     </Suspense>
   );
 }

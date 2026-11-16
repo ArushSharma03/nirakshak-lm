@@ -10,13 +10,19 @@ ANCHORS: dict[FieldName, str] = {
     "generic_name": r"(?:generic\s+name|product\s+name|commodity|उत्पाद\s*नाम)",
     "net_quantity": r"(?:net\s*(?:wt\.?|weight|qty\.?|quantity|content[s]?)|शुद्ध\s*(?:मात्रा|वजन))",
     "mrp": r"(?:m\.?\s*r\.?\s*p\.?|maximum\s+retail\s+price|अधिकतम\s*खुदरा\s*मूल्य)",
-    "manufacturer": r"(?:manufactured\s+by|packed\s+by|imported\s+by|mfd\.?\s*by|निर्माता|निर्मित)",
-    "date": r"(?:mfg\.?\s*(?:date)?|mfd\.?\s*(?:date)?|packed\s+on|date\s+of\s+(?:manufacture|packing)|निर्माण\s*तिथि)",
+    "manufacturer": r"(?:manufactured\s+by|packed\s+by|imported\s+by|mf[gd]\.?\s*(?:&\s*mkt\.?\s*)?by|निर्माता|निर्मित)",
+    "date": r"(?:mf[gd](?!\.?\s*(?:&\s*mkt\.?\s*)?by\b)\.?\s*(?:date)?|packed\s+on|date\s+of\s+(?:manufacture|packing)|निर्माण\s*तिथि)",
     "consumer_care": r"(?:consumer\s*care|customer\s*care|helpline|उपभोक्ता\s*सेवा)",
     "country_of_origin": r"(?:country\s+of\s+origin|made\s+in|उद्गम\s*देश)",
 }
 _QUANTITY = re.compile(r"\d+(?:[.,]\d+)?\s*(?:kg|mg|g|ml|cl|l|litres?|liters?|ग्राम|किग्रा|मिलीलीटर|लीटर)\b", re.I)
 _PRICE = re.compile(r"(?:₹|rs\.?|inr)?\s*\d+(?:[.,]\d{1,2})?", re.I)
+_DATE = re.compile(
+    r"\b(?:\d{4}[-/.](?:0?[1-9]|1[0-2])[-/.](?:0?[1-9]|[12]\d|3[01])"
+    r"|(?:0?[1-9]|[12]\d|3[01])[-/.](?:0?[1-9]|1[0-2])[-/.]\d{2,4}"
+    r"|(?:0?[1-9]|1[0-2])[-/.]\d{2,4}"
+    r"|(?:\d{1,2}[-\s]?)?(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*[-\s]?\d{2,4})\b", re.I,
+)
 
 
 def normalize(value: str) -> str:
@@ -35,7 +41,7 @@ def extract(ocr: OCRResult, view: View, calibration: Calibration) -> list[Candid
             if not match:
                 continue
             source = line
-            value = line.text[match.end():].strip(" :-।")
+            value = line.text[match.end():].strip(" :-।,.;")
             # Adjacent values must be below the anchor and aligned in this image.
             if not value and index + 1 < len(ocr.lines):
                 neighbor = ocr.lines[index + 1]
@@ -53,6 +59,9 @@ def extract(ocr: OCRResult, view: View, calibration: Calibration) -> list[Candid
             elif field == "mrp":
                 parsed = _PRICE.search(normalize(value))
                 value = parsed.group(0).strip() if parsed else ""
+            elif field == "date":
+                parsed = _DATE.search(normalize(value))
+                value = parsed.group(0) if parsed else ""
             if not value:
                 continue
             value_box = source.box
@@ -107,5 +116,5 @@ def fuse(candidates: list[Candidate]) -> list[FusedField]:
                 reason="OCR providers or views disagree. Inspector review required."))
         else:
             fused.append(FusedField(field=field, status="observed", value=evidence[0].value, evidence=evidence,
-                reason="Matching source readings; OCR confidence ranks evidence without asserting legal validity."))
+                reason="Unverified OCR transcription; inspector review required. Readings from the same photo or its crops are not independent confirmation."))
     return fused

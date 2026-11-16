@@ -6,7 +6,7 @@ from app.schemas.analysis import Analysis, AnalysisRequest, DecisionResult, Prof
 from app.engine.profiles import select_profile
 from app.services.calibration import calibrate
 from app.services.decision import judge_fields
-from app.services.extraction import extract, fuse
+from app.services.extraction import canonical, extract, fuse
 from app.services.marker_detector import detect_marker
 from app.services.ocr import recognize, detail_regions
 from app.core.config import settings
@@ -26,7 +26,8 @@ def analyze_record(record: dict, request: AnalysisRequest) -> Analysis:
         ocr = recognize(raw)
         view_candidates = []
         for result in ocr:
-            view_candidates.extend(extract(result, view, calibration))
+            if result.provider != "tesseract":
+                view_candidates.extend(extract(result, view, calibration))
             if result.status != "ok":
                 warnings.append(f"{view}/{result.provider}: {result.message}")
         # Dense declaration panels can hide small quantities in whole-page transcription.
@@ -43,6 +44,15 @@ def analyze_record(record: dict, request: AnalysisRequest) -> Analysis:
                     break
                 if any(c.field == "net_quantity" for c in found):
                     break
+        # Tesseract supplies geometry only for values also read by the primary model.
+        primary_values = {(c.field, canonical(c.field, c.value)) for c in view_candidates}
+        for result in ocr:
+            if result.provider == "tesseract":
+                geometry = extract(result, view, calibration)
+                view_candidates.extend(c for c in geometry
+                                       if (c.field, canonical(c.field, c.value)) in primary_values)
+                if geometry:
+                    warnings.append(f"{view}: Tesseract is used only for matching declaration geometry; its transcript is not an independent reading.")
         candidates.extend(view_candidates)
         views[view] = ViewAnalysis(file_hash=hashlib.sha256(raw).hexdigest(), calibration=calibration, ocr=ocr)
         if calibration.status != "available":

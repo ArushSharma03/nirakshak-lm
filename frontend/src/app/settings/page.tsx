@@ -1,219 +1,112 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { checkBackendStatus } from "@/lib/api";
-import { SystemStatus } from "@/types";
-import LegalDisclaimer from "@/components/common/LegalDisclaimer";
+import { TopBarContent } from "@/components/layout/TopBarContent";
 
-export default function SettingsPage() {
-  const [status, setStatus] = useState<SystemStatus>({
-    isLive: false,
-    backendVersion: undefined,
-    databaseAvailable: false,
-    mode: "Demonstrator Mode",
-  });
-  const [inspectorName, setInspectorName] = useState("Mr. Arush Sharma");
-  const [inspectorRole, setInspectorRole] = useState("Lead Inspector — Legal Metrology Screening");
-  const [markerSizeMm, setMarkerSizeMm] = useState("50.0");
-  const [dictionary, setDictionary] = useState("DICT_4X4_50");
-  const [cameraRes, setCameraRes] = useState("1080p");
-  const [savedBanner, setSavedBanner] = useState(false);
+import { useCallback, useEffect, useState } from "react";
+import { useInspections } from "@/components/InspectionLedger";
+import { Badge, Card, Field, Icon, buttonClass } from "@/components/ui";
+import { API_BASE, checkBackendStatus, getReferenceMarkerUrl } from "@/lib/api";
+import type { SystemStatus } from "@/types";
 
-  useEffect(() => {
-    async function load() {
-      const s = await checkBackendStatus();
-      setStatus(s);
-    }
-    load();
+const PIPELINE: [string, string][] = [
+  ["Photo optics", "Sharpness, exposure, contrast, glare and resolution of each original photo, scored 0–100. Advisory only."],
+  ["Reference marker", "ArUco 4x4_50, ID 0, printed at 50 mm. Gives physical scale only when you confirm it lies flat in the label plane."],
+  ["Enhanced copy", "Bilateral denoise and CLAHE produce a second image for viewing. The original is kept unchanged as evidence."],
+  ["Transcription", "Xiaomi-OCR reads each panel, with additional detail scans. Tesseract adds line geometry only where its text matches."],
+  ["Extraction", "Declarations are matched to the selected rule profile and marked read, conflicting or not found, with source text for each."],
+  ["Candidate ranking", "Jev can rank conflicting readings. Off by default because it uses paid credits."],
+];
+
+export default function SystemPage() {
+  const [status, setStatus] = useState<SystemStatus | null>(null);
+  const [checkedAt, setCheckedAt] = useState<Date | null>(null);
+  const { records } = useInspections();
+
+  const check = useCallback(async () => {
+    setStatus(null);
+    setStatus(await checkBackendStatus());
+    setCheckedAt(new Date());
   }, []);
 
-  const handleSave = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSavedBanner(true);
-    setTimeout(() => setSavedBanner(false), 3000);
-  };
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void check();
+  }, [check]);
+
+  const postgres = records?.filter((r) => r.databaseSaved).length ?? 0;
+  const fileStore = records ? records.length - postgres : 0;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      {/* Title */}
-      <div className="pb-4 border-b border-slate-200">
-        <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-          System & Hardware Settings
-        </h1>
-        <p className="text-xs text-slate-500 mt-1">
-          Configure inspector profile, camera resolutions, and reference-marker scale calibration parameters.
-        </p>
-      </div>
+    <div className="page-stack">
+      <TopBarContent title="System" lede="Backend connection, where records are stored, and how each photo is processed. Nothing here is configurable from the browser." actions={<button type="button" onClick={() => void check()} className={buttonClass.secondary}>Check again</button>} />
 
-      <LegalDisclaimer compact />
-
-      {savedBanner && (
-        <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg text-xs font-semibold flex items-center space-x-2">
-          <svg className="w-4 h-4 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-          </svg>
-          <span>Settings saved successfully in client preferences!</span>
-        </div>
-      )}
-
-      {/* Backend & Environment Status Card */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
-        <h2 className="text-sm font-bold text-slate-900">
-          Backend Service & Telemetry Status
-        </h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-          <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-            <span className="text-slate-400 block text-[11px] font-medium">FastAPI Endpoint</span>
-            <span className="font-mono font-bold text-slate-800">http://localhost:8000</span>
-            <span className="text-[10px] text-slate-500 block mt-1">
-              Status: {status.isLive ? "● Online (200 OK)" : "○ Offline / Mock Fallback"}
+      <Card title="Backend">
+        <div className="grid gap-5 sm:grid-cols-3">
+          <Field label="API endpoint" mono>
+            {API_BASE}
+          </Field>
+          <div className="min-w-0">
+            <span className="field-label">Status</span>
+            <span className="mt-1 block">
+              {status === null ? <Badge tone="neutral">Checking</Badge> : status.isLive ? <Badge tone="ok">Online</Badge> : <Badge tone="danger">Offline</Badge>}
             </span>
+            {checkedAt && <span className="mt-1 block text-xs text-ink-3">Checked {checkedAt.toLocaleTimeString("en-IN")}</span>}
           </div>
+          <Field label="Backend version" mono>
+            {status?.backendVersion ?? "Not reported"}
+          </Field>
+        </div>
+        {status && !status.isLive && (
+          <p className="mt-4 text-sm text-danger">Start the FastAPI backend on port 8000. Inspections cannot be created, loaded or analyzed until it responds.</p>
+        )}
+      </Card>
 
-          <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-            <span className="text-slate-400 block text-[11px] font-medium">Operating Mode</span>
-            <span className={`font-bold block ${status.isLive ? "text-emerald-700" : "text-teal-700"}`}>
-              {status.mode}
-            </span>
-            <span className="text-[10px] text-slate-500 block mt-1">
-              Dual-mode safety active
-            </span>
+      <Card title="Record storage">
+        {records ? (
+          <div className="grid gap-5 sm:grid-cols-3">
+            <Field label="Inspections stored">
+              <span className="tabular">{records.length}</span>
+            </Field>
+            <Field label="In PostgreSQL">
+              <span className="tabular">{postgres}</span>
+            </Field>
+            <Field label="In the API file store">
+              <span className="tabular">{fileStore}</span>
+            </Field>
           </div>
+        ) : (
+          <p className="text-sm text-ink-3">Storage counts appear when the API responds.</p>
+        )}
+        <p className="mt-4 text-xs text-ink-3">The backend writes to PostgreSQL when a database is configured and otherwise to a JSON file store on the API server. Both are real storage; the browser keeps no copy.</p>
+      </Card>
 
-          <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-            <span className="text-slate-400 block text-[11px] font-medium">PostgreSQL Database</span>
-            <span className="font-semibold text-slate-700 block">
-              {status.databaseAvailable ? "Connected" : "Unconnected (Local Mock)"}
-            </span>
-            <span className="text-[10px] text-slate-400 block mt-1">
-              Host DB not required for demo
-            </span>
+      <Card title="Processing pipeline" bodyClass="">
+        <ol className="divide-y divide-rule">
+          {PIPELINE.map(([title, body]) => (
+            <li key={title} className="grid gap-1 px-5 py-3 text-sm sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-4">
+              <span className="font-medium text-ink">{title}</span>
+              <span className="text-ink-2">{body}</span>
+            </li>
+          ))}
+        </ol>
+      </Card>
+
+      <Card title="Reference marker">
+        <div className="grid gap-5 sm:grid-cols-[9rem_minmax(0,1fr)]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={getReferenceMarkerUrl(0)} alt="ArUco 4x4_50 marker ID 0 with white border" className="w-36 rounded-md border border-rule" />
+          <div className="space-y-3 text-sm text-ink-2">
+            <p>
+              Print it so the black square measures exactly <strong className="text-ink">50 mm</strong>, and check with a ruler, because printers rescale. Keep the white border, lay it flat beside the label, and shoot from 20–50 cm without glare.
+            </p>
+            <p>Without a marker the photo is still read; only text-height estimates are skipped.</p>
+            <a href={getReferenceMarkerUrl(0)} target="_blank" rel="noreferrer" download="nirikshak-aruco-4x4-id0-50mm.png" className="inline-flex items-center gap-1.5 font-semibold text-accent hover:underline">
+              Open printable PNG
+              <Icon name="external" className="size-3.5" />
+            </a>
           </div>
         </div>
-      </div>
-
-      {/* Settings Form */}
-      <form onSubmit={handleSave} className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-6">
-        {/* Section 1: Inspector Identity */}
-        <div className="space-y-4">
-          <h2 className="text-sm font-bold text-slate-900 pb-2 border-b border-slate-100">
-            1. Inspector Profile
-          </h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Inspector Full Name
-              </label>
-              <input
-                type="text"
-                value={inspectorName}
-                onChange={(e) => setInspectorName(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500/20"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Designation / Department
-              </label>
-              <input
-                type="text"
-                value={inspectorRole}
-                onChange={(e) => setInspectorRole(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500/20"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Section 2: Scale Calibration Parameters */}
-        <div className="space-y-4">
-          <h2 className="text-sm font-bold text-slate-900 pb-2 border-b border-slate-100">
-            2. Reference Marker & Scale Calibration
-          </h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Reference Marker Physical Size (mm)
-              </label>
-              <input
-                type="number"
-                step="0.5"
-                value={markerSizeMm}
-                onChange={(e) => setMarkerSizeMm(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500/20"
-              />
-              <span className="text-[11px] text-slate-400">
-                Standard ArUco physical square side length (default 50.0 mm).
-              </span>
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                ArUco Dictionary Family
-              </label>
-              <select
-                value={dictionary}
-                onChange={(e) => setDictionary(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500/20"
-              >
-                <option value="DICT_4X4_50">ArUco 4×4 (50 markers) — Recommended</option>
-                <option value="DICT_5X5_50">ArUco 5×5 (50 markers)</option>
-                <option value="DICT_6X6_50">ArUco 6×6 (50 markers)</option>
-              </select>
-              <span className="text-[11px] text-slate-400">
-                Corresponds to the printed calibration card pattern.
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Section 3: Camera Capture Hardware */}
-        <div className="space-y-4">
-          <h2 className="text-sm font-bold text-slate-900 pb-2 border-b border-slate-100">
-            3. Camera & Capture Stream Preferences
-          </h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Preferred Stream Resolution
-              </label>
-              <select
-                value={cameraRes}
-                onChange={(e) => setCameraRes(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs sm:text-sm text-slate-900 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500/20"
-              >
-                <option value="1080p">1080p Full HD (1920 × 1080) — Best for Character OCR</option>
-                <option value="720p">720p HD (1280 × 720) — High Performance</option>
-                <option value="480p">480p Standard (640 × 480)</option>
-              </select>
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Facing Mode Constraint
-              </label>
-              <div className="px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-700">
-                Progressive cascade: <code>facingMode: environment</code> with automatic fallback to desktop webcam.
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Save CTA */}
-        <div className="pt-4 border-t border-slate-200 flex justify-end">
-          <button
-            type="submit"
-            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-xs transition-colors shadow-sm"
-          >
-            Save Settings
-          </button>
-        </div>
-      </form>
+      </Card>
     </div>
   );
 }

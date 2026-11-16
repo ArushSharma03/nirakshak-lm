@@ -1,26 +1,149 @@
 @import "tailwindcss";
 
+/*
+ * Nirikshak-LM console. Slate structure, one muted blue accent for brand, navigation
+ * and the primary action. Amber, rose and emerald appear only to report state.
+ */
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
+
+  /* Surfaces and text (Tailwind slate) */
+  --color-ground: #f8fafc;
+  --color-sheet: #ffffff;
+  --color-ink: #0f172a;
+  --color-ink-2: #475569;
+  --color-ink-3: #64748b;
+  --color-rule: #e2e8f0;
+  --color-rule-strong: #cbd5e1;
+
+  /* Navigation rail */
+  --color-rail: #0f172a;
+  --color-rail-2: #1e293b;
+  --color-rail-line: #1e293b;
+
+  /* Action and link accent */
+  --color-accent: #365c70;
+  --color-accent-deep: #284654;
+  --color-accent-wash: #f1f5f7;
+  --color-accent-soft: #cad8df;
+
+  /* State only */
+  --color-warn: #92400e;
+  --color-warn-wash: #fffbeb;
+  --color-danger: #be123c;
+  --color-danger-wash: #fff1f2;
+  --color-ok: #047857;
+  --color-ok-wash: #ecfdf5;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html,
+body {
+  background: var(--color-ground);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+::selection {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--color-ink-3);
+}
+
+[id] {
+  scroll-margin-top: 5rem;
+}
+
+/* Machine identities and raw text only: serials, hashes, transcripts, pixel values. */
+.serial {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@media print {
+  html,
+  body {
+    background: #fff;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Width and gutters belong to the shell; pages only arrange their content. */
+.page-container {
+  width: 100%;
+  max-width: 80rem;
+  min-width: 0;
+  margin-inline: auto;
+  padding-inline: 1rem;
 }
+
+.page-stack {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.page-stack > * {
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .page-container { padding-inline: 1.5rem; }
+}
+
+@media (min-width: 768px) {
+  .page-container { padding-inline: 2rem; }
+}
+
+.page-stack :where(.grid) > * {
+  min-width: 0;
+}
+
+.page-stack :where(p, blockquote, h1, h2, h3, .serial) {
+  overflow-wrap: anywhere;
+}
+
+/* Reserve the same scrollbar space on short and long pages and in the top bar. */
+#main, .shell-header {
+  scrollbar-gutter: stable;
+}
+.shell-header { overflow-y: auto; }
+@media print {
+  #main, .shell-header { scrollbar-gutter: auto; }
+}
+
+.topbar-page:has(.topbar-slot > *) .topbar-fallback { display: none; }
+.topbar-slot:empty { display: none; }
+
+/* Wrap according to space beside the sidebar, not the viewport breakpoint. */
+.topbar-slot {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .75rem 1rem;
+}
+.topbar-title { flex: 1 1 22rem; }
+.topbar-actions { flex: 0 1 auto; }
+.topbar-actions > * { max-width: 100%; }
+.shell-header { overflow-x: clip; }

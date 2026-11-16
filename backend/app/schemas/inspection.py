@@ -97,7 +97,7 @@ class InspectionRecordResponse(BaseModel):
     product_category: str
     brand: str
     declared_net_qty: str
-    declared_mrp: float
+    declared_mrp: float | None
     location: Optional[str] = None
     inspector_name: str
     status: str

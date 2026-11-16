@@ -215,7 +215,21 @@ def client(tmp_path, monkeypatch):
     return TestClient(app)
 
 
-def test_http_capture_analyze_reload_and_retake(client):
+@pytest.mark.parametrize("mrp", [None, 0, 25.5])
+def test_blank_setup_stays_blank_and_zero_price_survives_reload(client, mrp):
+    response = client.post("/inspections/", json={"product_name": "Wrapper sample", "declared_mrp": mrp})
+    assert response.status_code == 201
+    record = response.json()
+    assert record["declared_mrp"] == mrp
+    assert all(record[key] == "" for key in ("brand", "declared_net_qty", "location", "inspector_name"))
+    assert client.get(f"/inspections/{record['id']}").json() == record
+
+
+def test_http_capture_analyze_reload_and_retake(client, monkeypatch):
+    from app.services import ocr
+    # Keep this persistence test independent of heavyweight model availability.
+    monkeypatch.setattr(ocr, "xiaomi_ocr", lambda _: OCRResult(provider="xiaomi", model="test", status="ok",
+        lines=[OCRLine(text="Net quantity: 100 g")]))
     record = client.post("/inspections/", json={"product_name": "Cookies"}).json()
     inspection_id = record["id"]
     assert client.post(f"/inspections/{inspection_id}/analyze", json={"as_of": "2026-11-06"}).status_code == 409

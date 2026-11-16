@@ -1,0 +1,349 @@
+{
+  "schema_version": 1,
+  "retrieved_on": "2026-11-12",
+  "jurisdiction": "India",
+  "purpose": "Research index for source provenance and scope. Not a compliance determination or consolidated legal text.",
+  "rule_files": [
+    {
+      "path": "rules/food_grocery.json",
+      "profile_id": "lmpc-food-grocery",
+      "category": "food_grocery",
+      "declared_status": "MVP declaration inventory; historical amendments and exceptions need qualified legal review before enforcement use.",
+      "mapped_sources": [
+        "lmpc-pcr-2011",
+        "fssai-labelling-display-2020"
+      ],
+      "coverage": [
+        {
+          "rule_ids": [
+            "manufacturer",
+            "generic-name",
+            "net-quantity",
+            "manufacture-date",
+            "retail-price",
+            "consumer-care",
+            "import-origin"
+          ],
+          "references": [
+            "lmpc-pcr-2011",
+            "fssai-labelling-display-2020"
+          ],
+          "status": "partial-crosswalk",
+          "note": "The profile cites Legal Metrology Rule 6(1)/6(2). For food packages the Rules contain express interactions/substitutions with FSSAI law; fields and wording require clause-by-clause validation. No field should be treated as universally applicable from this index."
+        }
+      ],
+      "known_limitations": [
+        "The profile is a draft and has not been legally validated.",
+        "It contains only Legal Metrology citations and no FSSAI-specific food declaration rules.",
+        "Its 2011-base versions do not encode the amendment history or conditional exceptions.",
+        "It does not represent display-at-premises obligations, e-commerce presentation, product-specific standards, or all package types."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "lmpc-pcr-2011",
+      "title": "Legal Metrology (Packaged Commodities) Rules, 2011",
+      "publisher": "Department of Consumer Affairs, Ministry of Consumer Affairs, Food and Public Distribution, Government of India",
+      "official_index_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act",
+      "reference_text_url": "https://consumeraffairs.gov.in/public/upload/admin/cmsfiles/whatsnews/Book_on_Legal_Metrology_Packaged_Commodities_Rules%2C2011_with_all_amendments_whatsnews.pdf",
+      "reference_text_title": "The Legal Metrology (Packaged Commodities) Rules, 2011 with all amendments (cover states 9 May 2022)",
+      "retrieved_on": "2026-11-12",
+      "sections_reviewed": [
+        "Rule 1",
+        "Rule 6(1)(a)-(da)",
+        "Rule 6(2)",
+        "Rule 26",
+        "Rule 24"
+      ],
+      "verified_requirements": [
+        "Rule 6(1) calls for package declarations; the reviewed text includes responsible business details, origin for imported products, commodity identity, net quantity and date declarations, subject to its provisos and interactions with other law.",
+        "Rule 6(2) addresses consumer complaint contact particulars.",
+        "Rule 24 gives declarations for wholesale packages.",
+        "Rule 26 contains exemptions and exclusions; those are conditional and package/product-specific."
+      ],
+      "applicability_and_exemptions": "The Rules concern packaged commodities, including retail and wholesale package provisions. Food-package-specific provisions refer to the Food Safety and Standards Act and rules/regulations. Rule 26 lists exceptions (including specified small quantities, restaurant/hotel fast food, and certain drug-related packages in the reviewed text); the exact in-force scope must be checked against subsequent amendments and product facts.",
+      "consolidation_status": "Reference compilation is dated 9 May 2022. Browser inspection on 2026-11-12 found later Packaged Commodities notifications through 13 February 2026. Their operative effects have not been reconciled; this is not a current consolidated legal text.",
+      "amendment_index_url": "https://consumeraffairs.gov.in/pages/legal-metrology-act",
+      "verification_notes": "Parent browser review confirmed 36 Packaged Commodities document links on the official index. Prior research claims of 29 May and 21 September 2026 amendments were not confirmed and have been removed. Document titles and links are indexed separately; listing does not prove commencement."
+    },
+    {
+      "id": "fssai-labelling-display-2020",
+      "title": "Food Safety and Standards (Labelling and Display) Regulations, 2020",
+      "publisher": "Food Safety and Standards Authority of India (FSSAI), Government of India",
+      "official_index_url": "https://www.fssai.gov.in/food-law/regulations/amendments/labelling-display",
+      "reference_text_url": "https://www.fssai.gov.in/docs/food-law/regulations/Comp_Labelling%20Display_Version%20VIII_09_09_2025.pdf",
+      "reference_text_title": "Version VIII, dated 9 September 2025",
+      "retrieved_on": "2026-11-12",
+      "sections_reviewed": [
+        "Regulation 1",
+        "Regulation 2(r)",
+        "Regulation 4(1)-(8)",
+        "Regulation 5"
+      ],
+      "verified_requirements": [
+        "Regulation 1 describes requirements for pre-packaged food labels and essential information displayed at premises where food is manufactured, processed, served and stored.",
+        "Regulation 4 covers general label requirements, including online pre-sale access to mandatory label information with listed date/lot exceptions, legibility, language and wrappers.",
+        "Regulation 5 introduces itemized information required on food labels, starting with true name of food and ingredient list, with exceptions and detailed clauses in the text."
+      ],
+      "applicability_and_exemptions": "The reviewed regulations define pre-packaged food at Regulation 2(r) and apply Chapter 2 labelling to pre-packaged foods subject to 'unless otherwise provided' language and clause-specific exceptions. Other chapters cover display obligations at specified premises. Product, package size, food category and sales channel can alter declarations; inspect the relevant provision and schedules.",
+      "consolidation_status": "The official FSSAI page identifies the 2020 regulations and an amendments index. The reviewed compendium is Version VIII (09.09.2025). The official amendments page surfaced a later amendment dated 24 March 2026 in search results, but a consolidated post-amendment text and exact operative changes were not verified here. Thus the 2025 compendium is not represented as current consolidated law.",
+      "amendment_index_url": "https://www.fssai.gov.in/food-law/regulations/amendments/labelling-display",
+      "verification_notes": "Parent T3 browser inspection confirmed the five amendment entries and exact download links, including 24 March 2026. Notification effects and commencement remain unverified."
+    }
+  ],
+  "unknowns": [
+    "Whether each named later amendment is in force for a particular as-of date, given commencement clauses or extensions.",
+    "A complete current consolidated text for either regime, reconciled against every Gazette amendment through 2026-11-12.",
+    "Whether a particular food product/package qualifies for an exception, sector-specific rule, or state/local requirement.",
+    "Whether each draft profile field is correctly framed for all food categories, imports, package sizes and sales channels."
+  ],
+  "documents": [
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) Rules, 2011 (2.28 MB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/8_1732871406.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) (Amendment) Rules, 2011 (497.72 KB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/8(i)_0_1732860957.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) Second Amendment Rules, 2011 (388.65 KB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/8(ii)_0_1732860982.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) Third Amendment Rules, 2011 (2.23 MB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/8(iii)_0_1732861046.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download Corrigendum- The Legal Metrology (Packaged Commodities) Third Amendment Rules, 2011 (388.87 KB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/corrigendum_PCR_0_0_1732860695.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download Guidelines For Implementation of the Legal Metrology Act, 2009 and the Legal Metrology (Packaged Commodities) Rules, 2011 dated 29.04.11 (610.35 KB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/advisory_pcr(1)_0%20(1)_1732860898.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download Guidelines For Implementation of the Legal Metrology Act, 2009 and the Legal Metrology (Packaged Commodities) Rules, 2011 dated 30.09.11 (437.04 KB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/guidelines%20dt%2030_9_2011%20for%20PCR(1)_0%20(1)_1732860774.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) Amendment Rules, 2012 (8.71 MB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/8(v)_0_1732861119.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) (Second Amendment) Rules, 2012 (1.71 MB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/8(vi)_0_1732861153.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) Amendment Rules, 2013 (633.16 KB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/8(vii)_0_1732861181.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) (Amendment) Rules, 2014 (373.50 KB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/8(viii)_0%20(1)_1732870622.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) (Second Amendment) Rules, 2014 (248.83 KB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/8(ix)_0_1732870718.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) (Amendment) Rules, 2015; (739.69 KB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/8(x)_0_1732870750.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) (Amendment) Rules, 2016 (885.70 KB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/8(xi)_0_1732871315.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) Rules,2011- Advisory for enforcement of provisions of Rules for Readymade Garments/ Hosiery products (544.66 KB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/LM_Advisory_for_Readymade_Garments_0_1732710356.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) (Amendment) Rules, 2017 (1.30 MB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/8(xii)_0_1732871346.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download Corrigendum- The Legal Metrology (Packaged Commodities) Amendment, Rules, 2017 (1.47 MB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/8(xiii)_0_1732871373.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) Amendment Rule, 2021 (1.36 MB)",
+      "url": "https://consumeraffairs.gov.in/public/upload/files/230946_1732871433.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) Amendment Rules, 2022 dated 28.03.2022 (1.11 MB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/GSR226_1732871458.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) (Second Amendment) Rules, 2022 (976.09 KB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/Notification%20-%20%20Legal%20Metrology%20(QR%20Code)_1732871487.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) (Third Amendment) Rules, 2022 (1.01 MB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/2022%203rd%20amendment%20in%20PCR%20Garments_1733228786.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) Amendment (Amendment) Rules, 2022. (815.05 KB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/PCR_1732871549.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) (Amendment) Rules, 2022 dated 30.11.2022 (699.10 KB)",
+      "url": "https://consumeraffairs.gov.in/public/upload/files/eGazette_30_nov_22_1732871630_1746006280.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) Amendment (Amendment) Rules, 2023 dated 27.01.2023 (764.45 KB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/2023.01.27%20amendment%20in%20amendment%20of%202023%20PCR_1732871665.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download Advisory On Packages of agriculture farm produce upto 50kg under the Legal Metrology (Packaged Commodities) Rule, 2011 dated 06.03.2023 (339.20 KB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/2023.3.6%20farm%20produce%20upto%2050%20kg%20as%20per%20PCR_1732871747.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) Amendment (Amendment) Rules, 2023 dated 24.03.2023 (1.54 MB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/PCR_Amendment_24March2023_1732871698.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) (Amendment) Rules, 2023 dated 05.06.2023 (862.85 KB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/2023.06.5%20amendment%20in%20amendment%20of%20PCR%20ext%20till%2030.6.2023_1732871791.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) (Amendment) Rules, 2023 dated 23.06.2023 (1.04 MB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/2023.6.23%20QR%20Code%20PCR%20amendment_1732871827.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) (Amendment) Rules, 2023 dated 28.06.2023 (537.23 KB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/2023.6.28%20amendment%20in%20amendment%20of%20PCR%20ext%20till%2031.8.2023_1733228263.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download Provisions of the Legal Metrology (Packaged Commodities) Rules,2011 on Medical Devices dated 10.07.2023 (402.28 KB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/2023.7.10%20Medical%20Devices%20revision%20of%20prices_1733228304.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) (Amendment) Rules, 2023 dated 30.08.2023 (461.24 KB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/248432_1732871904.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) (Amendment) Rules, 2023 dated 30.09.2023 (883.68 KB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/Amendment%20of%20PCR%20ext%20till%2031.12.2023%20(1)_1732871950.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) (Amendment) Rules, 2023 dated 06.10.2023 (1.15 MB)",
+      "url": "http://consumeraffairs.gov.in/public/upload/files/2023.10.6%20amendment%20in%20PCR_1732871982.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) (Amendment) Rules, 2025 dated 24.10.2025 (1.19 MB)",
+      "url": "https://consumeraffairs.gov.in/public/upload/files/267107_1761404707.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) Second (Amendment) Rules, 2025. 02.12.2025 (536.58 KB)",
+      "url": "https://consumeraffairs.gov.in/public/upload/files/2nd%20PCR%20Pan%20Masala_1764736734.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "lmpc-pcr-2011",
+      "title": "Download The Legal Metrology (Packaged Commodities) (Amendment) Rules, 2026 dated 13.02.2026 (640.95 KB)",
+      "url": "https://consumeraffairs.gov.in/public/upload/files/2026.02.13%20PCR%201st%20COO%20Filter%20on%20e-commerce%20websites_1771231030.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "fssai-labelling-display-2020",
+      "title": "No. 110th September 2021PDF (1.06 MB)",
+      "url": "https://www.fssai.gov.in/docs/food-law/regulations/amendments/labelling-display/Gazette_Notification_Oil_Sweetner_16_09_2021.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "fssai-labelling-display-2020",
+      "title": "No. 29th September 2022PDF (0.97 MB)",
+      "url": "https://www.fssai.gov.in/docs/food-law/regulations/amendments/labelling-display/Gazette_Notification_FSS_Label_12_09_2022.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "fssai-labelling-display-2020",
+      "title": "No. 311th October 2022PDF (1.06 MB)",
+      "url": "https://www.fssai.gov.in/docs/food-law/regulations/amendments/labelling-display/Gazette_Notification_Labelling_14_10_2022.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "fssai-labelling-display-2020",
+      "title": "No. 48th August 2025PDF (1.96 MB)",
+      "url": "https://www.fssai.gov.in/docs/food-law/regulations/amendments/labelling-display/coffee%20chicory_gazette.pdf",
+      "verification_status": "listed_on_official_index"
+    },
+    {
+      "source_id": "fssai-labelling-display-2020",
+      "title": "No. 524th March 2026PDF (0.85 MB)",
+      "url": "https://www.fssai.gov.in/docs/food-law/regulations/amendments/labelling-display/Notification%20dt%2024_03_2026_NRC.pdf",
+      "verification_status": "listed_on_official_index"
+    }
+  ]
+}

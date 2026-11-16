@@ -29,18 +29,6 @@ export interface PackageViewsState {
   side: boolean;
 }
 
-export interface RuleCheckResult {
-  ruleId: string;
-  ruleCode: string;
-  title: string;
-  statutoryCitation: string;
-  status: "verified" | "violated" | "requires_review";
-  extractedValue?: string;
-  expectedRequirement?: string;
-  confidence: number; // 0.0 - 1.0
-  notes?: string;
-}
-
 export type QualityStatus = "Pass" | "Warning" | "Retake Recommended";
 
 export interface QualityMetricItem {
@@ -93,6 +81,7 @@ export interface InspectionImageView {
   view_type: string;
   filename?: string;
   filepath?: string;
+  originalFilename?: string;
   previewUrl?: string;
   processedUrl?: string;
   file_hash?: string;
@@ -106,66 +95,28 @@ export interface InspectionImageView {
 }
 
 export interface InspectionRecord {
-  id: string; // e.g. "INS-2026-0042"
+  id: string;
   productName: string;
   productCategory: ProductCategory;
+  /** Setup metadata typed by the inspector (or a server placeholder); never read from the label. */
   brand: string;
   declaredNetQty: string;
-  declaredMRP: number;
+  declaredMRP: number | null;
   location?: string;
   inspectorName: string;
+  notes: string;
   timestamp: string;
   status: InspectionStatus;
   outcome: ComplianceOutcome;
   viewsCaptured: PackageViewsState;
   markerDetected: boolean;
-  scalePpm: number | null; // Pixels per millimeter
-  violationsCount: number;
-  checksPassed: number;
-  totalChecks: number;
-  isMock: boolean;
-  databaseSaved?: boolean;
-  mode?: string;
-  images?: Record<string, InspectionImageView>;
-  ruleResults?: RuleCheckResult[];
+  scalePpm: number | null;
+  databaseSaved: boolean;
+  images: Record<string, InspectionImageView>;
   analysis?: import("@/lib/analysis").Analysis;
-}
-
-export interface ComplianceRule {
-  id: string;
-  ruleCode: string; // e.g. "Rule 6(1)(a)"
-  title: string;
-  description: string;
-  statutoryCitation: string;
-  category: "declaration" | "dimension" | "consumer_care" | "pricing";
-  mandatory: boolean;
-  summaryRequirement: string;
-}
-
-export interface ProductRecord {
-  id: string;
-  name: string;
-  category: ProductCategory;
-  brand: string;
-  declaredNetQty: string;
-  dimensions: string;
-  sampleBarcode: string;
-  verifiedStandard: string;
-  activeInspectionsCount: number;
-}
-
-export interface AnalyticsSummary {
-  totalInspections: number;
-  complianceRate: number;
-  potentialViolations: number;
-  manualReviewQueue: number;
-  categoryDistribution: Record<ProductCategory, number>;
-  topViolations: { rule: string; count: number }[];
 }
 
 export interface SystemStatus {
   isLive: boolean;
   backendVersion?: string;
-  databaseAvailable: boolean;
-  mode: "Live Backend" | "Demonstrator Mode";
 }

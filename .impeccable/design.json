@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-12T17:00:00Z",
+  "title": "Design System: Nirikshak-LM",
+  "extensions": {
+    "colorMeta": {
+      "accent": {
+        "role": "primary",
+        "displayName": "Teal"
+      },
+      "rail": {
+        "role": "neutral",
+        "displayName": "Slate Rail"
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Slate 50"
+      },
+      "sheet": {
+        "role": "neutral",
+        "displayName": "White"
+      },
+      "warn": {
+        "role": "state",
+        "displayName": "Amber"
+      },
+      "danger": {
+        "role": "state",
+        "displayName": "Rose"
+      },
+      "ok": {
+        "role": "state",
+        "displayName": "Emerald"
+      }
+    },
+    "shadows": [
+      {
+        "name": "card",
+        "value": "0 1px 2px rgb(15 23 42 / 0.04)"
+      }
+    ],
+    "motion": [],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Filled teal action.",
+      "html": "<button class=\"ds-btn-primary\">New inspection</button>",
+      "css": ".ds-btn-primary{background:#0f766e;color:#fff;min-height:40px;padding:0 16px;border:0;border-radius:8px;font:600 14px/1 ui-sans-serif,system-ui,sans-serif}.ds-btn-primary:hover{background:#115e59}"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "badge",
+      "description": "Pill with state dot; amber/rose/emerald report state only.",
+      "html": "<span class=\"ds-badge\"><i></i>Manual review</span>",
+      "css": ".ds-badge{display:inline-flex;align-items:center;gap:6px;border:1px solid #fde68a;background:#fffbeb;color:#92400e;border-radius:9999px;padding:2px 8px;font:500 12px ui-sans-serif,system-ui}.ds-badge i{width:6px;height:6px;border-radius:9999px;background:#f59e0b}"
+    },
+    {
+      "name": "Card",
+      "kind": "surface",
+      "refersTo": "card",
+      "description": "White card with header row.",
+      "html": "<section class=\"ds-card\"><h2>Recent inspections</h2></section>",
+      "css": ".ds-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 1px 2px rgb(15 23 42/.04);padding:16px 20px}.ds-card h2{font:600 14px ui-sans-serif,system-ui;color:#0f172a;margin:0}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Evidence Bag",
+    "overview": "Each inspection is a sealed evidence bag with a serial and a custody log of who read what from which photo. Light, flat, one ink; state colours report state only.",
+    "keyCharacteristics": [
+      "White poly sheets on a cool ground",
+      "One custody-blue ink",
+      "Dashed tear lines and empty slots",
+      "Mono only for data",
+      "Outlined stamps for status"
+    ],
+    "rules": [
+      {
+        "name": "The State-Only Rule",
+        "body": "Amber, red and green only report state.",
+        "section": "colors"
+      },
+      {
+        "name": "The No-Verdict Rule",
+        "body": "Never green or compliant language for outcomes the system cannot establish.",
+        "section": "colors"
+      },
+      {
+        "name": "The Mono-Is-Data Rule",
+        "body": "Monospace is for serials, hashes, transcripts and measurements only.",
+        "section": "typography"
+      }
+    ],
+    "dos": [
+      "Show evidence beside every reading",
+      "Show offline and empty states plainly"
+    ],
+    "donts": [
+      "No sample or cached data",
+      "No shadows or gradients",
+      "No government letterhead imitation"
+    ]
+  }
+}
