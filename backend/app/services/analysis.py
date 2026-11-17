@@ -5,6 +5,7 @@ import hashlib
 from app.schemas.analysis import Analysis, AnalysisRequest, DecisionResult, ProfileRequest, ViewAnalysis
 from app.engine.profiles import select_profile
 from app.services.calibration import calibrate
+from app.services.checks import check_declarations
 from app.services.decision import judge_fields
 from app.services.extraction import canonical, extract, fuse
 from app.services.marker_detector import detect_marker
@@ -67,4 +68,5 @@ def analyze_record(record: dict, request: AnalysisRequest) -> Analysis:
         decision = DecisionResult.model_validate(old_decision)
     else:
         decision = judge_fields(fields)
-    return Analysis(views=views, fields=fields, profile=profile, warnings=warnings, decision=decision)
+    checks = check_declarations(profile, fields, views, record.get("images", {}))
+    return Analysis(version="1.1.0", views=views, fields=fields, profile=profile, warnings=warnings, decision=decision, checks=checks)

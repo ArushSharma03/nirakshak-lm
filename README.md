@@ -28,14 +28,17 @@ It is **not** an autonomous legal authority. All outcomes are advisory and must 
 
 ## Current Implementation Status
 
-Implemented through week 8: capture, image quality, planar calibration, OCR,
+Implemented pipeline through week 8: capture, image quality, planar calibration, OCR,
 anchored English/Hindi extraction, spatial continuation, multi-view fusion and
 versioned category/origin/date profile selection. Retakes invalidate analysis.
 The UI shows actual source evidence and optional Jev suggestions.
 
 The initial food/grocery rules are drafts requiring legal review. Other categories
-return unsupported. Weeks 9–11 legal checks, classification and report export are
-outside this milestone. See [setup and limitations](docs/week-8-usage.md),
+return unsupported. Week 9 now adds deterministic evidence checks, saved-OCR
+rechecking and source-linked results in reports. Missing geometry, verified
+thresholds or applicability produce insufficient evidence. See
+[Week 9 checks and limits](docs/week-9-checks.md). Weeks 10–11 classification
+and automated report export remain pending. See [setup and limitations](docs/week-8-usage.md),
 [model selection](docs/model-selection.md) and [validation](docs/completion-record.md).
 
 ---

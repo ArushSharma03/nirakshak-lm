@@ -69,7 +69,7 @@ export default function AnalysisEvidence({ analysis }: { analysis: Analysis }) {
                             {item.height_mm !== null && (
                               <>
                                 <span aria-hidden="true">·</span>
-                                <span>Line box ≈ {item.height_mm} mm tall</span>
+                                <span>Line box ≈ {item.height_mm.toFixed(3)} mm tall</span>
                               </>
                             )}
                           </p>

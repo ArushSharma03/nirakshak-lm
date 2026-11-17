@@ -59,6 +59,7 @@ class Candidate(BaseModel):
     box: Box | None = None
     confidence: float | None = None
     height_mm: float | None = None
+    glyph_box: Box | None = Field(default=None, description="Inspector-selected single-glyph bounds in original-image pixels; separate from OCR line geometry.")
 
 
 class FusedField(BaseModel):
@@ -85,6 +86,9 @@ class Rule(BaseModel):
     effective_to: date | None = None
     origins: list[Literal["domestic", "imported"]]
     source_url: str
+    required_view: View | None = None
+    minimum_glyph_height_mm: float | None = Field(default=None, gt=0)
+    constraints_verified: bool = False
 
 
 class Profile(BaseModel):
@@ -102,6 +106,26 @@ class AnalysisRequest(BaseModel):
     as_of: date
     coplanar_views: list[View] = Field(default_factory=list)
     use_jev: bool = False
+
+
+class GlyphMeasurement(BaseModel):
+    field: FieldName
+    view: View
+    box: Box
+
+
+class CheckRequest(BaseModel):
+    origin: Literal["domestic", "imported", "unknown"] | None = None
+    as_of: date | None = None
+    glyph_measurements: list[GlyphMeasurement] = Field(default_factory=list)
+    clear_glyph_measurements: bool = False
+
+    @model_validator(mode="after")
+    def unique_glyph_annotations(self):
+        keys = [(m.field, m.view) for m in self.glyph_measurements]
+        if len(keys) != len(set(keys)):
+            raise ValueError("Provide one glyph annotation per declaration and view.")
+        return self
 
 
 class DecisionAnswer(BaseModel):
@@ -125,6 +149,28 @@ class ViewAnalysis(BaseModel):
     ocr: list[OCRResult]
 
 
+CheckKind = Literal["presence", "completeness", "units", "consistency", "placement", "readability", "character_height"]
+
+
+class DeclarationCheck(BaseModel):
+    rule_id: str
+    field: FieldName
+    kind: CheckKind
+    status: Literal["pass", "fail", "insufficient_evidence", "not_applicable"]
+    reason: str
+    citation: str
+    source_url: str
+    evidence: list[Candidate] = Field(default_factory=list)
+    measured_mm: float | None = None
+    required_mm: float | None = None
+
+
+class CheckReport(BaseModel):
+    version: str = "1.0.0"
+    scope: str = "Deterministic screening of unverified OCR evidence against a draft profile. A pass is not a legal compliance finding."
+    results: list[DeclarationCheck] = Field(default_factory=list)
+
+
 class Analysis(BaseModel):
     version: str = "1.0.0"
     views: dict[View, ViewAnalysis]
@@ -132,3 +178,4 @@ class Analysis(BaseModel):
     profile: Profile
     warnings: list[str]
     decision: DecisionResult
+    checks: CheckReport | None = None

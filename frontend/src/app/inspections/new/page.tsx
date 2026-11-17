@@ -54,7 +54,7 @@ export default function NewInspectionPage() {
 
       <form onSubmit={handleSubmit} className="overflow-hidden rounded-xl border border-rule bg-sheet shadow-[0_1px_2px_rgb(15_23_42/0.04)]">
         <fieldset className="grid gap-5 p-5 sm:grid-cols-2">
-          <legend className="float-left mb-1 w-full text-sm font-semibold text-ink">Package</legend>
+          <legend className="float-left mb-1 w-full text-sm font-semibold text-ink sm:col-span-2">Package</legend>
           <label className="block text-sm font-medium sm:col-span-2">
             Package name
             <input required value={productName} onChange={(e) => setProductName(e.target.value)} placeholder="e.g. Parle-G biscuits 70 g, shelf sample 2" className={inputClass} />
@@ -80,7 +80,7 @@ export default function NewInspectionPage() {
         <hr className="border-rule" />
 
         <fieldset className="grid gap-5 p-5 sm:grid-cols-2">
-          <legend className="float-left mb-1 w-full text-sm">
+          <legend className="float-left mb-1 w-full text-sm sm:col-span-2">
             <span className="font-semibold text-ink">Optional setup notes</span>
             <span className="block text-ink-3">
               For your reference only. Leave anything you have not checked blank. These values are separate from photo evidence.

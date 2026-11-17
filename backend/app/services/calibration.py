@@ -27,11 +27,12 @@ def calibrate(marker: MarkerDetectionResult, coplanar: bool) -> Calibration:
 
 
 def physical_height(box: Box | None, calibration: Calibration) -> float | None:
-    """Estimate a text-line box height, not a legal glyph-height measurement."""
+    """Map box height into the marker plane; the caller identifies line or glyph."""
     if box is None or calibration.homography is None:
         return None
     corners = np.array([[[box.x0, box.y0], [box.x1, box.y0],
-                         [box.x1, box.y1], [box.x0, box.y1]]], dtype=np.float32)
+                         [box.x1, box.y1], [box.x0, box.y1]]], dtype=np.float64)
     mapped = cv2.perspectiveTransform(corners, np.array(calibration.homography))[0]
     height = float((np.linalg.norm(mapped[3] - mapped[0]) + np.linalg.norm(mapped[2] - mapped[1])) / 2)
-    return round(height, 3) if np.isfinite(height) else None
+    # Threshold decisions need unrounded geometry; presentation may round separately.
+    return height if np.isfinite(height) else None

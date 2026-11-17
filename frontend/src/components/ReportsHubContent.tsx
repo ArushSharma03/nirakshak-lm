@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import AnalysisEvidence from "@/components/AnalysisEvidence";
+import DeclarationChecks from "@/components/DeclarationChecks";
 import { LoadError, useInspections } from "@/components/InspectionLedger";
 import { ButtonLink, Field, Icon, Loading, Notice, Badge, buttonClass, qualityTone, type Tone } from "@/components/ui";
 import { CATEGORY_LABEL, VIEWS, VIEW_LABEL, capturedViews, formatDate, storageLabel } from "@/lib/format";
@@ -75,6 +76,7 @@ export default function ReportsHubContent({ inspectionId: urlId }: { inspectionI
 
 function Report({ record }: { record: InspectionRecord }) {
   const [plate, setPlate] = useState<"raw" | "processed">("raw");
+  const [analysis, setAnalysis] = useState(record.analysis);
   const views = capturedViews(record);
   const anyProcessed = views.some((v) => record.images[v]?.processedUrl);
 
@@ -169,8 +171,11 @@ function Report({ record }: { record: InspectionRecord }) {
         <p className="text-xs text-ink-3">The optical score rates the original photo&rsquo;s sharpness, exposure, contrast, glare and resolution. It is not OCR accuracy and says nothing about compliance.</p>
       </section>
 
-      {record.analysis ? (
-        <AnalysisEvidence analysis={record.analysis} />
+      {analysis ? (
+        <>
+          <DeclarationChecks id={record.id} analysis={analysis} onUpdate={setAnalysis} />
+          <AnalysisEvidence analysis={analysis} />
+        </>
       ) : (
         <Notice
           tone="warn"

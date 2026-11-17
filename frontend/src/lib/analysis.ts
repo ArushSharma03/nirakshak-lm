@@ -8,6 +8,7 @@ const line = z.object({ text: z.string(), box: box.nullable(), confidence: proba
 const candidate = z.object({
   field: fieldName, value: z.string(), view, provider: z.string(), source_text: z.string(),
   box: box.nullable(), confidence: probability.nullable(), height_mm: z.number().nullable(),
+  glyph_box: box.nullable().optional(),
 });
 export const profileInputsSchema = z.object({
   category: z.enum(["food_grocery", "beverage", "personal_care", "household"]),
@@ -17,6 +18,8 @@ export const ruleSchema = z.object({
   id: z.string(), version: z.string(), citation: z.string(), field: fieldName,
   requirement: z.string(), effective_from: z.string(), effective_to: z.string().nullable(),
   origins: z.array(z.enum(["domestic", "imported"])), source_url: z.string(),
+  required_view: view.nullable().optional(), minimum_glyph_height_mm: z.number().positive().nullable().optional(),
+  constraints_verified: z.boolean().optional(),
 });
 export const profileSchema = z.object({
   status: z.enum(["selected", "review_required", "unsupported"]), id: z.string().nullable(),
@@ -39,6 +42,16 @@ export const analysisSchema = z.object({
   })),
   fields: z.array(z.object({ field: fieldName, status: z.enum(["observed", "conflict", "missing"]), value: z.string().nullable(), evidence: z.array(candidate), reason: z.string() })),
   profile: profileSchema, warnings: z.array(z.string()),
+  checks: z.object({
+    version: z.string(), scope: z.string(),
+    results: z.array(z.object({
+      rule_id: z.string(), field: fieldName,
+      kind: z.enum(["presence", "completeness", "units", "consistency", "placement", "readability", "character_height"]),
+      status: z.enum(["pass", "fail", "insufficient_evidence", "not_applicable"]), reason: z.string(),
+      citation: z.string(), source_url: z.string(), evidence: z.array(candidate),
+      measured_mm: z.number().nullable(), required_mm: z.number().nullable(),
+    })),
+  }).nullable().optional(),
   decision: z.object({
     status: z.enum(["ok", "unavailable", "failed", "not_needed"]), model: z.string(), message: z.string(),
     answers: z.record(z.string(), z.object({ type: z.literal("choice"), choice: z.string(), confidence: probability, probabilities: z.record(z.string(), probability) })),
@@ -75,6 +88,13 @@ async function checkedResponse(response: Response): Promise<unknown> {
 
 export async function analyzeInspection(id: string, input: Omit<ProfileInputs, "category"> & { coplanar_views: View[]; use_jev: boolean }): Promise<Analysis> {
   const response = await fetch(`${API_BASE}/inspections/${encodeURIComponent(id)}/analyze`, {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input),
+  });
+  return z.object({ analysis: analysisSchema }).parse(await checkedResponse(response)).analysis;
+}
+
+export async function checkInspection(id: string, input: Omit<ProfileInputs, "category"> & { glyph_measurements?: { field: z.infer<typeof fieldName>; view: View; box: z.infer<typeof box> }[]; clear_glyph_measurements?: boolean }): Promise<Analysis> {
+  const response = await fetch(`${API_BASE}/inspections/${encodeURIComponent(id)}/checks`, {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input),
   });
   return z.object({ analysis: analysisSchema }).parse(await checkedResponse(response)).analysis;

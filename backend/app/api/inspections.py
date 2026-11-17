@@ -18,6 +18,9 @@ from fastapi import APIRouter, File, Form, UploadFile, HTTPException, Response, 
 from fastapi.responses import FileResponse
 
 from app.schemas.inspection import InspectionCreate, InspectionRecordResponse
+from app.schemas.analysis import Analysis, CheckRequest, ProfileRequest
+from app.engine.profiles import select_profile
+from app.services.checks import check_declarations
 from app.services.inspection_store import (
     create_inspection_record,
     get_inspection_record,
@@ -153,6 +156,49 @@ def analyze_inspection(inspection_id: str, request: AnalysisRequest):
     except FileNotFoundError:
         raise HTTPException(status_code=409, detail="Stored image missing. Retake the affected view.")
     except ValueError as error:
+        raise HTTPException(status_code=409, detail=str(error))
+    finally:
+        _ANALYSIS_LOCK.release()
+
+
+@router.post("/{inspection_id}/checks", response_model=InspectionRecordResponse)
+def run_inspection_checks(inspection_id: str, request: CheckRequest | None = None):
+    """Check saved evidence without repeating OCR or invoking Jev."""
+    record = get_inspection_record(inspection_id)
+    if record is None:
+        raise HTTPException(status_code=404, detail="Inspection not found.")
+    if not record.get("analysis"):
+        raise HTTPException(status_code=409, detail="Analyze the stored photos before running declaration checks.")
+    if not _ANALYSIS_LOCK.acquire(blocking=False):
+        raise HTTPException(status_code=409, detail="Analysis already running. Wait before retrying.")
+    try:
+        snapshot = copy.deepcopy(record)
+        analysis = Analysis.model_validate(snapshot["analysis"])
+        request = request or CheckRequest()
+        analysis.profile = select_profile(ProfileRequest(category=snapshot["product_category"],
+            origin=request.origin if request.origin is not None else analysis.profile.inputs.origin,
+            as_of=request.as_of or analysis.profile.inputs.as_of))
+        if request.clear_glyph_measurements:
+            for field in analysis.fields:
+                for candidate in field.evidence:
+                    candidate.glyph_box = None
+        for measurement in request.glyph_measurements:
+            view = analysis.views.get(measurement.view)
+            if view is None or view.calibration.status != "available" or view.calibration.homography is None:
+                raise HTTPException(status_code=422, detail="Glyph measurement requires confirmed coplanar marker calibration for that photo.")
+            box = measurement.box
+            matches = [candidate for field in analysis.fields if field.field == measurement.field
+                for candidate in field.evidence if candidate.view == measurement.view and candidate.box is not None
+                and candidate.box.x0 <= box.x0 < box.x1 <= candidate.box.x1
+                and candidate.box.y0 <= box.y0 < box.y1 <= candidate.box.y1]
+            if not matches:
+                raise HTTPException(status_code=422, detail="Select one glyph inside the located declaration's original-image pixel box.")
+            for candidate in matches:
+                candidate.glyph_box = box
+        analysis.checks = check_declarations(analysis.profile, analysis.fields, analysis.views, snapshot.get("images", {}))
+        analysis.version = "1.1.0"
+        return save_analysis(inspection_id, analysis)
+    except (FileNotFoundError, ValueError) as error:
         raise HTTPException(status_code=409, detail=str(error))
     finally:
         _ANALYSIS_LOCK.release()
