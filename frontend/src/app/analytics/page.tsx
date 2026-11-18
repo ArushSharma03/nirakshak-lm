@@ -35,21 +35,16 @@ function summarize(records: InspectionRecord[]) {
       pass: scores.filter((q) => q.overall_status === "Pass").length,
       warning: scores.filter((q) => q.overall_status === "Warning").length,
       retake: scores.filter((q) => q.overall_status === "Retake Recommended").length,
-      markers: records.filter((r) => r.images[view]?.marker_detected).length,
     };
   });
 
-  const providers = new Map<string, { ok: number; failed: number; unavailable: number }>();
-  let calibrated = 0;
-  let viewRuns = 0;
+  const providers = new Map<string, { ok: number; partial: number; failed: number; unavailable: number }>();
   for (const r of analyzed) {
     for (const result of Object.values(r.analysis!.views)) {
       if (!result) continue;
-      viewRuns += 1;
-      if (result.calibration.status === "available") calibrated += 1;
       for (const ocr of result.ocr) {
         const key = ocr.provider.startsWith("xiaomi_detail") ? "xiaomi_detail" : ocr.provider;
-        const row = providers.get(key) ?? { ok: 0, failed: 0, unavailable: 0 };
+        const row = providers.get(key) ?? { ok: 0, partial: 0, failed: 0, unavailable: 0 };
         row[ocr.status] += 1;
         providers.set(key, row);
       }
@@ -63,7 +58,7 @@ function summarize(records: InspectionRecord[]) {
     analyzed: analyzed.filter((r) => r.productCategory === key).length,
   }));
 
-  return { analyzed, fields, optics, providers: [...providers.entries()], calibrated, viewRuns, jevRan, categories };
+  return { analyzed, fields, optics, providers: [...providers.entries()], jevRan, categories };
 }
 
 function Legend({ items }: { items: [string, string][] }) {
@@ -154,7 +149,6 @@ export default function AnalyticsPage() {
                       <th scope="col" className="px-3 py-2.5 text-right font-medium">Photos</th>
                       <th scope="col" className="px-3 py-2.5 text-right font-medium">Median score</th>
                       <th scope="col" className="px-3 py-2.5 text-right font-medium">Pass / warn / retake</th>
-                      <th scope="col" className="px-5 py-2.5 text-right font-medium">Marker found</th>
                     </tr>
                   </thead>
                   <tbody className="tabular divide-y divide-rule">
@@ -166,7 +160,6 @@ export default function AnalyticsPage() {
                         <td className="px-3 py-2.5 text-right text-ink-2">
                           {o.pass} / {o.warning} / {o.retake}
                         </td>
-                        <td className="px-5 py-2.5 text-right text-ink-2">{o.markers}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -177,17 +170,18 @@ export default function AnalyticsPage() {
               </p>
             </Card>
 
-            <Card title="OCR runs and calibration" bodyClass="">
+            <Card title="OCR runs" bodyClass="">
               <ul className="divide-y divide-rule text-sm">
                 {data.providers.length === 0 && <li className="px-5 py-3 text-ink-3">No OCR runs recorded yet.</li>}
                 {data.providers.map(([provider, row]) => {
-                  const total = row.ok + row.failed + row.unavailable;
+                  const total = row.ok + row.partial + row.failed + row.unavailable;
                   return (
                     <li key={provider} className="space-y-1.5 px-5 py-3">
                       <span className="flex items-baseline justify-between gap-3">
                         <span className="font-medium text-ink">{provider === "xiaomi_detail" ? "Xiaomi-OCR detail scans" : providerLabel(provider)}</span>
                         <span className="tabular text-xs text-ink-2">
                           {row.ok} ok{row.failed ? ` · ${row.failed} failed` : ""}
+                          {row.partial ? ` · ${row.partial} incomplete` : ""}
                           {row.unavailable ? ` · ${row.unavailable} unavailable` : ""}
                         </span>
                       </span>
@@ -195,18 +189,9 @@ export default function AnalyticsPage() {
                     </li>
                   );
                 })}
-                <li className="space-y-1.5 px-5 py-3">
-                  <span className="flex items-baseline justify-between gap-3">
-                    <span className="font-medium text-ink">Physical scale available</span>
-                    <span className="tabular text-xs text-ink-2">
-                      {data.calibrated} of {data.viewRuns} analyzed panels
-                    </span>
-                  </span>
-                  <Meter value={data.calibrated} max={data.viewRuns} tone="neutral" />
-                </li>
               </ul>
               <p className="border-t border-rule px-5 py-3 text-xs text-ink-3">
-                Xiaomi-OCR is the primary reading. Tesseract supplies line positions only where its text matches. Scale needs a detected marker confirmed flat in the label plane.
+                Xiaomi-OCR is the primary reading. Tesseract supplies line positions only where its text matches.
               </p>
             </Card>
           </div>

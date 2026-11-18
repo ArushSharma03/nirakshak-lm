@@ -329,7 +329,7 @@ def assess_image_quality(
         recommendations.append("Position device closer so package occupies at least 65% of the camera frame.")
 
     if not recommendations:
-        recommendations.append("Global optical checks passed. Inspect small declarations at full size; text readability and calibration still need verification.")
+        recommendations.append("Global optical checks passed. Inspect small declarations at full size; verify text readability.")
 
     return {
         "overall_status": overall_status,

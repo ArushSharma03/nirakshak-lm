@@ -34,14 +34,14 @@ export const analysisSchema = z.object({
   version: z.string(),
   views: z.partialRecord(view, z.object({
     file_hash: z.string(),
-    calibration: z.object({
-      status: z.enum(["available", "unavailable"]), reason: z.string(), marker_mm: z.number(),
-      pixels_per_mm: z.number().nullable(), homography: z.array(z.array(z.number())).nullable(),
-    }),
-    ocr: z.array(z.object({ provider: z.string(), model: z.string(), status: z.enum(["ok", "unavailable", "failed"]), lines: z.array(line), message: z.string() })),
+    ocr: z.array(z.object({ provider: z.string(), model: z.string(), status: z.enum(["ok", "partial", "unavailable", "failed"]), lines: z.array(line), message: z.string(), raw_text: z.string().nullable().optional() })),
   })),
   fields: z.array(z.object({ field: fieldName, status: z.enum(["observed", "conflict", "missing"]), value: z.string().nullable(), evidence: z.array(candidate), reason: z.string() })),
   profile: profileSchema, warnings: z.array(z.string()),
+  classification: z.object({
+    outcome: z.enum(["Manual Review Required", "Potential Non-Compliance", "Compliant within Implemented Checks"]),
+    reason: z.string(),
+  }).nullish(),
   checks: z.object({
     version: z.string(), scope: z.string(),
     results: z.array(z.object({
@@ -86,14 +86,14 @@ async function checkedResponse(response: Response): Promise<unknown> {
   return data;
 }
 
-export async function analyzeInspection(id: string, input: Omit<ProfileInputs, "category"> & { coplanar_views: View[]; use_jev: boolean }): Promise<Analysis> {
+export async function analyzeInspection(id: string, input: Omit<ProfileInputs, "category"> & { use_jev: boolean; reuse_ocr?: boolean }): Promise<Analysis> {
   const response = await fetch(`${API_BASE}/inspections/${encodeURIComponent(id)}/analyze`, {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input),
   });
   return z.object({ analysis: analysisSchema }).parse(await checkedResponse(response)).analysis;
 }
 
-export async function checkInspection(id: string, input: Omit<ProfileInputs, "category"> & { glyph_measurements?: { field: z.infer<typeof fieldName>; view: View; box: z.infer<typeof box> }[]; clear_glyph_measurements?: boolean }): Promise<Analysis> {
+export async function checkInspection(id: string, input: Omit<ProfileInputs, "category">): Promise<Analysis> {
   const response = await fetch(`${API_BASE}/inspections/${encodeURIComponent(id)}/checks`, {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input),
   });

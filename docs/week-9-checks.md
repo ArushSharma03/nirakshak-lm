@@ -1,5 +1,8 @@
 # Week 9: deterministic declaration checks
 
+> Historical milestone. See [Week 10](week-10.md) for current classification, reports, and capture behavior.
+
+
 The engine evaluates saved OCR evidence. It never converts an OCR omission into
 proof of absence or changes the inspection's overall manual-review outcome.
 

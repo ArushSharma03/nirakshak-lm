@@ -82,8 +82,6 @@ class InspectionCreate(BaseModel):
     views_captured: Optional[dict[str, bool]] = Field(
         default_factory=lambda: {"front": False, "rear": False, "side": False}
     )
-    marker_detected: Optional[bool] = False
-    scale_ppm: Optional[float] = None
     notes: Optional[str] = None
 
 
@@ -105,8 +103,6 @@ class InspectionRecordResponse(BaseModel):
     notes: Optional[str] = None
     timestamp: str
     views_captured: dict[str, bool]
-    marker_detected: bool
-    scale_ppm: Optional[float] = None
     images: Optional[dict[str, Any]] = None
     database_saved: bool = False
     mode: str = "Demo / Offline Fallback"

@@ -6,12 +6,10 @@ import { Suspense, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import CameraCapture from "@/components/CameraCapture";
-import MarkerGuide from "@/components/MarkerGuide";
-import MarkerResult from "@/components/MarkerResult";
 import QualityResult from "@/components/QualityResult";
 import { InspectionTable, LoadError, progressOf, useInspections } from "@/components/InspectionLedger";
 import { Badge, ButtonLink, Card, EmptyState, Icon, Loading, Notice, buttonClass, inputClass, qualityTone } from "@/components/ui";
-import { ApiUnavailableError, getInspectionById, removeInspectionView, uploadInspectionView, type MarkerDetectionResult } from "@/lib/api";
+import { ApiUnavailableError, getInspectionById, removeInspectionView, uploadInspectionView } from "@/lib/api";
 import { analyzeInspection, type ProfileInputs } from "@/lib/analysis";
 import { VIEWS, VIEW_LABEL, errorText, type ViewName } from "@/lib/format";
 import type { InspectionRecord, QualityAssessment } from "@/types";
@@ -23,12 +21,11 @@ interface ViewState {
   blob: Blob | null;
   previewUrl: string | null;
   processedUrl: string | null;
-  marker: MarkerDetectionResult | null;
   quality: QualityAssessment | null;
   error: string | null;
 }
 
-const EMPTY: ViewState = { phase: "empty", blob: null, previewUrl: null, processedUrl: null, marker: null, quality: null, error: null };
+const EMPTY: ViewState = { phase: "empty", blob: null, previewUrl: null, processedUrl: null, quality: null, error: null };
 
 const GUIDANCE: Record<ViewName, string> = {
   front: "The principal display panel: brand, product name and usually the net quantity.",
@@ -48,17 +45,6 @@ function viewsFromRecord(record: InspectionRecord): Record<ViewName, ViewState> 
       processedUrl: img.processedUrl ?? null,
       quality: img.quality_assessment ?? null,
       error: null,
-      marker: {
-        detected: !!img.marker_detected,
-        bounding_box: null,
-        pixel_width: img.pixel_width ?? null,
-        pixel_height: img.pixel_height ?? null,
-        score: img.score ?? null,
-        estimated_ppm: img.estimated_ppm ?? null,
-        message: img.marker_detected
-          ? "Marker found. Confirm it lies flat in the label plane before relying on physical measurements."
-          : "No reference marker found in this photo. Physical text height cannot be estimated for this view.",
-      },
     };
   }
   return out;
@@ -77,8 +63,8 @@ function InspectFlow({ inspectionId }: { inspectionId: string }) {
 
   const [origin, setOrigin] = useState<ProfileInputs["origin"]>("unknown");
   const [asOf, setAsOf] = useState(() => new Date().toISOString().slice(0, 10));
-  const [coplanarViews, setCoplanarViews] = useState<ViewName[]>([]);
   const [useJev, setUseJev] = useState(false);
+  const [reuseOcr, setReuseOcr] = useState(false);
   const [processing, setProcessing] = useState(false);
 
   const load = useCallback(async () => {
@@ -90,6 +76,10 @@ function InspectFlow({ inspectionId }: { inspectionId: string }) {
         return;
       }
       setRecord(found);
+      if (found.analysis) {
+        setOrigin(found.analysis.profile.inputs.origin);
+        setAsOf(found.analysis.profile.inputs.as_of);
+      }
       const initial = viewsFromRecord(found);
       setViews(initial);
       const firstMissing = VIEWS.find((v) => initial[v].phase === "empty");
@@ -114,7 +104,7 @@ function InspectFlow({ inspectionId }: { inspectionId: string }) {
     try {
       const result = await uploadInspectionView(inspectionId, view, blob);
       setRecord(result.record);
-      patch(view, { phase: "stored", marker: result.markerResult, quality: result.qualityAssessment, processedUrl: result.processedUrl, error: null });
+      patch(view, { phase: "stored", quality: result.qualityAssessment, processedUrl: result.processedUrl, error: null });
     } catch (cause) {
       patch(view, { phase: "failed", error: errorText(cause, "Upload failed.") });
     }
@@ -130,7 +120,6 @@ function InspectFlow({ inspectionId }: { inspectionId: string }) {
         return;
       }
     }
-    setCoplanarViews((current) => current.filter((v) => v !== view));
     patch(view, EMPTY);
   }
 
@@ -138,7 +127,7 @@ function InspectFlow({ inspectionId }: { inspectionId: string }) {
     setProcessing(true);
     setActionError(null);
     try {
-      await analyzeInspection(inspectionId, { origin, as_of: asOf, coplanar_views: coplanarViews, use_jev: useJev });
+      await analyzeInspection(inspectionId, { origin, as_of: asOf, use_jev: useJev, reuse_ocr: reuseOcr && Boolean(record?.analysis) });
       router.push(`/reports?id=${encodeURIComponent(inspectionId)}`);
     } catch (cause) {
       setActionError(`Analysis did not complete: ${errorText(cause, "check that the API is online")}. Your photos are still stored; try again.`);
@@ -277,6 +266,12 @@ function InspectFlow({ inspectionId }: { inspectionId: string }) {
             }}
           >
             <h2 className="text-base font-bold">Analysis settings</h2>
+            {record.analysis && (
+              <label className="flex items-start gap-2 text-sm">
+                <input type="checkbox" checked={reuseOcr} onChange={(e) => setReuseOcr(e.target.checked)} className="mt-1" />
+                <span>Use stored transcripts<span className="mt-1 block text-xs text-ink-3">Rebuild extraction and checks without running OCR. Incomplete or misread text still needs a fresh photo analysis.</span></span>
+              </label>
+            )}
             <label className="block text-sm font-medium">
               Package origin
               <select value={origin} onChange={(e) => setOrigin(e.target.value as ProfileInputs["origin"])} className={inputClass}>
@@ -289,28 +284,6 @@ function InspectFlow({ inspectionId }: { inspectionId: string }) {
               Rules in force on
               <input type="date" required value={asOf} onChange={(e) => setAsOf(e.target.value)} className={inputClass} />
             </label>
-            <fieldset className="space-y-2">
-              <legend className="text-sm font-medium">Marker lies flat in the label plane</legend>
-              <p className="text-xs text-ink-3">Tick only views where the printed marker measures 50 mm and sits on the same flat surface as the text.</p>
-              <div className="flex flex-wrap gap-x-4 gap-y-2">
-                {VIEWS.map((view) => {
-                  const enabled = views[view].phase === "stored" && !!views[view].marker?.detected;
-                  return (
-                    <label key={view} className={`inline-flex min-h-8 items-center gap-2 text-sm ${enabled ? "" : "text-ink-3"}`}>
-                      <input
-                        type="checkbox"
-                        disabled={!enabled}
-                        checked={coplanarViews.includes(view)}
-                        onChange={(e) => setCoplanarViews((cur) => (e.target.checked ? [...cur, view] : cur.filter((v) => v !== view)))}
-                        className="size-4 accent-accent"
-                      />
-                      {VIEW_LABEL[view]}
-                      {!enabled && views[view].phase === "stored" && <span className="text-xs">(no marker)</span>}
-                    </label>
-                  );
-                })}
-              </div>
-            </fieldset>
             <label className="flex items-start gap-2 text-sm">
               <input type="checkbox" checked={useJev} onChange={(e) => setUseJev(e.target.checked)} className="mt-0.5 size-4 accent-accent" />
               <span>
@@ -319,18 +292,17 @@ function InspectFlow({ inspectionId }: { inspectionId: string }) {
               </span>
             </label>
             <button type="submit" disabled={stored.length === 0 || busy} className={`${buttonClass.primary} w-full`}>
-              {processing ? "Analyzing…" : stored.length === 0 ? "Add a photo first" : `Analyze ${stored.length} photo${stored.length > 1 ? "s" : ""}`}
+              {processing ? "Analyzing…" : stored.length === 0 ? "Add a photo first" : reuseOcr && record.analysis ? "Rebuild from stored text" : `Analyze ${stored.length} photo${stored.length > 1 ? "s" : ""}`}
             </button>
             {processing && (
               <p role="status" className="text-xs leading-relaxed text-ink-2">
-                Running OCR, extraction and profile selection on the server. On CPU, or on the first run while model weights download, this can take several minutes. Keep this tab open.
+                {reuseOcr && record.analysis ? "Rebuilding extraction and checks from the stored transcripts. No OCR model is running." : "Running OCR, extraction and profile selection on the server. On CPU, or on the first run while model weights download, this can take several minutes. Keep this tab open."}
               </p>
             )}
           </form>
         </section>
       )}
 
-      <MarkerGuide />
     </div>
   );
 }
@@ -396,13 +368,12 @@ function ViewPanel({
         )}
         {state.phase === "empty" && (
           <div className="hidden rounded-xl border border-dashed border-rule-strong px-4 py-6 text-sm text-ink-2 lg:block">
-            After upload you will see the photo&rsquo;s optical check and whether a reference marker was found. Panels are optional; skip any that carry no declarations.
+            After upload you will see the photo&rsquo;s optical check. Panels are optional; skip any that carry no declarations.
           </div>
         )}
         {state.phase === "stored" && (
           <>
             <QualityResult assessment={state.quality} rawPreviewUrl={state.previewUrl} processedUrl={state.processedUrl} />
-            <MarkerResult result={state.marker} />
           </>
         )}
         <div className="flex justify-end pt-1">
@@ -444,7 +415,6 @@ function ContinueList() {
           )}
         </Card>
       )}
-      <MarkerGuide />
     </div>
   );
 }

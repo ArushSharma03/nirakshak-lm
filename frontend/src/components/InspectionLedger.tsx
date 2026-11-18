@@ -110,16 +110,6 @@ export function ViewMarks({ record }: { record: InspectionRecord }) {
   );
 }
 
-function MarkerCell({ record }: { record: InspectionRecord }) {
-  if (!record.markerDetected) return <span className="text-xs text-ink-3">No marker</span>;
-  return (
-    <span className="inline-flex items-center gap-1 text-xs font-medium text-ok">
-      <Icon name="check" className="size-3.5" />
-      {record.scalePpm ? <span className="tabular">{record.scalePpm} px/mm</span> : "Marker found"}
-    </span>
-  );
-}
-
 /** The inspection table used by the dashboard and history. Rows become stacked cards on phones. */
 export function InspectionTable({ records, compact = false, onQuickLook }: { records: InspectionRecord[]; compact?: boolean; onQuickLook?: (record: InspectionRecord) => void }) {
   return (
@@ -131,7 +121,6 @@ export function InspectionTable({ records, compact = false, onQuickLook }: { rec
             <th scope="col" className="px-5 py-2.5 font-medium">Inspection</th>
             <th scope="col" className="px-3 py-2.5 font-medium">Package</th>
             {!compact && <th scope="col" className="hidden px-3 py-2.5 font-medium lg:table-cell">Category</th>}
-            {!compact && <th scope="col" className="hidden px-3 py-2.5 font-medium xl:table-cell">Scale</th>}
             <th scope="col" className="px-3 py-2.5 font-medium">Photos</th>
             <th scope="col" className="px-3 py-2.5 font-medium">Status</th>
             <th scope="col" className="px-5 py-2.5 text-right font-medium">
@@ -155,11 +144,6 @@ export function InspectionTable({ records, compact = false, onQuickLook }: { rec
                 {!compact && (
                   <td className="hidden px-3 py-3 align-middle lg:table-cell">
                     <CategoryTag category={record.productCategory} />
-                  </td>
-                )}
-                {!compact && (
-                  <td className="hidden whitespace-nowrap px-3 py-3 align-middle xl:table-cell">
-                    <MarkerCell record={record} />
                   </td>
                 )}
                 <td className="px-3 py-3 align-middle">

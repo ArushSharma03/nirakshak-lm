@@ -2,39 +2,11 @@
 
 import re
 from datetime import date, datetime
-from decimal import Decimal
 from app.schemas.analysis import CheckReport, CheckKind, DeclarationCheck, FusedField, Profile, ViewAnalysis
 from app.services.calibration import physical_height
-from app.services.extraction import normalize
+from app.services.extraction import normalize, price, quantity
 
 KINDS: tuple[CheckKind, ...] = ("presence", "completeness", "units", "consistency", "placement", "readability", "character_height")
-_QUANTITY = re.compile(r"([0-9]+(?:\.[0-9]+)?)\s*(kg|mg|g|ml|cl|l|litres?|liters?|ग्राम|किग्रा|मिलीलीटर|लीटर|nos?\.?|pcs?\.?|units?)", re.I)
-_UNITS = {"kg": ("mass", "1000"), "g": ("mass", "1"), "mg": ("mass", ".001"),
-          "किग्रा": ("mass", "1000"), "ग्राम": ("mass", "1"), "l": ("volume", "1000"),
-          "ml": ("volume", "1"), "cl": ("volume", "10"), "लीटर": ("volume", "1000"), "मिलीलीटर": ("volume", "1")}
-
-
-def quantity(value: str):
-    match = _QUANTITY.fullmatch(normalize(value))
-    if not match or Decimal(match[1]) <= 0:
-        return None
-    unit = match[2].rstrip(".")
-    if unit.startswith("lit"):
-        unit = "l"
-    dimension, factor = _UNITS.get(unit, ("count", "1"))
-    amount = Decimal(match[1]) * Decimal(factor)
-    if dimension == "count" and amount != amount.to_integral_value():
-        return None
-    return dimension, amount
-
-
-def price(value: str):
-    value = re.sub(r"^(?:₹|rs\.?|inr)\s*", "", normalize(value))
-    if not re.fullmatch(r"[0-9]+(?:\.[0-9]{1,2})?", value):
-        return None
-    return Decimal(value)
-
-
 def valid_date(value: str, as_of: date) -> bool | None:
     """Validate supported date formats; ambiguous two-digit years stay unresolved."""
     value = normalize(value)
@@ -124,7 +96,7 @@ def check_declarations(profile: Profile, fields: list[FusedField], views: dict[s
                     measured_views = set()
                     for c in evidence:
                         view = views.get(c.view)
-                        if c.glyph_box is not None and view and view.calibration.status == "available":
+                        if c.glyph_box is not None and view and view.calibration and view.calibration.status == "available":
                             height = physical_height(c.glyph_box, view.calibration)
                             if height is not None:
                                 heights.append(height)
@@ -141,7 +113,7 @@ def check_declarations(profile: Profile, fields: list[FusedField], views: dict[s
                             status = "pass" if measured >= required else "fail"
                             reason = "Minimum calibrated glyph-box height compared with the profile threshold."
                         else:
-                            reason = "Confirmed glyph boxes and coplanar calibration are required. OCR line-box height is not glyph height."
+                            reason = "Physical glyph height was not measured. Verify it on the package if applicable."
             if kind == "units" and rule.field != "net_quantity":
                 status, reason = "not_applicable", "Unit validation applies to net quantity."
             results.append(DeclarationCheck(rule_id=rule.id, field=rule.field, kind=kind, status=status,

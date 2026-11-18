@@ -4,13 +4,12 @@ import { TopBarContent } from "@/components/layout/TopBarContent";
 
 import { useCallback, useEffect, useState } from "react";
 import { useInspections } from "@/components/InspectionLedger";
-import { Badge, Card, Field, Icon, buttonClass } from "@/components/ui";
-import { API_BASE, checkBackendStatus, getReferenceMarkerUrl } from "@/lib/api";
+import { Badge, Card, Field, buttonClass } from "@/components/ui";
+import { API_BASE, checkBackendStatus } from "@/lib/api";
 import type { SystemStatus } from "@/types";
 
 const PIPELINE: [string, string][] = [
   ["Photo optics", "Sharpness, exposure, contrast, glare and resolution of each original photo, scored 0–100. Advisory only."],
-  ["Reference marker", "ArUco 4x4_50, ID 0, printed at 50 mm. Gives physical scale only when you confirm it lies flat in the label plane."],
   ["Enhanced copy", "Bilateral denoise and CLAHE produce a second image for viewing. The original is kept unchanged as evidence."],
   ["Transcription", "Xiaomi-OCR reads each panel, with additional detail scans. Tesseract adds line geometry only where its text matches."],
   ["Extraction", "Declarations are matched to the selected rule profile and marked read, conflicting or not found, with source text for each."],
@@ -91,22 +90,6 @@ export default function SystemPage() {
         </ol>
       </Card>
 
-      <Card title="Reference marker">
-        <div className="grid gap-5 sm:grid-cols-[9rem_minmax(0,1fr)]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={getReferenceMarkerUrl(0)} alt="ArUco 4x4_50 marker ID 0 with white border" className="w-36 rounded-md border border-rule" />
-          <div className="space-y-3 text-sm text-ink-2">
-            <p>
-              Print it so the black square measures exactly <strong className="text-ink">50 mm</strong>, and check with a ruler, because printers rescale. Keep the white border, lay it flat beside the label, and shoot from 20–50 cm without glare.
-            </p>
-            <p>Without a marker the photo is still read; only text-height estimates are skipped.</p>
-            <a href={getReferenceMarkerUrl(0)} target="_blank" rel="noreferrer" download="nirikshak-aruco-4x4-id0-50mm.png" className="inline-flex items-center gap-1.5 font-semibold text-accent hover:underline">
-              Open printable PNG
-              <Icon name="external" className="size-3.5" />
-            </a>
-          </div>
-        </div>
-      </Card>
     </div>
   );
 }

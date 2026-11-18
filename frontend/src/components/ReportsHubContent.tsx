@@ -8,8 +8,9 @@ import { useMemo, useState } from "react";
 import AnalysisEvidence from "@/components/AnalysisEvidence";
 import DeclarationChecks from "@/components/DeclarationChecks";
 import { LoadError, useInspections } from "@/components/InspectionLedger";
-import { ButtonLink, Field, Icon, Loading, Notice, Badge, buttonClass, qualityTone, type Tone } from "@/components/ui";
+import { ButtonLink, Field, Loading, Notice, Badge, buttonClass, qualityTone, type Tone } from "@/components/ui";
 import { CATEGORY_LABEL, VIEWS, VIEW_LABEL, capturedViews, formatDate, storageLabel } from "@/lib/format";
+import { API_BASE } from "@/lib/api";
 import type { ComplianceOutcome, InspectionRecord } from "@/types";
 
 const OUTCOME_TONE: Record<ComplianceOutcome, Tone> = {
@@ -25,6 +26,7 @@ export default function ReportsHubContent({ inspectionId: urlId }: { inspectionI
   const analyzed = useMemo(() => records?.filter((r) => r.analysis) ?? [], [records]);
   const selected: InspectionRecord | undefined = urlId ? records?.find((r) => r.id === urlId) : analyzed[0];
 
+  const reportUrl = selected && `${API_BASE}/inspections/${encodeURIComponent(selected.id)}/report`;
   const choose = (id: string) => router.replace(`/reports?id=${encodeURIComponent(id)}`, { scroll: false });
 
   if (error) return <LoadError error={error} onRetry={reload} />;
@@ -35,7 +37,10 @@ export default function ReportsHubContent({ inspectionId: urlId }: { inspectionI
       <TopBarContent title="Reports" lede="Review the photos, declarations and source evidence for an analyzed inspection."
         actions={selected && <>
           <Link href={`/inspect?id=${encodeURIComponent(selected.id)}`} className={buttonClass.secondary}>Photos and re-run</Link>
-          <button type="button" onClick={() => window.print()} className={buttonClass.secondary}><Icon name="print" />Print</button>
+          {selected.analysis && <>
+            <a href={`${reportUrl}?download=false`} target="_blank" rel="noreferrer" className={buttonClass.secondary}>Printable report</a>
+            <a href={reportUrl} className={buttonClass.secondary}>Download report</a>
+          </>}
         </>}
       />
       <div className="min-w-0 rounded-md border border-rule bg-sheet p-5 print:hidden">
@@ -77,6 +82,7 @@ export default function ReportsHubContent({ inspectionId: urlId }: { inspectionI
 function Report({ record }: { record: InspectionRecord }) {
   const [plate, setPlate] = useState<"raw" | "processed">("raw");
   const [analysis, setAnalysis] = useState(record.analysis);
+  const outcome = analysis?.classification?.outcome ?? record.outcome;
   const views = capturedViews(record);
   const anyProcessed = views.some((v) => record.images[v]?.processedUrl);
 
@@ -92,10 +98,11 @@ function Report({ record }: { record: InspectionRecord }) {
             </p>
           </div>
           <div className="flex shrink-0 flex-col items-start gap-3 sm:items-end">
-            <Badge tone={OUTCOME_TONE[record.outcome] ?? "warn"} large>
-              {record.outcome}
+            <Badge tone={OUTCOME_TONE[outcome] ?? "warn"} large>
+              {outcome}
             </Badge>
 
+            {analysis?.classification && <p className="max-w-sm text-sm text-ink-2">{analysis.classification.reason}</p>}
           </div>
         </div>
         <hr className="border-rule" />
@@ -146,7 +153,7 @@ function Report({ record }: { record: InspectionRecord }) {
                 <div className="aspect-[4/3] bg-ground">
                   {url ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={url} alt={`${VIEW_LABEL[view]} panel`} className="size-full object-contain" />
+                    <img loading="eager" src={url} alt={`${VIEW_LABEL[view]} panel`} className="size-full object-contain" />
                   ) : (
                     <span className="grid size-full place-items-center text-sm text-ink-3">No {VIEW_LABEL[view].toLowerCase()} photo</span>
                   )}
@@ -158,7 +165,7 @@ function Report({ record }: { record: InspectionRecord }) {
                   </span>
                   {img && (
                     <span className="block text-xs text-ink-3">
-                      {quality ? `Optical score ${quality.composite_score}/100` : "No optical check"} · {img.marker_detected ? "marker found" : "no marker"}
+                      {quality ? `Optical score ${quality.composite_score}/100` : "No optical check"}
                       {img.originalFilename && <span className="serial block truncate">{img.originalFilename}</span>}
                     </span>
                   )}

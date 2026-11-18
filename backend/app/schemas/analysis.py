@@ -37,9 +37,10 @@ class OCRLine(BaseModel):
 class OCRResult(BaseModel):
     provider: str
     model: str
-    status: Literal["ok", "unavailable", "failed"]
+    status: Literal["ok", "partial", "unavailable", "failed"]
     lines: list[OCRLine] = Field(default_factory=list)
     message: str = ""
+    raw_text: str | None = None
 
 
 class Calibration(BaseModel):
@@ -104,28 +105,13 @@ class Profile(BaseModel):
 class AnalysisRequest(BaseModel):
     origin: Literal["domestic", "imported", "unknown"] = "unknown"
     as_of: date
-    coplanar_views: list[View] = Field(default_factory=list)
     use_jev: bool = False
-
-
-class GlyphMeasurement(BaseModel):
-    field: FieldName
-    view: View
-    box: Box
+    reuse_ocr: bool = False
 
 
 class CheckRequest(BaseModel):
     origin: Literal["domestic", "imported", "unknown"] | None = None
     as_of: date | None = None
-    glyph_measurements: list[GlyphMeasurement] = Field(default_factory=list)
-    clear_glyph_measurements: bool = False
-
-    @model_validator(mode="after")
-    def unique_glyph_annotations(self):
-        keys = [(m.field, m.view) for m in self.glyph_measurements]
-        if len(keys) != len(set(keys)):
-            raise ValueError("Provide one glyph annotation per declaration and view.")
-        return self
 
 
 class DecisionAnswer(BaseModel):
@@ -145,7 +131,7 @@ class DecisionResult(BaseModel):
 
 class ViewAnalysis(BaseModel):
     file_hash: str
-    calibration: Calibration
+    calibration: Calibration | None = None
     ocr: list[OCRResult]
 
 
@@ -171,6 +157,11 @@ class CheckReport(BaseModel):
     results: list[DeclarationCheck] = Field(default_factory=list)
 
 
+class ScreeningClassification(BaseModel):
+    outcome: Literal["Manual Review Required", "Potential Non-Compliance", "Compliant within Implemented Checks"] = "Manual Review Required"
+    reason: str
+
+
 class Analysis(BaseModel):
     version: str = "1.0.0"
     views: dict[View, ViewAnalysis]
@@ -179,3 +170,4 @@ class Analysis(BaseModel):
     warnings: list[str]
     decision: DecisionResult
     checks: CheckReport | None = None
+    classification: ScreeningClassification | None = None

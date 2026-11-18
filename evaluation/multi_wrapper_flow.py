@@ -2,6 +2,8 @@
 import hashlib
 import json
 import time
+import argparse
+from datetime import date
 from pathlib import Path
 import httpx
 from PIL import Image
@@ -15,14 +17,21 @@ CASES = [
 
 
 def main():
-    output = ROOT / "multi-wrapper-results.json"
-    report = {"retrieved_on": "2026-11-12", "scope": "Three public catalogue rear images; no front/side captures, no physical marker, no accuracy benchmark or legal verdict. Rights remain with image owners. Expected quantity and notes were transcribed visually before OCR; catalogue titles were not fed to extraction.", "results": []}
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, default=ROOT / "live-pipeline-results.json")
+    parser.add_argument("--cases", nargs="+", choices=[case["id"] for case in CASES], default=[case["id"] for case in CASES])
+    args = parser.parse_args()
+    output = args.output
+    today = date.today().isoformat()
+    report = {"retrieved_on": today, "scope": "Public catalogue rear images; no front/side captures, no physical marker, no accuracy benchmark or legal verdict. Rights remain with image owners. Expected quantity and notes were transcribed visually before OCR; catalogue titles were not fed to extraction.", "results": []}
     with httpx.Client(base_url="http://127.0.0.1:8000", timeout=900) as client:
         def request(method, path, **kwargs):
             response = client.request(method, path, **kwargs)
             response.raise_for_status()
             return response.json()
         for case in CASES:
+            if case["id"] not in args.cases:
+                continue
             started = time.monotonic()
             file = ROOT / "fixtures/wrappers" / case["file"]
             raw = file.read_bytes()
@@ -30,7 +39,7 @@ def main():
             base = f"/inspections/{record['id']}"
             record = request("POST", base + "/images", data={"view_type": "rear"}, files={"file": (file.name, raw, "image/jpeg")})
             quality = record["images"]["rear"]["quality_assessment"]
-            record = request("POST", base + "/analyze", json={"origin": "unknown", "as_of": "2026-11-12", "coplanar_views": [], "use_jev": False})
+            record = request("POST", base + "/analyze", json={"origin": "unknown", "as_of": today, "coplanar_views": [], "use_jev": False})
             analysis = record["analysis"]
             quantity = next(f for f in analysis["fields"] if f["field"] == "net_quantity")
             actual = (quantity["value"] or "").replace(" ", "").lower() or None

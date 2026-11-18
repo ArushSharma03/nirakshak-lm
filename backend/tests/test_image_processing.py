@@ -13,13 +13,12 @@ Tests:
 9. API integration for Front, Rear, and Side images with quality assessment and processed image retrieval.
 
 NOTE: Tests 1-8 use controlled synthetic images with mathematically known properties.
-Test 9 executes integration tests against the running FastAPI service.
+Test 9 executes the real FastAPI handlers with isolated temporary storage.
 """
 
 import os
 import sys
 import unittest
-import shutil
 import hashlib
 import cv2
 import numpy as np
@@ -204,125 +203,64 @@ class TestImagePreprocessingPipeline(unittest.TestCase):
 
 
 class TestApiIntegration(unittest.TestCase):
-    """Integration tests verifying HTTP endpoints for quality assessment and preprocessing."""
+    """Exercise real HTTP handlers with isolated disk storage, without a live server."""
 
-    @classmethod
-    def setUpClass(cls):
-        # Verify local server is reachable
-        import urllib.request
-        try:
-            with urllib.request.urlopen("http://127.0.0.1:8000/health", timeout=2) as resp:
-                cls.server_online = (resp.status == 200)
-        except Exception:
-            cls.server_online = False
+    def setUp(self):
+        from tempfile import TemporaryDirectory
+        from unittest.mock import patch
+        from fastapi.testclient import TestClient
+        from app.main import app
+        from app.services import inspection_store as store
+
+        temporary = TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        values = {
+            "DATA_DIR": temporary.name,
+            "FALLBACK_FILE": os.path.join(temporary.name, "records.json"),
+            "_MEMORY_INSPECTIONS": {},
+            "is_database_available": lambda: False,
+        }
+        for name, value in values.items():
+            change = patch.object(store, name, value)
+            change.start()
+            self.addCleanup(change.stop)
+        self.client = TestClient(app)
 
     def test_quality_assessment_endpoint(self):
-        """Test POST /capture/assess-quality returns structured metrics and recommendations."""
-        if not self.server_online:
-            self.skipTest("FastAPI server offline on localhost:8000")
-
-        import subprocess
-        import json
-
-        # Create a test sharp image
         sharp = np.full((480, 640, 3), 230, dtype=np.uint8)
         cv2.putText(sharp, "AMUL BUTTER 500G", (100, 240), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 2)
-        test_file = "test_quality_api.jpg"
-        cv2.imwrite(test_file, sharp)
-
-        try:
-            cmd = [
-                shutil.which("curl") or "curl.exe", "-s", "-X", "POST",
-                "http://127.0.0.1:8000/capture/assess-quality",
-                "-F", f"file=@{test_file}",
-            ]
-            res = subprocess.run(cmd, capture_output=True, text=True)
-            self.assertEqual(res.returncode, 0)
-            data = json.loads(res.stdout)
-
-            self.assertIn("overall_status", data)
-            self.assertIn("composite_score", data)
-            self.assertIn("metrics", data)
-            self.assertIn("sharpness", data["metrics"])
-            self.assertIn("exposure", data["metrics"])
-            self.assertIn("contrast", data["metrics"])
-            self.assertIn("resolution", data["metrics"])
-            self.assertIn("glare", data["metrics"])
-            self.assertIn("disclaimer", data)
-        finally:
-            if os.path.exists(test_file):
-                os.remove(test_file)
+        _, encoded = cv2.imencode(".jpg", sharp)
+        response = self.client.post("/capture/assess-quality",
+            files={"file": ("source.jpg", encoded.tobytes(), "image/jpeg")})
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue({"overall_status", "composite_score", "metrics", "disclaimer"} <= data.keys())
+        self.assertTrue({"sharpness", "exposure", "contrast", "resolution", "glare"} <= data["metrics"].keys())
 
     def test_inspection_view_upload_with_preprocessing_and_quality(self):
-        """Test uploading Front, Rear, and Side views generates quality assessment and processed copies."""
-        if not self.server_online:
-            self.skipTest("FastAPI server offline on localhost:8000")
-
-        import subprocess
-        import json
-        import urllib.request
-
-        # 1. Create a new inspection
-        req = urllib.request.Request(
-            "http://127.0.0.1:8000/inspections/",
-            data=json.dumps({
-                "product_name": "Dettol Original Soap 125g",
-                "product_category": "personal_care",
-                "brand": "Reckitt Benckiser",
-                "declared_net_qty": "125 g",
-                "declared_mrp": 58.0,
-                "inspector_name": "Inspector Test",
-            }).encode(),
-            headers={"Content-Type": "application/json"},
-        )
-        with urllib.request.urlopen(req) as resp:
-            rec = json.loads(resp.read().decode())
-        ins_id = rec["id"]
-
-        # 2. Upload Front, Rear, and Side images
-        test_file = "test_view_temp.jpg"
-        for vt in ["front", "rear", "side"]:
-            img = np.full((480, 640, 3), 220, dtype=np.uint8)
-            cv2.putText(img, f"DETTOL {vt.upper()} PANEL", (80, 240), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (10, 80, 20), 2)
-            cv2.imwrite(test_file, img)
-
-            try:
-                cmd = [
-                    shutil.which("curl") or "curl.exe", "-s", "-X", "POST",
-                    f"http://127.0.0.1:8000/inspections/{ins_id}/images",
-                    "-F", f"view_type={vt}",
-                    "-F", f"file=@{test_file}",
-                ]
-                res = subprocess.run(cmd, capture_output=True, text=True)
-                updated = json.loads(res.stdout)
-
-                # Verify view metadata includes quality assessment and preprocessing
-                view_meta = updated["images"][vt]
-                self.assertIn("quality_assessment", view_meta)
-                self.assertIn("preprocessing", view_meta)
-                self.assertIsNotNone(view_meta["preprocessing"])
-                self.assertEqual(view_meta["preprocessing"]["algorithm_version"], ALGORITHM_VERSION)
-
-                # 3. Verify processed image endpoint GET /inspections/{id}/images/{view}/processed
-                proc_url = f"http://127.0.0.1:8000/inspections/{ins_id}/images/{vt}/processed"
-                with urllib.request.urlopen(proc_url) as proc_resp:
-                    self.assertEqual(proc_resp.status, 200)
-                    self.assertEqual(proc_resp.headers.get("content-type"), "image/jpeg")
-                    proc_bytes = proc_resp.read()
-                    self.assertGreater(len(proc_bytes), 0)
-
-                # 4. Verify quality endpoint GET /inspections/{id}/images/{view}/quality
-                qual_url = f"http://127.0.0.1:8000/inspections/{ins_id}/images/{vt}/quality"
-                with urllib.request.urlopen(qual_url) as qual_resp:
-                    self.assertEqual(qual_resp.status, 200)
-                    qual_data = json.loads(qual_resp.read().decode())
-                    self.assertIn("overall_status", qual_data)
-                    self.assertIn("metrics", qual_data)
-
-            finally:
-                if os.path.exists(test_file):
-                    os.remove(test_file)
-
+        response = self.client.post("/inspections/", json={"product_name": "API image fixture"})
+        self.assertEqual(response.status_code, 201)
+        base = f"/inspections/{response.json()['id']}"
+        image = np.full((800, 1200, 3), 230, dtype=np.uint8)
+        cv2.putText(image, "PACKAGE LABEL", (150, 300), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 0), 3)
+        _, encoded = cv2.imencode(".jpg", image)
+        raw = encoded.tobytes()
+        for view in ("front", "rear", "side"):
+            upload = self.client.post(base + "/images", data={"view_type": view},
+                files={"file": ("source.jpg", raw, "image/jpeg")})
+            self.assertEqual(upload.status_code, 200)
+            metadata = upload.json()["images"][view]
+            self.assertIn("quality_assessment", metadata)
+            self.assertEqual(metadata["preprocessing"]["algorithm_version"], ALGORITHM_VERSION)
+            self.assertEqual(metadata["file_hash"], hashlib.sha256(raw).hexdigest())
+            self.assertEqual(self.client.get(base + f"/images/{view}").content, raw)
+            processed = self.client.get(base + f"/images/{view}/processed")
+            self.assertEqual(processed.status_code, 200)
+            self.assertEqual(processed.headers["content-type"], "image/jpeg")
+            self.assertGreater(len(processed.content), 0)
+            quality = self.client.get(base + f"/images/{view}/quality")
+            self.assertEqual(quality.status_code, 200)
+            self.assertTrue({"overall_status", "metrics"} <= quality.json().keys())
 
 if __name__ == "__main__":
     unittest.main()

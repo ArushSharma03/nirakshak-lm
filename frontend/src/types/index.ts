@@ -85,11 +85,6 @@ export interface InspectionImageView {
   previewUrl?: string;
   processedUrl?: string;
   file_hash?: string;
-  marker_detected?: boolean;
-  score?: number | null;
-  pixel_width?: number | null;
-  pixel_height?: number | null;
-  estimated_ppm?: number | null;
   quality_assessment?: QualityAssessment;
   preprocessing?: PreprocessingMeta;
 }
@@ -109,8 +104,6 @@ export interface InspectionRecord {
   status: InspectionStatus;
   outcome: ComplianceOutcome;
   viewsCaptured: PackageViewsState;
-  markerDetected: boolean;
-  scalePpm: number | null;
   databaseSaved: boolean;
   images: Record<string, InspectionImageView>;
   analysis?: import("@/lib/analysis").Analysis;

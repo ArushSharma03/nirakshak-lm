@@ -32,6 +32,7 @@ export default function AnalysisEvidence({ analysis }: { analysis: Analysis }) {
   const profileStatus = PROFILE_STATUS[profile.status] ?? { tone: "neutral" as Tone, label: profile.status };
   const read = analysis.fields.filter((f) => f.status === "observed").length;
 
+  const warnings = analysis.warnings.filter((warning) => !/marker|calibration/i.test(warning));
   return (
     <div className="page-stack">
       <section className="space-y-3" aria-labelledby="declarations">
@@ -54,7 +55,7 @@ export default function AnalysisEvidence({ analysis }: { analysis: Analysis }) {
                   <Badge tone={status.tone}>{status.label}</Badge>
                 </div>
                 <div className="min-w-0 space-y-3">
-                  <p className={`text-base ${field.value ? "font-semibold" : "text-ink-3"}`}>{field.value ?? (field.status === "conflict" ? "Conflicting readings. Review the source photo." : "Not extracted.")}</p>
+                  <p className={`whitespace-pre-line text-base ${field.value ? "font-semibold" : "text-ink-3"}`}>{field.value ?? (field.status === "conflict" ? "Conflicting readings. Review the source photo." : "Not extracted.")}</p>
                   <p className="text-xs text-ink-3">{field.reason}</p>
                   {field.evidence.length > 0 && (
                     <ul className="space-y-2">
@@ -73,7 +74,7 @@ export default function AnalysisEvidence({ analysis }: { analysis: Analysis }) {
                               </>
                             )}
                           </p>
-                          <blockquote className="serial mt-1.5 rounded-md bg-sheet px-2.5 py-1.5 text-[0.8rem] text-ink ring-1 ring-rule">{item.source_text}</blockquote>
+                          <blockquote className="serial mt-1.5 whitespace-pre-wrap rounded-md bg-sheet px-2.5 py-1.5 text-[0.8rem] text-ink ring-1 ring-rule">{item.source_text}</blockquote>
                           {item.box && (
                             <p className="serial mt-1 text-xs text-ink-3">
                               Original pixels ({item.box.x0}, {item.box.y0}) to ({item.box.x1}, {item.box.y1})
@@ -89,15 +90,15 @@ export default function AnalysisEvidence({ analysis }: { analysis: Analysis }) {
           })}
         </ol>
         <p className="text-xs text-ink-3">
-          Physical values estimate text-line box height in a confirmed marker plane. Glyph height, legal thresholds and compliance checks are not implemented.
+          OCR boxes locate text regions. Verify physical character height directly on the package.
         </p>
       </section>
 
-      {analysis.warnings.length > 0 && (
+      {warnings.length > 0 && (
         <section className="space-y-2" aria-labelledby="warnings">
           <h2 id="warnings" className="text-base font-bold">Analysis warnings</h2>
           <ul className="space-y-1 text-sm text-warn">
-            {analysis.warnings.map((warning) => (
+            {warnings.map((warning) => (
               <li key={warning} className="flex gap-2">
                 <Icon name="alert" className="mt-0.5 size-3.5" />
                 {warning}
@@ -158,7 +159,7 @@ export default function AnalysisEvidence({ analysis }: { analysis: Analysis }) {
       </section>
 
       <section className="space-y-3" aria-labelledby="transcripts">
-        <h2 id="transcripts" className="text-base font-bold">OCR transcripts and calibration</h2>
+        <h2 id="transcripts" className="text-base font-bold">OCR transcripts</h2>
         <p className="text-sm text-ink-2">
           Xiaomi-OCR is the primary reading. Tesseract supplies line positions, used only where its text matches the primary reading.
         </p>
@@ -168,30 +169,26 @@ export default function AnalysisEvidence({ analysis }: { analysis: Analysis }) {
               <summary className="flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 text-sm">
                 <span className="font-semibold">{viewName(view)} photo</span>
                 <span className="text-ink-3">
-                  {result.ocr.length} transcript{result.ocr.length === 1 ? "" : "s"} · scale {result.calibration.status}
+                  {result.ocr.length} transcript{result.ocr.length === 1 ? "" : "s"}
                 </span>
                 <span className="serial ml-auto text-xs text-ink-3" title="SHA-256 of the original photo">
                   {result.file_hash.slice(0, 12)}
                 </span>
               </summary>
               <div className="space-y-4 border-t border-rule px-4 py-4">
-                <p className="text-sm text-ink-2">
-                  Calibration: {result.calibration.reason}
-                  {result.calibration.pixels_per_mm !== null && ` (${result.calibration.pixels_per_mm} px/mm)`}
-                </p>
-                {result.ocr.map((ocr) => (
-                  <div key={ocr.provider} className="space-y-1.5">
+                {result.ocr.map((ocr, index) => (
+                  <div key={index} className="space-y-1.5">
                     <p className="flex flex-wrap items-center gap-2 text-sm">
                       <span className="font-semibold">{providerLabel(ocr.provider)}</span>
-                      <Badge tone={ocr.status === "ok" ? "neutral" : "danger"}>{ocr.status}</Badge>
+                      <Badge tone={ocr.status === "ok" ? "neutral" : ocr.status === "partial" ? "warn" : "danger"}>{ocr.status === "partial" ? "Incomplete" : ocr.status}</Badge>
                       <span className="text-xs text-ink-3">{ocr.lines.length} lines</span>
                     </p>
                     <p className="text-xs text-ink-3">
                       <span className="serial">{ocr.model}</span> · {ocr.message}
                     </p>
-                    {ocr.lines.length > 0 && (
+                    {(ocr.raw_text || ocr.lines.length > 0) && (
                       <pre className="serial max-h-72 overflow-auto rounded-md bg-ground px-3 py-2 text-xs leading-relaxed whitespace-pre-wrap text-ink">
-                        {ocr.lines.map((line) => line.text).join("\n")}
+                        {ocr.raw_text ?? ocr.lines.map((line) => line.text).join("\n")}
                       </pre>
                     )}
                   </div>

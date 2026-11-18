@@ -159,23 +159,29 @@ def test_http_rechecks_legacy_ocr_without_provider_and_invalidates_on_removal(tm
     store._MEMORY_INSPECTIONS.clear()
     store._load_persisted_fallback()
     assert client.get(base).json()["analysis"] == saved
-    annotation = {"field": "net_quantity", "view": "rear", "box": {"x0": 1, "y0": 1, "x1": 4, "y1": 4}}
-    annotated = client.post(base + '/checks', json={"glyph_measurements": [annotation]})
-    assert annotated.status_code == 200, annotated.text
-    height = next(c for c in annotated.json()["analysis"]["checks"]["results"] if c["field"] == "net_quantity" and c["kind"] == "character_height")
-    assert height["measured_mm"] == 3 and height["status"] == "insufficient_evidence"
-    assert client.post(base + '/checks', json={"glyph_measurements": [annotation, annotation]}).status_code == 422
-    cleared = client.post(base + '/checks', json={"clear_glyph_measurements": True})
-    assert cleared.status_code == 200
-    assert all(c["measured_mm"] is None for c in cleared.json()["analysis"]["checks"]["results"])
-    annotation["view"] = "front"
-    assert client.post(base + '/checks', json={"glyph_measurements": [annotation]}).status_code == 422
-    annotation["view"] = "rear"
-    annotation["box"]["x1"] = 999
-    assert client.post(base + '/checks', json={"glyph_measurements": [annotation]}).status_code == 422
+    height = next(c for c in saved["checks"]["results"] if c["field"] == "net_quantity" and c["kind"] == "character_height")
+    assert height["measured_mm"] is None and height["status"] == "insufficient_evidence"
     image.write_bytes(b"changed evidence")
     assert client.post(base + '/checks').status_code == 409
     image.write_bytes(raw)
     assert client.delete(base + '/images/rear').status_code == 200
     assert client.get(base).json()["analysis"] is None
     assert client.post(base + '/checks').status_code == 409
+
+
+@pytest.mark.parametrize(("value", "ocr_status", "outcome"), [
+    ("31/02/2025", "ok", "Potential Non-Compliance"),
+    ("31/02/2025", "partial", "Manual Review Required"),
+    ("02/2025", "ok", "Manual Review Required"),
+])
+def test_classification_uses_structured_failures_from_complete_evidence(value, ocr_status, outcome):
+    from app.schemas.analysis import OCRResult
+    from app.services.classification import classify
+
+    profile, views, images = context()
+    views["rear"].ocr = [OCRResult(provider="xiaomi", model="fixture", status=ocr_status)]
+    fields = fuse([sample(value, field="date")])
+    checks = check_declarations(profile, fields, views, images)
+    analysis = Analysis(views=views, fields=fields, profile=profile, warnings=[], checks=checks,
+        decision=DecisionResult(status="unavailable", model="fixture", message="No model call"))
+    assert classify(analysis).outcome == outcome

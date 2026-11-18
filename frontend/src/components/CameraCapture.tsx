@@ -166,7 +166,7 @@ export default function CameraCapture({ onCapture, disabled = false }: CameraCap
       <div className="grid min-h-64 place-items-center rounded-xl border-2 border-dashed border-rule-strong bg-sheet px-6 py-10 text-center">
         <div className="space-y-4">
           <p className="mx-auto max-w-sm text-sm text-ink-2">
-            Fill the frame with this panel. Keep the 50 mm marker flat beside the label if you want text-height estimates.
+            Fill the frame with this panel. Keep small text in focus and avoid glare.
           </p>
           <div className="flex flex-wrap justify-center gap-2">
             {uploadButton}

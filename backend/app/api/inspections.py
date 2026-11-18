@@ -4,7 +4,7 @@ Inspection API endpoints.
 POST /inspections/                     — Create a new inspection.
 GET  /inspections/                     — List all inspections.
 GET  /inspections/{inspection_id}      — Retrieve an inspection with its images and metadata.
-POST /inspections/{inspection_id}/images — Attach a captured view image (front, rear, side) and run marker detection.
+POST /inspections/{inspection_id}/images — Attach a captured view image (front, rear, side).
 GET  /inspections/{inspection_id}/images/{view_type} — Serve the stored view image file.
 """
 
@@ -15,7 +15,7 @@ import cv2
 import numpy as np
 from typing import List, Optional
 from fastapi import APIRouter, File, Form, UploadFile, HTTPException, Response, status
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
 
 from app.schemas.inspection import InspectionCreate, InspectionRecordResponse
 from app.schemas.analysis import Analysis, CheckRequest, ProfileRequest
@@ -27,9 +27,9 @@ from app.services.inspection_store import (
     list_inspection_records,
     attach_inspection_image,
 )
-from app.services.marker_detector import detect_marker
 from app.schemas.analysis import AnalysisRequest
 from app.services.analysis import analyze_record
+from app.services.report import render_report
 from app.services.inspection_store import save_analysis, remove_inspection_image
 
 router = APIRouter(prefix="/inspections", tags=["Inspections"])
@@ -67,7 +67,7 @@ def list_inspections():
     summary="Retrieve an inspection by ID",
 )
 def get_inspection(inspection_id: str):
-    """Retrieve an inspection by ID, including its captured views, marker calibration, and metadata."""
+    """Retrieve an inspection by ID, including its captured views and metadata."""
     inspection = get_inspection_record(inspection_id)
     if inspection is None:
         raise HTTPException(
@@ -89,8 +89,6 @@ async def upload_inspection_view(
 ):
     """
     Attach an optical evidence plate to the specified inspection record.
-    Automatically executes ArUco reference marker detection on the uploaded image
-    and stores pixel scaling and quality scores.
     """
     normalized_view = view_type.lower().strip()
     if normalized_view not in ("front", "rear", "side"):
@@ -116,25 +114,11 @@ async def upload_inspection_view(
     if decoded.shape[0] * decoded.shape[1] > 25_000_000:
         raise HTTPException(status_code=413, detail="Image exceeds 25 megapixels.")
 
-    # Automatically analyze marker detection on the captured image
-    detection_res = detect_marker(image_bytes)
-    marker_dict = {
-        "detected": detection_res.detected,
-        "score": detection_res.score,
-        "pixel_width": detection_res.pixel_width,
-        "pixel_height": detection_res.pixel_height,
-        "estimated_ppm": detection_res.estimated_ppm,
-        "marker_id": detection_res.marker_id,
-        "dictionary": detection_res.dictionary,
-        "message": detection_res.message,
-    }
-
     updated_record = attach_inspection_image(
         inspection_id=inspection_id,
         view_type=normalized_view,
         image_bytes=image_bytes,
         original_filename=file.filename or f"{normalized_view}.jpg",
-        marker_result=marker_dict,
     )
 
     return updated_record
@@ -178,30 +162,30 @@ def run_inspection_checks(inspection_id: str, request: CheckRequest | None = Non
         analysis.profile = select_profile(ProfileRequest(category=snapshot["product_category"],
             origin=request.origin if request.origin is not None else analysis.profile.inputs.origin,
             as_of=request.as_of or analysis.profile.inputs.as_of))
-        if request.clear_glyph_measurements:
-            for field in analysis.fields:
-                for candidate in field.evidence:
-                    candidate.glyph_box = None
-        for measurement in request.glyph_measurements:
-            view = analysis.views.get(measurement.view)
-            if view is None or view.calibration.status != "available" or view.calibration.homography is None:
-                raise HTTPException(status_code=422, detail="Glyph measurement requires confirmed coplanar marker calibration for that photo.")
-            box = measurement.box
-            matches = [candidate for field in analysis.fields if field.field == measurement.field
-                for candidate in field.evidence if candidate.view == measurement.view and candidate.box is not None
-                and candidate.box.x0 <= box.x0 < box.x1 <= candidate.box.x1
-                and candidate.box.y0 <= box.y0 < box.y1 <= candidate.box.y1]
-            if not matches:
-                raise HTTPException(status_code=422, detail="Select one glyph inside the located declaration's original-image pixel box.")
-            for candidate in matches:
-                candidate.glyph_box = box
         analysis.checks = check_declarations(analysis.profile, analysis.fields, analysis.views, snapshot.get("images", {}))
-        analysis.version = "1.1.0"
+        analysis.version = "1.2.0"
         return save_analysis(inspection_id, analysis)
     except (FileNotFoundError, ValueError) as error:
         raise HTTPException(status_code=409, detail=str(error))
     finally:
         _ANALYSIS_LOCK.release()
+
+
+@router.get("/{inspection_id}/report", response_class=HTMLResponse)
+def get_inspection_report(inspection_id: str, download: bool = True):
+    """Download an offline, printable report with all saved evidence."""
+    record = copy.deepcopy(get_inspection_record(inspection_id))
+    if record is None:
+        raise HTTPException(status_code=404, detail="Inspection not found.")
+    if not record.get("analysis"):
+        raise HTTPException(status_code=409, detail="Analyze the photos before generating a report.")
+    try:
+        html = render_report(record, Analysis.model_validate(record["analysis"]))
+    except (ValueError, FileNotFoundError) as error:
+        raise HTTPException(status_code=409, detail=str(error))
+    disposition = "attachment" if download else "inline"
+    return HTMLResponse(html, headers={"Content-Disposition": f'{disposition}; filename="{record["id"]}.html"',
+        "Cache-Control": "no-store", "Content-Security-Policy": "default-src 'none'; img-src data:; style-src 'unsafe-inline'"})
 
 
 @router.delete("/{inspection_id}/images/{view_type}", response_model=InspectionRecordResponse)

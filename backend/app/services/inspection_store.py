@@ -20,6 +20,7 @@ from datetime import datetime, timezone
 from typing import Optional, List, Dict, Any
 
 from app.core.config import settings
+from app.services.classification import classify
 from app.schemas.analysis import Analysis
 
 # In-memory store for fallback/demo mode
@@ -104,8 +105,6 @@ def create_inspection_record(payload: Dict[str, Any]) -> Dict[str, Any]:
         "notes": payload.get("notes") or "",
         "timestamp": now_iso,
         "views_captured": payload.get("views_captured") or {"front": False, "rear": False, "side": False},
-        "marker_detected": bool(payload.get("marker_detected", False)),
-        "scale_ppm": payload.get("scale_ppm"),
         "images": payload.get("images") or {},
         "database_saved": False,
         "mode": "Demo / Offline Fallback",
@@ -189,7 +188,6 @@ def attach_inspection_image(
     view_type: str,
     image_bytes: bytes,
     original_filename: str = "capture.jpg",
-    marker_result: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """
     Attach a captured package image to an existing inspection record.
@@ -197,7 +195,7 @@ def attach_inspection_image(
     2. Runs comprehensive Image Quality Assessment (sharpness, exposure, contrast, resolution, glare).
     3. Executes reproducible Image Preprocessing pipeline and stores processed copy as
        data/images/{inspection_id}_{view_type}_processed.jpg.
-    4. Updates inspection record metadata with hashes, metrics, and calibration data.
+    4. Updates inspection record metadata with hashes, and optical metrics.
     """
     record = _MEMORY_INSPECTIONS.get(inspection_id)
     if record is None:
@@ -263,19 +261,11 @@ def attach_inspection_image(
         "file_hash": file_hash,
         "size_bytes": len(image_bytes),
         "created_at": datetime.now(timezone.utc).isoformat(),
-        "marker_detected": marker_result.get("detected", False) if marker_result else False,
-        "marker_score": marker_result.get("score") if marker_result else None,
-        "pixel_width": marker_result.get("pixel_width") if marker_result else None,
-        "pixel_height": marker_result.get("pixel_height") if marker_result else None,
-        "estimated_ppm": marker_result.get("estimated_ppm") if marker_result else None,
         "quality_assessment": quality_assessment,
         "preprocessing": processed_meta,
     }
     record["images"][view_type] = image_meta
 
-    record["marker_detected"] = any(v.get("marker_detected") for v in record["images"].values())
-    # Physical scales are per-view; an old view's scale must not apply to a retake.
-    record["scale_ppm"] = None
     record["status"] = "capturing"
 
     # Check if all views captured
@@ -304,9 +294,10 @@ def save_analysis(inspection_id: str, analysis: Analysis):
                 raise ValueError("Evidence changed during analysis. Run analysis again.")
     if set(record.get("images", {})) != set(analysis.views):
         raise ValueError("Captured views changed during analysis. Run analysis again.")
+    analysis.classification = classify(analysis)
     record["analysis"] = analysis.model_dump(mode="json")
     record["status"] = "analyzed"
-    record["final_outcome"] = "Manual Review Required"
+    record["final_outcome"] = analysis.classification.outcome
     _save_persisted_fallback()
     return record
 
@@ -319,8 +310,6 @@ def remove_inspection_image(inspection_id: str, view_type: str):
     record["views_captured"][view_type] = False
     record.pop("analysis", None)
     record["status"] = "capturing"
-    record["marker_detected"] = any(v.get("marker_detected") for v in record["images"].values())
-    record["scale_ppm"] = None
     record["final_outcome"] = "Manual Review Required"
     _save_persisted_fallback()
     return record

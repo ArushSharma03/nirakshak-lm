@@ -17,18 +17,6 @@ import {
 } from "@/types";
 import { analysisSchema } from "./analysis";
 
-export interface MarkerDetectionResult {
-  detected: boolean;
-  marker_id?: number | null;
-  dictionary?: string | null;
-  bounding_box: number[] | null;
-  pixel_width: number | null;
-  pixel_height: number | null;
-  score: number | null;
-  estimated_ppm?: number | null;
-  message: string;
-}
-
 export const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export class ApiUnavailableError extends Error {
@@ -36,10 +24,6 @@ export class ApiUnavailableError extends Error {
     super(message);
     this.name = "ApiUnavailableError";
   }
-}
-
-export function getReferenceMarkerUrl(markerId = 0): string {
-  return `${API_BASE}/capture/reference-marker?marker_id=${markerId}`;
 }
 
 export function getViewImageUrl(inspectionId: string, viewType: string): string {
@@ -72,14 +56,6 @@ interface BackendImageMeta {
   filepath?: string;
   original_filename?: string;
   file_hash?: string;
-  marker_detected?: boolean;
-  marker_score?: number | null;
-  score?: number | null;
-  pixel_width?: number | null;
-  pixel_height?: number | null;
-  estimated_ppm?: number | null;
-  marker_id?: number | null;
-  dictionary?: string | null;
   quality_assessment?: QualityAssessment;
   preprocessing?: PreprocessingMeta;
 }
@@ -98,8 +74,6 @@ interface BackendInspectionRecord {
   status?: string;
   final_outcome?: string;
   views_captured?: { front: boolean; rear: boolean; side: boolean };
-  marker_detected?: boolean;
-  scale_ppm?: number | null;
   database_saved?: boolean;
   mode?: string;
   images?: Record<string, BackendImageMeta>;
@@ -117,11 +91,6 @@ function mapBackendRecord(item: BackendInspectionRecord): InspectionRecord {
       file_hash: v.file_hash,
       previewUrl: getViewImageUrl(item.id, key),
       processedUrl: v.preprocessing ? getProcessedImageUrl(item.id, key) : undefined,
-      marker_detected: v.marker_detected,
-      score: v.marker_score ?? v.score ?? null,
-      pixel_width: v.pixel_width ?? null,
-      pixel_height: v.pixel_height ?? null,
-      estimated_ppm: v.estimated_ppm ?? null,
       quality_assessment: v.quality_assessment,
       preprocessing: v.preprocessing,
     };
@@ -141,8 +110,6 @@ function mapBackendRecord(item: BackendInspectionRecord): InspectionRecord {
     status: (item.status as InspectionStatus) || "created",
     outcome: (item.final_outcome || "Manual Review Required") as ComplianceOutcome,
     viewsCaptured: item.views_captured || { front: false, rear: false, side: false },
-    markerDetected: !!item.marker_detected,
-    scalePpm: item.scale_ppm ?? null,
     databaseSaved: !!item.database_saved,
     images,
     analysis: item.analysis ? analysisSchema.parse(item.analysis) : undefined,
@@ -223,7 +190,6 @@ export async function uploadInspectionView(
   imageBlob: Blob,
 ): Promise<{
   record: InspectionRecord;
-  markerResult: MarkerDetectionResult;
   qualityAssessment: QualityAssessment | null;
   processedUrl: string | null;
 }> {
@@ -239,22 +205,8 @@ export async function uploadInspectionView(
   const data: BackendInspectionRecord = await response.json();
   const record = mapBackendRecord(data);
   const viewMeta = data.images?.[viewType];
-  const markerResult: MarkerDetectionResult = {
-    detected: viewMeta?.marker_detected ?? false,
-    marker_id: viewMeta?.marker_id ?? null,
-    dictionary: viewMeta?.dictionary ?? null,
-    bounding_box: null,
-    pixel_width: viewMeta?.pixel_width ?? null,
-    pixel_height: viewMeta?.pixel_height ?? null,
-    score: viewMeta?.marker_score ?? null,
-    estimated_ppm: viewMeta?.estimated_ppm ?? null,
-    message: viewMeta?.marker_detected
-      ? "Marker found. Confirm it lies flat in the label plane before relying on physical measurements."
-      : "No reference marker found in this photo. Physical text height cannot be estimated for this view.",
-  };
   return {
     record,
-    markerResult,
     qualityAssessment: viewMeta?.quality_assessment ?? null,
     processedUrl: viewMeta?.preprocessing ? getProcessedImageUrl(inspectionId, viewType) : null,
   };

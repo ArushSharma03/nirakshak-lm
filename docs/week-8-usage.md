@@ -14,14 +14,15 @@ uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```
 
 The first Xiaomi run downloads the pinned public Hugging Face checkpoint.
-Set `XIAOMI_OCR_ENABLED=false` for Tesseract alone. Provider failures are explicit.
+Set `XIAOMI_OCR_ENABLED=false` to disable model inference. Tesseract then records
+geometry/transcripts only; it does not become an automatic primary reader.
+Provider failures and incomplete transcriptions are explicit.
 API docs are at `http://localhost:8000/docs`. Start the frontend with `npm ci`
 and `npm run dev` in `frontend`, then open `http://localhost:3000`.
 
 Create an inspection, upload views, select the inspection date and origin, then
-process evidence. A 50 mm ArUco 4x4_50 marker, ID 0, enables height estimates only
-when the inspector confirms that marker and declaration are coplanar. Curved
-packaging cannot be calibrated by that assumption. Retakes invalidate analysis.
+process evidence. Package photos are sufficient for analysis. Verify physical character
+height directly on the package if applicable. Retakes invalidate analysis.
 
 Configuration comes from the backend environment or working directory's `.env`.
 See [.env.example](../.env.example). Supply `TYPESAFE_API_KEY` with a server-side
@@ -54,11 +55,32 @@ categories and dates return explicit profile results. Boxes refer to original
 images; preprocessing copies are separate. No cross-view image registration is
 claimed. Spatial association is within each view; cross-view fusion matches values.
 
-When whole-image OCR misses quantity on a declaration panel, the pipeline scans
-up to four overlapping quadrants with Xiaomi and stops on an anchored quantity.
-Each detail transcript records the original-image crop coordinates. These are
-region coordinates, not word boxes; no confidence or physical height is invented.
-This local fallback can add several minutes on CPU and makes no paid request.
+`OCR_MAX_PIXELS=1048576` bounds model image processing. `OCR_CPU_THREADS=4`
+sets CPU compute threads; `OCR_MAX_TOKENS=1024` bounds generated tokens. The model
+also has a 120-second generation limit; prefill/loading can extend wall time.
+Whole-image and detail results distinguish complete, partial, unavailable and
+failed reads. Raw generated text is preserved, but a cutoff's unfinished last
+line is excluded from extraction.
+
+Missing declarations get up to four Xiaomi detail reads. Located headings guide
+focused crops without passing Tesseract's proposed values to Xiaomi. When a
+partial read cuts off a manufacturer heading, lower-panel recovery shares that
+same four-crop budget. Unlocated quantity recovery uses overlapping quadrants.
+Every crop records its source coordinates. No confidence or word box is invented.
+EXIF orientation is applied consistently to displayed pixels; uploaded source
+bytes and hashes remain unchanged. These local reads can take minutes on CPU.
+
+On an existing analysis, choose **Use stored transcripts** to rebuild extraction
+and checks without running either OCR adapter. The API equivalent adds
+`"reuse_ocr":true` to the analysis body. Each saved view must match the current
+photo hash. This rebuilds evidence from the saved OCR. It does not repair missing or misread
+OCR. Fresh photo analysis remains the default. Jev remains a separate opt-in.
+
+Label/value association searches nearby aligned regions instead of serialized
+line order. Contact blocks stop at another declaration or section. Bare numeric
+labels cannot borrow unlocated subsequent values. Quoted references such as
+“see below” are not company names. Currency grouping is preserved during parsing;
+malformed percentages, negative amounts and invalid numeric prefixes are rejected.
 
 ## Validation
 
@@ -71,9 +93,10 @@ npx tsc --noEmit
 npm run build
 ```
 
-Older HTTP integration tests expect a backend on port 8000. The evaluation script
-uses temporary storage and real local OCR. It makes no paid call unless `--jev`
-is added explicitly. Checked-in results contain generated evidence only.
+The pytest HTTP tests use isolated temporary storage. `evaluation/live_pipeline.py`
+also uses temporary storage with real local OCR, and makes no paid call unless
+`--jev` is added explicitly. `evaluation/multi_wrapper_flow.py` instead exercises
+the running API and intentionally creates reviewable public-photo records.
 
 ## Limits
 
