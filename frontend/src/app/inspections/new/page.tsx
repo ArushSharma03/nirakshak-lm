@@ -1,235 +1,129 @@
 "use client";
 
-import React, { useState } from "react";
+import { TopBarContent } from "@/components/layout/TopBarContent";
+
+import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { ProductCategory } from "@/types";
+import type { ProductCategory } from "@/types";
 import { createInspection } from "@/lib/api";
-import LegalDisclaimer from "@/components/common/LegalDisclaimer";
+import { CATEGORY_LABEL, errorText } from "@/lib/format";
+import { Icon, Notice, buttonClass, inputClass } from "@/components/ui";
 
 export default function NewInspectionPage() {
   const router = useRouter();
   const [productName, setProductName] = useState("");
   const [category, setCategory] = useState<ProductCategory>("food_grocery");
+  const [notes, setNotes] = useState("");
   const [brand, setBrand] = useState("");
   const [declaredNetQty, setDeclaredNetQty] = useState("");
   const [declaredMRP, setDeclaredMRP] = useState("");
-  const [location, setLocation] = useState("Retail Store — Sample Bay 1");
-  const [inspectorName, setInspectorName] = useState("Mr. Arush Sharma");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [location, setLocation] = useState("");
+  const [inspectorName, setInspectorName] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleQuickFill = (name: string, cat: ProductCategory, b: string, qty: string, mrp: string) => {
-    setProductName(name);
-    setCategory(cat);
-    setBrand(b);
-    setDeclaredNetQty(qty);
-    setDeclaredMRP(mrp);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+    setSubmitting(true);
+    setError(null);
     try {
+      const mrp = declaredMRP.trim() ? Number(declaredMRP) : null;
       const record = await createInspection({
-        productName: productName || "Generic Commodity Sample",
+        productName,
         productCategory: category,
-        brand: brand || "Unspecified Brand",
-        declaredNetQty: declaredNetQty || "100 g",
-        declaredMRP: parseFloat(declaredMRP) || 50.0,
-        location: location || "Retail Store — Sample Bay 1",
-        inspectorName: inspectorName || "Mr. Arush Sharma",
+        notes,
+        brand,
+        declaredNetQty,
+        declaredMRP: mrp !== null && Number.isFinite(mrp) ? mrp : null,
+        location,
+        inspectorName,
       });
-
-      // Navigate to guided capture flow with inspection ID
       router.push(`/inspect?id=${encodeURIComponent(record.id)}`);
-    } catch (err) {
-      console.error("Failed to initialize inspection:", err);
-      router.push("/inspect");
+    } catch (cause) {
+      setError(errorText(cause, "Could not create the inspection."));
+      setSubmitting(false);
     }
-  };
+  }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
-        <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-            New Inspection Setup
-          </h1>
-          <p className="text-xs text-slate-500 mt-1">
-            Register commodity profile details before initiating multi-view camera capture.
-          </p>
-        </div>
-        <Link
-          href="/inspections"
-          className="inline-flex items-center text-xs font-medium text-slate-600 hover:text-slate-900"
-        >
-          &larr; Back to History
-        </Link>
-      </div>
+    <div className="page-stack">
+            <TopBarContent
+        title="New inspection"
+        lede="Name the package so you can find it later. Nothing typed here counts as label evidence; declarations are read from the photos."
+      />
 
-      <LegalDisclaimer compact />
-
-      {/* Quick Fill Preset Pills */}
-      <div className="bg-slate-100/80 border border-slate-200 rounded-xl p-4">
-        <span className="text-xs font-semibold text-slate-700 block mb-2">
-          Quick-Fill Sample Commodity Preset:
-        </span>
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => handleQuickFill("Britannia NutriChoice Digestive 100g", "food_grocery", "Britannia Industries Ltd.", "100 g", "25")}
-            className="text-xs px-2.5 py-1 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-md font-medium transition-colors"
-          >
-            Britannia Digestive (100g)
-          </button>
-          <button
-            type="button"
-            onClick={() => handleQuickFill("Amul Pasteurized Butter 500g", "food_grocery", "GCMMF (Amul)", "500 g", "285")}
-            className="text-xs px-2.5 py-1 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-md font-medium transition-colors"
-          >
-            Amul Butter (500g)
-          </button>
-          <button
-            type="button"
-            onClick={() => handleQuickFill("Dettol Original Bathing Soap 125g", "personal_care", "Reckitt Benckiser", "125 g", "58")}
-            className="text-xs px-2.5 py-1 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-md font-medium transition-colors"
-          >
-            Dettol Soap (125g)
-          </button>
-          <button
-            type="button"
-            onClick={() => handleQuickFill("Vim Dishwash Liquid Gel 500ml", "household", "Hindustan Unilever", "500 ml", "115")}
-            className="text-xs px-2.5 py-1 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-md font-medium transition-colors"
-          >
-            Vim Dishwash (500ml)
-          </button>
-        </div>
-      </div>
-
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Product Name */}
-          <div className="space-y-1.5 md:col-span-2">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              Commodity / Product Name *
-            </label>
-            <input
-              type="text"
-              required
-              value={productName}
-              onChange={(e) => setProductName(e.target.value)}
-              placeholder="e.g. Britannia NutriChoice Digestive Biscuits 100g"
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all"
-            />
-          </div>
-
-          {/* Category */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              Commodity Category *
-            </label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value as ProductCategory)}
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all"
-            >
-              <option value="food_grocery">Food and Grocery</option>
-              <option value="beverage">Beverages</option>
-              <option value="personal_care">Personal Care Products</option>
-              <option value="household">Household Commodities</option>
+      <form onSubmit={handleSubmit} className="overflow-hidden rounded-xl border border-rule bg-sheet shadow-[0_1px_2px_rgb(15_23_42/0.04)]">
+        <fieldset className="grid gap-5 p-5 sm:grid-cols-2">
+          <legend className="float-left mb-1 w-full text-sm font-semibold text-ink sm:col-span-2">Package</legend>
+          <label className="block text-sm font-medium sm:col-span-2">
+            Package name
+            <input required value={productName} onChange={(e) => setProductName(e.target.value)} placeholder="e.g. Parle-G biscuits 70 g, shelf sample 2" className={inputClass} />
+          </label>
+          <label className="block text-sm font-medium">
+            Category
+            <select value={category} onChange={(e) => setCategory(e.target.value as ProductCategory)} className={inputClass}>
+              {Object.entries(CATEGORY_LABEL).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
             </select>
-          </div>
+            <span className="mt-1 block text-xs font-normal text-ink-3">Picks the rule profile. Only food and grocery has rule data so far.</span>
+          </label>
+          <label className="block text-sm font-medium">
+            Photo source
+            <input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="e.g. Shelf photos, phone camera" className={inputClass} />
+            <span className="mt-1 block text-xs font-normal text-ink-3">Shown on the report as provenance. Say if images are catalog or web copies.</span>
+          </label>
+        </fieldset>
 
-          {/* Brand */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              Manufacturer / Brand Name
-            </label>
-            <input
-              type="text"
-              value={brand}
-              onChange={(e) => setBrand(e.target.value)}
-              placeholder="e.g. Britannia Industries Ltd."
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all"
-            />
-          </div>
+        <hr className="border-rule" />
 
-          {/* Declared Net Qty */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              Declared Net Quantity *
-            </label>
-            <input
-              type="text"
-              required
-              value={declaredNetQty}
-              onChange={(e) => setDeclaredNetQty(e.target.value)}
-              placeholder="e.g. 100 g or 500 ml"
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all"
-            />
-          </div>
+        <fieldset className="grid gap-5 p-5 sm:grid-cols-2">
+          <legend className="float-left mb-1 w-full text-sm sm:col-span-2">
+            <span className="font-semibold text-ink">Optional setup notes</span>
+            <span className="block text-ink-3">
+              For your reference only. Leave anything you have not checked blank. These values are separate from photo evidence.
+            </span>
+          </legend>
+          <label className="block text-sm font-medium">
+            Brand or manufacturer
+            <input value={brand} onChange={(e) => setBrand(e.target.value)} className={inputClass} />
+          </label>
+          <label className="block text-sm font-medium">
+            Net quantity on the pack
+            <input value={declaredNetQty} onChange={(e) => setDeclaredNetQty(e.target.value)} placeholder="e.g. 70 g" className={inputClass} />
+          </label>
+          <label className="block text-sm font-medium">
+            MRP on the pack (₹)
+            <input type="number" inputMode="decimal" step="0.01" min="0" value={declaredMRP} onChange={(e) => setDeclaredMRP(e.target.value)} className={inputClass} />
+          </label>
+          <label className="block text-sm font-medium">
+            Location
+            <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. Store, shelf or lab desk" className={inputClass} />
+          </label>
+          <label className="block text-sm font-medium sm:col-span-2">
+            Inspector
+            <input value={inspectorName} onChange={(e) => setInspectorName(e.target.value)} className={inputClass} />
+          </label>
+        </fieldset>
 
-          {/* Declared MRP */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              Declared MRP (₹ Inclusive of Taxes) *
-            </label>
-            <input
-              type="number"
-              step="0.01"
-              required
-              value={declaredMRP}
-              onChange={(e) => setDeclaredMRP(e.target.value)}
-              placeholder="e.g. 25.00"
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all"
-            />
-          </div>
-
-          {/* Location */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              Inspection Premises / Location
-            </label>
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all"
-            />
-          </div>
-
-          {/* Inspector Name */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              Designated Inspector
-            </label>
-            <input
-              type="text"
-              value={inspectorName}
-              onChange={(e) => setInspectorName(e.target.value)}
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-900 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all"
-            />
-          </div>
-        </div>
-
-        {/* Submit Bar */}
-        <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
-          <span className="text-xs text-slate-500">
-            Next: Guided Capture of Front, Rear, and Side package panels with ArUco reference marker.
-          </span>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-sm transition-all shadow-md flex items-center space-x-2"
-          >
-            <span>Proceed to Guided Capture</span>
-            <span>&rarr;</span>
+        <div className="flex flex-col gap-3 border-t border-rule bg-ground/50 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-ink-2">Next: photograph the front, rear and side panels.</p>
+          <button type="submit" disabled={submitting} className={buttonClass.primary}>
+            {submitting ? "Creating…" : "Create and start photos"}
+            {!submitting && <Icon name="arrowRight" />}
           </button>
         </div>
       </form>
+
+      {error && (
+        <div>
+          <Notice tone="danger" title="The inspection was not created">
+            {error} Nothing was saved. Check that the API is online and try again.
+          </Notice>
+        </div>
+      )}
     </div>
   );
 }

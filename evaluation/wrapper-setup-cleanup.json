@@ -1,0 +1,35 @@
+[
+  {
+    "inspection_id": "INS-2026-E8C4ADA9",
+    "reason": "These setup fields were not supplied by multi_wrapper_flow.py; clear server placeholders created before the default-value fix. OCR analysis and images unchanged.",
+    "previous": {
+      "brand": "Unspecified Manufacturer",
+      "declared_net_qty": "100 g",
+      "declared_mrp": 50.0,
+      "location": "Retail Inspection Bay 1",
+      "inspector_name": "Mr. Arush Sharma"
+    }
+  },
+  {
+    "inspection_id": "INS-2026-820EB3AF",
+    "reason": "These setup fields were not supplied by multi_wrapper_flow.py; clear server placeholders created before the default-value fix. OCR analysis and images unchanged.",
+    "previous": {
+      "brand": "Unspecified Manufacturer",
+      "declared_net_qty": "100 g",
+      "declared_mrp": 50.0,
+      "location": "Retail Inspection Bay 1",
+      "inspector_name": "Mr. Arush Sharma"
+    }
+  },
+  {
+    "inspection_id": "INS-2026-6C5806D7",
+    "reason": "These setup fields were not supplied by multi_wrapper_flow.py; clear server placeholders created before the default-value fix. OCR analysis and images unchanged.",
+    "previous": {
+      "brand": "Unspecified Manufacturer",
+      "declared_net_qty": "100 g",
+      "declared_mrp": 50.0,
+      "location": "Retail Inspection Bay 1",
+      "inspector_name": "Mr. Arush Sharma"
+    }
+  }
+]

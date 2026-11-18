@@ -37,9 +37,10 @@ class OCRLine(BaseModel):
 class OCRResult(BaseModel):
     provider: str
     model: str
-    status: Literal["ok", "unavailable", "failed"]
+    status: Literal["ok", "partial", "unavailable", "failed"]
     lines: list[OCRLine] = Field(default_factory=list)
     message: str = ""
+    raw_text: str | None = None
 
 
 class Calibration(BaseModel):
@@ -59,6 +60,7 @@ class Candidate(BaseModel):
     box: Box | None = None
     confidence: float | None = None
     height_mm: float | None = None
+    glyph_box: Box | None = Field(default=None, description="Inspector-selected single-glyph bounds in original-image pixels; separate from OCR line geometry.")
 
 
 class FusedField(BaseModel):
@@ -85,6 +87,9 @@ class Rule(BaseModel):
     effective_to: date | None = None
     origins: list[Literal["domestic", "imported"]]
     source_url: str
+    required_view: View | None = None
+    minimum_glyph_height_mm: float | None = Field(default=None, gt=0)
+    constraints_verified: bool = False
 
 
 class Profile(BaseModel):
@@ -100,8 +105,13 @@ class Profile(BaseModel):
 class AnalysisRequest(BaseModel):
     origin: Literal["domestic", "imported", "unknown"] = "unknown"
     as_of: date
-    coplanar_views: list[View] = Field(default_factory=list)
     use_jev: bool = False
+    reuse_ocr: bool = False
+
+
+class CheckRequest(BaseModel):
+    origin: Literal["domestic", "imported", "unknown"] | None = None
+    as_of: date | None = None
 
 
 class DecisionAnswer(BaseModel):
@@ -121,8 +131,35 @@ class DecisionResult(BaseModel):
 
 class ViewAnalysis(BaseModel):
     file_hash: str
-    calibration: Calibration
+    calibration: Calibration | None = None
     ocr: list[OCRResult]
+
+
+CheckKind = Literal["presence", "completeness", "units", "consistency", "placement", "readability", "character_height"]
+
+
+class DeclarationCheck(BaseModel):
+    rule_id: str
+    field: FieldName
+    kind: CheckKind
+    status: Literal["pass", "fail", "insufficient_evidence", "not_applicable"]
+    reason: str
+    citation: str
+    source_url: str
+    evidence: list[Candidate] = Field(default_factory=list)
+    measured_mm: float | None = None
+    required_mm: float | None = None
+
+
+class CheckReport(BaseModel):
+    version: str = "1.0.0"
+    scope: str = "Deterministic screening of unverified OCR evidence against a draft profile. A pass is not a legal compliance finding."
+    results: list[DeclarationCheck] = Field(default_factory=list)
+
+
+class ScreeningClassification(BaseModel):
+    outcome: Literal["Manual Review Required", "Potential Non-Compliance", "Compliant within Implemented Checks"] = "Manual Review Required"
+    reason: str
 
 
 class Analysis(BaseModel):
@@ -132,3 +169,5 @@ class Analysis(BaseModel):
     profile: Profile
     warnings: list[str]
     decision: DecisionResult
+    checks: CheckReport | None = None
+    classification: ScreeningClassification | None = None

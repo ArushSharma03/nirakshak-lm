@@ -18,31 +18,35 @@ It is **not** an autonomous legal authority. All outcomes are advisory and must 
 |---|---|
 | Frontend | Next.js (React) + TypeScript |
 | Backend | Python FastAPI |
-| Computer Vision | OpenCV planar calibration and preprocessing |
+| Computer Vision | OpenCV photo quality and preprocessing |
 | OCR | Xiaomi-OCR-0 transcription + Tesseract geometry |
 | Decisions | Optional TypeSafe Jev candidate selection |
 | Information Extraction | Regex, keyword matching, spatial analysis |
 | Compliance Engine | Versioned rule-as-data (Python) |
 | Database | PostgreSQL / SQLite (future) |
-| Reports | ReportLab / python-docx (future) |
+| Reports | Printable, self-contained HTML |
 
 ## Current Implementation Status
 
-Implemented through week 8: capture, image quality, planar calibration, OCR,
-anchored English/Hindi extraction, spatial continuation, multi-view fusion and
-versioned category/origin/date profile selection. Retakes invalidate analysis.
-The UI shows actual source evidence and optional Jev suggestions.
+Implemented through Week 10: package photo capture, OCR, declaration extraction,
+multi-view fusion, versioned rule profiles, declaration checks, and advisory screening
+classification. Capture and analysis use package photos alone. Verify physical text height
+on the package if needed. Replacing or removing a photo invalidates analysis.
 
-The initial food/grocery rules are drafts requiring legal review. Other categories
-return unsupported. Weeks 9–11 legal checks, classification and report export are
-outside this milestone. See [setup and limitations](docs/week-8-usage.md),
-[model selection](docs/model-selection.md) and [validation](docs/completion-record.md).
+The food/grocery profile is a draft. Other categories need manual review. The reports page
+offers a printable view and a downloadable HTML file with the original photos and saved
+evidence. See [Week 10 behavior and verification](docs/week-10.md) and
+[setup and OCR limitations](docs/week-8-usage.md).
 
 ---
 
 ## Getting Started
 
-### Prerequisites
+### Windows
+
+See [Windows setup and launch](docs/windows-dev.md).
+
+### Manual setup prerequisites
 
 - Python 3.13, Node.js 20.9+ and npm
 - Tesseract with English language data; Hindi data for `eng+hin`

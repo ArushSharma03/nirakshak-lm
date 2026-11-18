@@ -304,6 +304,11 @@ def assess_image_quality(
         + resolution["score"] * 0.10,
         1,
     )
+    # A weighted average must not hide a failed capture requirement.
+    if has_retake:
+        composite_score = min(composite_score, 59.0)
+    elif has_warning:
+        composite_score = min(composite_score, 79.0)
 
     # 4. Generate actionable inspector recommendations
     recommendations: List[str] = []
@@ -324,7 +329,7 @@ def assess_image_quality(
         recommendations.append("Position device closer so package occupies at least 65% of the camera frame.")
 
     if not recommendations:
-        recommendations.append("Image quality is optimal for optical screening and calibration.")
+        recommendations.append("Global optical checks passed. Inspect small declarations at full size; verify text readability.")
 
     return {
         "overall_status": overall_status,

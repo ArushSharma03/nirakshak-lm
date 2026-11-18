@@ -1,446 +1,227 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState, type ChangeEvent } from "react";
+import { Icon, buttonClass } from "@/components/ui";
 
 interface CameraCaptureProps {
   onCapture: (blob: Blob, previewUrl: string) => void;
-  currentPreview?: string | null;
-  onRetake: () => void;
+  disabled?: boolean;
 }
 
-export default function CameraCapture({ onCapture, currentPreview, onRetake }: CameraCaptureProps) {
+function cameraErrorMessage(error: unknown): string {
+  if (error instanceof DOMException) {
+    switch (error.name) {
+      case "NotAllowedError":
+      case "PermissionDeniedError":
+        return "Camera permission was denied. Allow it in the browser address bar and try again, or upload a photo.";
+      case "NotFoundError":
+      case "DevicesNotFoundError":
+        return "No camera was found on this device. Upload a photo instead.";
+      case "NotReadableError":
+      case "TrackStartError":
+        return "Another app is using the camera. Close it and try again.";
+      case "OverconstrainedError":
+        return "The camera could not satisfy the requested resolution.";
+      default:
+        return `Camera error: ${error.message || error.name}`;
+    }
+  }
+  return error instanceof Error ? error.message : "The camera could not be started.";
+}
+
+export default function CameraCapture({ onCapture, disabled = false }: CameraCaptureProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
-
-  const [hasCamera, setHasCamera] = useState<boolean>(true);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isStreaming, setIsStreaming] = useState<boolean>(false);
-  const [errorMsg, setErrorMsg] = useState<string>("");
-  const [retryKey, setRetryKey] = useState<number>(0);
-
-  // Multi-camera support
+  const [cameraOn, setCameraOn] = useState(false);
+  const [starting, setStarting] = useState(false);
+  const [streaming, setStreaming] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
-  const [selectedDeviceId, setSelectedDeviceId] = useState<string>("");
-  const [currentDeviceId, setCurrentDeviceId] = useState<string>("");
-  const [activeDeviceLabel, setActiveDeviceLabel] = useState<string>("");
+  const [deviceId, setDeviceId] = useState("");
+  const [deviceLabel, setDeviceLabel] = useState("");
 
   const stopStream = useCallback(() => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => {
-        try {
-          track.stop();
-        } catch {
-          // ignore
-        }
-      });
-      streamRef.current = null;
-    }
-    if (videoRef.current) {
-      videoRef.current.srcObject = null;
-    }
-  }, []);
-
-  // Enumerate video devices
-  const refreshDevices = useCallback(async () => {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
-    try {
-      const allDevices = await navigator.mediaDevices.enumerateDevices();
-      const videoInputs = allDevices.filter((d) => d.kind === "videoinput");
-      setDevices(videoInputs);
-    } catch (e) {
-      console.warn("Failed to enumerate devices:", e);
-    }
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+    if (videoRef.current) videoRef.current.srcObject = null;
+    setStreaming(false);
   }, []);
 
   useEffect(() => {
-    if (currentPreview) {
-      stopStream();
-      return;
-    }
+    if (!cameraOn) return;
+    let alive = true;
 
-    let isMounted = true;
-
-    async function setupCamera() {
-      if (typeof window === "undefined") return;
-
-      // 1. Check secure context (localhost or HTTPS)
-      const isLocalhost =
-        window.location.hostname === "localhost" ||
-        window.location.hostname === "127.0.0.1" ||
-        window.location.hostname === "[::1]";
-
-      if (!window.isSecureContext && !isLocalhost) {
-        if (isMounted) {
-          setHasCamera(false);
-          setErrorMsg("Camera access requires a secure context. Please open http://localhost:3000 in your browser.");
-          setIsLoading(false);
-        }
+    async function start() {
+      if (!window.isSecureContext) {
+        setErrorMsg("The camera needs a secure page (https or localhost). Upload a photo instead.");
+        setCameraOn(false);
         return;
       }
-
-      // 2. Check MediaDevices support
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        if (isMounted) {
-          setHasCamera(false);
-          setErrorMsg("Camera API (navigator.mediaDevices.getUserMedia) is not supported in this browser.");
-          setIsLoading(false);
-        }
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setErrorMsg("This browser does not support camera capture. Upload a photo instead.");
+        setCameraOn(false);
         return;
       }
-
-      setIsLoading(true);
+      setStarting(true);
       setErrorMsg("");
+      stopStream();
 
-      // Stop any existing stream before opening new one
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop());
-        streamRef.current = null;
-      }
+      const attempts: MediaStreamConstraints[] = [
+        ...(deviceId ? [{ video: { deviceId: { exact: deviceId }, width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false }] : []),
+        { video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false },
+        { video: true, audio: false },
+      ];
 
-      // 3. Progressive constraint fallback cascade
-      const constraintsList: MediaStreamConstraints[] = [];
-
-      if (selectedDeviceId) {
-        constraintsList.push({
-          video: {
-            deviceId: { exact: selectedDeviceId },
-            width: { ideal: 1920 },
-            height: { ideal: 1080 },
-          },
-          audio: false,
-        });
-        constraintsList.push({
-          video: {
-            deviceId: { exact: selectedDeviceId },
-          },
-          audio: false,
-        });
-      }
-
-      // General fallback constraints
-      constraintsList.push(
-        {
-          video: {
-            width: { ideal: 1920 },
-            height: { ideal: 1080 },
-          },
-          audio: false,
-        },
-        {
-          video: {
-            facingMode: { ideal: "environment" },
-            width: { ideal: 1280 },
-            height: { ideal: 720 },
-          },
-          audio: false,
-        },
-        {
-          video: true,
-          audio: false,
-        }
-      );
-
-      let activeStream: MediaStream | null = null;
-      let caughtError: unknown = null;
-
-      for (const constraints of constraintsList) {
+      let stream: MediaStream | null = null;
+      let lastError: unknown = null;
+      for (const constraints of attempts) {
         try {
-          activeStream = await navigator.mediaDevices.getUserMedia(constraints);
-          if (activeStream) break;
-        } catch (err: unknown) {
-          caughtError = err;
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+          break;
+        } catch (error) {
+          lastError = error;
         }
       }
 
-      if (!activeStream) {
-        if (isMounted) {
-          setHasCamera(false);
-          setIsLoading(false);
-
-          let friendlyMessage = "Unable to access camera.";
-          if (caughtError instanceof DOMException) {
-            switch (caughtError.name) {
-              case "NotAllowedError":
-              case "PermissionDeniedError":
-                friendlyMessage =
-                  "Camera permission was denied. Please allow camera permissions in your browser address bar and click Retry.";
-                break;
-              case "NotFoundError":
-              case "DevicesNotFoundError":
-                friendlyMessage = "No camera hardware detected on this device. You can use the upload option below.";
-                break;
-              case "NotReadableError":
-              case "TrackStartError":
-                friendlyMessage =
-                  "Camera is already in use by another application. Please close other webcam apps and click Retry.";
-                break;
-              case "OverconstrainedError":
-                friendlyMessage = "Camera could not satisfy the requested resolution.";
-                break;
-              default:
-                friendlyMessage = `Camera error: ${caughtError.message || caughtError.name}`;
-            }
-          } else if (caughtError instanceof Error) {
-            friendlyMessage = caughtError.message;
-          }
-
-          setErrorMsg(friendlyMessage);
-        }
+      if (!alive) {
+        stream?.getTracks().forEach((track) => track.stop());
+        return;
+      }
+      setStarting(false);
+      if (!stream) {
+        setErrorMsg(cameraErrorMessage(lastError));
+        setCameraOn(false);
         return;
       }
 
-      if (!isMounted) {
-        activeStream.getTracks().forEach((track) => track.stop());
-        return;
+      streamRef.current = stream;
+      const track = stream.getVideoTracks()[0];
+      if (track?.label) setDeviceLabel(track.label);
+      try {
+        const all = await navigator.mediaDevices.enumerateDevices();
+        if (alive) setDevices(all.filter((d) => d.kind === "videoinput"));
+      } catch {
+        // device list is optional
       }
-
-      streamRef.current = activeStream;
-      setHasCamera(true);
-      setIsLoading(false);
-
-      // Track active device metadata without triggering re-render cascades
-      const videoTrack = activeStream.getVideoTracks()[0];
-      if (videoTrack) {
-        const settings = videoTrack.getSettings();
-        if (settings.deviceId) {
-          setCurrentDeviceId(settings.deviceId);
-        }
-        if (videoTrack.label) {
-          setActiveDeviceLabel(videoTrack.label);
-        }
-      }
-
-      // Enumerate available devices once permission is granted
-      refreshDevices();
-
-      // Attach stream to video
-      if (videoRef.current && videoRef.current.srcObject !== activeStream) {
-        videoRef.current.srcObject = activeStream;
-        videoRef.current.muted = true;
-        const playPromise = videoRef.current.play();
-        if (playPromise !== undefined) {
-          playPromise.catch((playErr: unknown) => {
-            const errName = playErr instanceof DOMException ? playErr.name : "";
-            if (errName !== "AbortError") {
-              console.warn("Video playback was interrupted or prevented:", playErr);
-            }
-          });
-        }
+      const video = videoRef.current;
+      if (video) {
+        video.srcObject = stream;
+        video.muted = true;
+        video.play().catch(() => undefined);
       }
     }
 
-    setupCamera();
-
+    void start();
     return () => {
-      isMounted = false;
+      alive = false;
       stopStream();
     };
-  }, [currentPreview, retryKey, selectedDeviceId, stopStream, refreshDevices]);
+  }, [cameraOn, deviceId, stopStream]);
 
-  // Ensure stream stays attached if ref mounts after stream is acquired
-  useEffect(() => {
-    if (hasCamera && videoRef.current && streamRef.current && videoRef.current.srcObject !== streamRef.current) {
-      videoRef.current.srcObject = streamRef.current;
-      videoRef.current.muted = true;
-      const playPromise = videoRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.catch((playErr: unknown) => {
-          const errName = playErr instanceof DOMException ? playErr.name : "";
-          if (errName !== "AbortError") {
-            console.warn("Video playback error on ref sync:", playErr);
-          }
-        });
-      }
-    }
-  });
-
-  const handleCapture = () => {
+  const capture = () => {
     const video = videoRef.current;
     if (!video) return;
-    const width = video.videoWidth || 1280;
-    const height = video.videoHeight || 720;
-
     const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = video.videoWidth || 1280;
+    canvas.height = video.videoHeight || 720;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-
-    ctx.drawImage(video, 0, 0, width, height);
-
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     canvas.toBlob(
       (blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          onCapture(blob, url);
-        }
+        if (!blob) return;
+        setCameraOn(false);
+        onCapture(blob, URL.createObjectURL(blob));
       },
       "image/jpeg",
-      0.92
+      0.92,
     );
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const upload = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
     if (file) {
-      const url = URL.createObjectURL(file);
-      onCapture(file, url);
+      setCameraOn(false);
+      onCapture(file, URL.createObjectURL(file));
     }
   };
 
-  const handleSwitchCamera = () => {
+  const switchCamera = () => {
     if (devices.length < 2) return;
-    const currentId = selectedDeviceId || currentDeviceId;
-    const currentIndex = devices.findIndex((d) => d.deviceId === currentId);
-    const nextIndex = (currentIndex + 1) % devices.length;
-    const nextDevice = devices[nextIndex];
-    if (nextDevice) {
-      setIsStreaming(false);
-      setSelectedDeviceId(nextDevice.deviceId);
-      if (nextDevice.label) {
-        setActiveDeviceLabel(nextDevice.label);
-      }
-    }
+    const current = devices.findIndex((d) => d.deviceId === (deviceId || streamRef.current?.getVideoTracks()[0]?.getSettings().deviceId));
+    setDeviceId(devices[(current + 1) % devices.length].deviceId);
   };
 
-  // Preview Mode
-  if (currentPreview) {
+  const uploadButton = (
+    <label className={`${cameraOn ? buttonClass.secondary : buttonClass.primary} cursor-pointer ${disabled ? "pointer-events-none opacity-45" : ""}`}>
+      <Icon name="upload" />
+      Upload photo
+      <input type="file" accept="image/*" onChange={upload} disabled={disabled} className="sr-only" />
+    </label>
+  );
+
+  if (!cameraOn) {
     return (
-      <div className="flex flex-col items-center space-y-4">
-        <div className="max-w-lg w-full aspect-[4/3] rounded-lg border border-gray-300 overflow-hidden bg-black flex items-center justify-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={currentPreview} alt="Captured preview" className="max-w-full max-h-full object-contain" />
+      <div className="grid min-h-64 place-items-center rounded-xl border-2 border-dashed border-rule-strong bg-sheet px-6 py-10 text-center">
+        <div className="space-y-4">
+          <p className="mx-auto max-w-sm text-sm text-ink-2">
+            Fill the frame with this panel. Keep small text in focus and avoid glare.
+          </p>
+          <div className="flex flex-wrap justify-center gap-2">
+            {uploadButton}
+            <button type="button" disabled={disabled} onClick={() => setCameraOn(true)} className={buttonClass.secondary}>
+              <Icon name="camera" />
+              Use camera
+            </button>
+          </div>
+          {errorMsg && (
+            <p role="alert" className="mx-auto max-w-sm text-sm text-danger">
+              {errorMsg}
+            </p>
+          )}
         </div>
-        <button
-          onClick={onRetake}
-          className="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors font-medium shadow-sm flex items-center space-x-2"
-        >
-          <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          <span>Retake View</span>
-        </button>
       </div>
     );
   }
 
-  // Active Camera / Fallback Mode
-  const currentCamIndex = devices.findIndex((d) => d.deviceId === (selectedDeviceId || currentDeviceId));
-
   return (
-    <div className="flex flex-col items-center space-y-4">
-      <div className="max-w-lg w-full aspect-[4/3] rounded-lg border border-gray-300 overflow-hidden bg-black flex flex-col items-center justify-center text-white relative shadow-inner">
-        {/* Video element is ALWAYS mounted while in camera mode */}
-        {hasCamera && (
-          <video
-            ref={videoRef}
-            autoPlay
-            playsInline
-            muted
-            onLoadedMetadata={(e) => {
-              const p = e.currentTarget.play();
-              if (p !== undefined) p.catch(() => {});
-              setIsStreaming(true);
-            }}
-            onPlay={() => setIsStreaming(true)}
-            className={`w-full h-full object-cover transition-opacity duration-300 ${
-              isStreaming ? "opacity-100" : "opacity-0"
-            }`}
-          />
+    <div className="space-y-3">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-ink">
+        <video
+          ref={videoRef}
+          playsInline
+          muted
+          autoPlay
+          onPlaying={() => setStreaming(true)}
+          className={`size-full object-cover transition-opacity duration-300 ${streaming ? "opacity-100" : "opacity-0"}`}
+        />
+        {/* framing guide */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-[8%] rounded-md border border-dashed border-white/50" />
+        {(starting || !streaming) && (
+          <p role="status" className="absolute inset-0 grid place-items-center text-sm text-white/80">
+            Starting camera…
+          </p>
         )}
-
-        {/* Live indicator & device switcher overlay */}
-        {isStreaming && (
-          <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-20">
-            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/90 text-white shadow-sm backdrop-blur-xs">
-              <span className="w-2 h-2 mr-1.5 rounded-full bg-white animate-pulse"></span>
-              Live Feed
-            </span>
-
-            {devices.length > 1 && (
-              <button
-                type="button"
-                onClick={handleSwitchCamera}
-                className="pointer-events-auto inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-black/60 hover:bg-black/80 text-white border border-white/20 shadow-sm backdrop-blur-xs transition-colors"
-                title={activeDeviceLabel || "Switch Camera"}
-              >
-                <svg className="w-3.5 h-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-                Switch Cam ({currentCamIndex >= 0 ? currentCamIndex + 1 : 1}/{devices.length})
-              </button>
-            )}
-          </div>
-        )}
-
-        {/* Loading overlay */}
-        {isLoading && (
-          <div className="absolute inset-0 bg-slate-950/80 flex flex-col items-center justify-center p-4 text-center z-10">
-            <svg className="animate-spin h-8 w-8 text-blue-400 mb-2" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <p className="text-sm font-medium text-gray-200">Initializing camera feed...</p>
-            <p className="text-xs text-gray-400 mt-1">Requesting video stream from device</p>
-          </div>
-        )}
-
-        {/* Error / No Camera overlay */}
-        {!isLoading && !hasCamera && (
-          <div className="p-6 text-center max-w-md z-10">
-            <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <p className="font-semibold text-gray-100 mb-1">Camera Unavailable</p>
-            <p className="text-xs text-gray-300 mb-4">{errorMsg}</p>
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setHasCamera(true);
-                  setRetryKey((k) => k + 1);
-                }}
-                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded text-sm font-medium transition-colors"
-              >
-                Retry Camera
-              </button>
-              <label className="cursor-pointer bg-blue-600 px-4 py-2 rounded text-sm text-white hover:bg-blue-700 font-medium transition-colors">
-                Upload Image
-                <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
-              </label>
-            </div>
-          </div>
+        {streaming && deviceLabel && (
+          <span className="absolute left-3 top-3 max-w-[70%] truncate rounded bg-black/60 px-2 py-1 text-xs text-white">{deviceLabel}</span>
         )}
       </div>
-
-      <div className="flex items-center space-x-3">
-        {hasCamera && (
-          <button
-            onClick={handleCapture}
-            disabled={isLoading}
-            className={`px-6 py-2.5 rounded-lg font-medium shadow-sm flex items-center space-x-2 transition-colors ${
-              isLoading
-                ? "bg-gray-400 text-white cursor-not-allowed"
-                : "bg-blue-600 text-white hover:bg-blue-700"
-            }`}
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <circle cx="12" cy="12" r="3" strokeWidth="2" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-            </svg>
-            <span>Capture Frame</span>
+      <div className="flex flex-wrap items-center gap-2">
+        <button type="button" onClick={capture} disabled={!streaming || disabled} className={buttonClass.primary}>
+          <Icon name="camera" />
+          Take photo
+        </button>
+        {devices.length > 1 && (
+          <button type="button" onClick={switchCamera} className={buttonClass.secondary}>
+            <Icon name="switch" />
+            Switch camera
           </button>
         )}
-
-        <label className="cursor-pointer px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors border border-gray-200 flex items-center space-x-1.5">
-          <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-          </svg>
-          <span>Upload File Instead</span>
-          <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
-        </label>
+        {uploadButton}
+        <button type="button" onClick={() => setCameraOn(false)} className={buttonClass.quiet}>
+          Cancel
+        </button>
       </div>
     </div>
   );

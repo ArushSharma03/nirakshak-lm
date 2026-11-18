@@ -65,7 +65,7 @@ def test_tsv_quotes_are_literal_ocr_text(monkeypatch):
     tsv += '5\t1\t1\t1\t1\t10\t10\t10\t10\t90\t"quoted\n'
     tsv += '5\t1\t1\t1\t2\t10\t30\t10\t10\t90\tquantity\n'
     monkeypatch.setattr(subprocess, "run", lambda *args, **kwargs: SimpleNamespace(stdout=tsv.encode()))
-    result = tesseract_ocr(b"fixture")
+    result = tesseract_ocr(generate_reference_marker_image())
     assert [line.text for line in result.lines] == ['"quoted', 'quantity']
 
 
@@ -215,8 +215,22 @@ def client(tmp_path, monkeypatch):
     return TestClient(app)
 
 
-def test_http_capture_analyze_reload_and_retake(client):
-    record = client.post("/inspections/", json={"product_name": "Cookies"}).json()
+@pytest.mark.parametrize("mrp", [None, 0, 25.5])
+def test_blank_setup_stays_blank_and_zero_price_survives_reload(client, mrp):
+    response = client.post("/inspections/", json={"product_name": "Wrapper sample", "declared_mrp": mrp})
+    assert response.status_code == 201
+    record = response.json()
+    assert record["declared_mrp"] == mrp
+    assert all(record[key] == "" for key in ("brand", "declared_net_qty", "location", "inspector_name"))
+    assert client.get(f"/inspections/{record['id']}").json() == record
+
+
+def test_http_capture_analyze_reload_and_retake(client, monkeypatch):
+    from app.services import ocr
+    # Keep this persistence test independent of heavyweight model availability.
+    monkeypatch.setattr(ocr, "xiaomi_ocr", lambda _: OCRResult(provider="xiaomi", model="test", status="ok",
+        lines=[OCRLine(text="Net quantity: 100 g")]))
+    record = client.post("/inspections/", json={"product_name": "Cookies <test>"}).json()
     inspection_id = record["id"]
     assert client.post(f"/inspections/{inspection_id}/analyze", json={"as_of": "2026-11-06"}).status_code == 409
     image = np.full((500, 1100, 3), 255, np.uint8)
@@ -232,15 +246,25 @@ def test_http_capture_analyze_reload_and_retake(client):
     qty = next(f for f in analysis["fields"] if f["field"] == "net_quantity")
     assert qty["value"] == "100 g", analysis
     assert qty["evidence"][0]["box"] is not None
-    assert analysis["views"]["front"]["calibration"]["status"] == "unavailable"
+    assert analysis["views"]["front"]["calibration"] is None
     assert analysis["decision"]["status"] == "unavailable"
     assert response.json()["final_outcome"] == "Manual Review Required"
     store._MEMORY_INSPECTIONS.clear()
     store._load_persisted_fallback()
     assert client.get(f"/inspections/{inspection_id}").json()["analysis"] == analysis
+    report_url = f"/inspections/{inspection_id}/report"
+    report = client.get(report_url)
+    assert report.status_code == 200
+    assert report.headers["content-disposition"].startswith("attachment")
+    assert "Cookies &lt;test&gt;" in report.text and "Cookies <test>" not in report.text
+    assert "Net quantity: 100 g" in report.text
+    assert "data:image/png;base64," in report.text
+    assert analysis["views"]["front"]["file_hash"] in report.text
+    assert client.get(report_url, params={"download": "false"}).headers["content-disposition"].startswith("inline")
     stale = Analysis.model_validate(analysis)
     replacement = client.post(f"/inspections/{inspection_id}/images", data={"view_type": "front"}, files={"file": ("test.png", png.tobytes())})
     assert replacement.json()["analysis"] is None
+    assert client.get(report_url).status_code == 409
     assert client.delete(f"/inspections/{inspection_id}/images/front").json()["views_captured"]["front"] is False
     with pytest.raises(ValueError, match="Evidence changed"):
         store.save_analysis(inspection_id, stale)

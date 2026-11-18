@@ -1,210 +1,216 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { getAnalyticsData, getInspections } from "@/lib/api";
-import { AnalyticsSummary } from "@/types";
-import StatCard from "@/components/common/StatCard";
-import LegalDisclaimer from "@/components/common/LegalDisclaimer";
+import { TopBarContent } from "@/components/layout/TopBarContent";
 
-export default function AnalyticsPage() {
-  const [data, setData] = useState<AnalyticsSummary | null>(null);
-  const [isLiveDataset, setIsLiveDataset] = useState<boolean>(false);
+import { useMemo } from "react";
+import { LoadError, progressOf, useInspections } from "@/components/InspectionLedger";
+import { providerLabel } from "@/components/AnalysisEvidence";
+import { Card, EmptyState, Loading, Meter } from "@/components/ui";
+import { CATEGORY_LABEL, VIEWS, VIEW_LABEL, fieldLabel } from "@/lib/format";
+import type { InspectionRecord, ProductCategory } from "@/types";
 
-  useEffect(() => {
-    async function load() {
-      const stats = await getAnalyticsData();
-      const { records, isLive } = await getInspections();
-      setIsLiveDataset(isLive);
+const FIELD_ORDER = ["generic_name", "net_quantity", "mrp", "manufacturer", "date", "consumer_care", "country_of_origin"];
 
-      // Merge newly added inspection sessions into summary stats
-      const liveRecords = records.filter((r) => !r.isMock || r.databaseSaved);
-      if (liveRecords.length > 0) {
-        const violationsInLive = liveRecords.filter(
-          (r) => r.outcome === "Potential Non-Compliance"
-        ).length;
-        const reviewInLive = liveRecords.filter(
-          (r) => r.outcome === "Manual Review Required"
-        ).length;
-        const compliantInLive = liveRecords.filter(
-          (r) => r.outcome === "Compliant within Implemented Checks"
-        ).length;
+function summarize(records: InspectionRecord[]) {
+  const analyzed = records.filter((r) => r.analysis);
 
-        const total = stats.totalInspections + liveRecords.length;
-        const compliantTotal =
-          Math.round((stats.complianceRate / 100) * stats.totalInspections) +
-          compliantInLive;
-        const rate = Number(((compliantTotal / total) * 100).toFixed(1));
+  const fields = FIELD_ORDER.map((field) => {
+    const tally = { observed: 0, conflict: 0, missing: 0 };
+    for (const r of analyzed) {
+      const hit = r.analysis!.fields.find((f) => f.field === field);
+      if (hit) tally[hit.status] += 1;
+    }
+    return { field, ...tally, total: tally.observed + tally.conflict + tally.missing };
+  });
 
-        setData({
-          ...stats,
-          totalInspections: total,
-          complianceRate: rate,
-          potentialViolations: stats.potentialViolations + violationsInLive,
-          manualReviewQueue: stats.manualReviewQueue + reviewInLive,
-        });
-      } else {
-        setData(stats);
+  const optics = VIEWS.map((view) => {
+    const scores = records.map((r) => r.images[view]?.quality_assessment).filter((q): q is NonNullable<typeof q> => !!q);
+    const sorted = scores.map((q) => q.composite_score).sort((a, b) => a - b);
+    const median = sorted.length ? sorted[Math.floor((sorted.length - 1) / 2)] : null;
+    return {
+      view,
+      photos: records.filter((r) => r.images[view]).length,
+      checked: scores.length,
+      median,
+      pass: scores.filter((q) => q.overall_status === "Pass").length,
+      warning: scores.filter((q) => q.overall_status === "Warning").length,
+      retake: scores.filter((q) => q.overall_status === "Retake Recommended").length,
+    };
+  });
+
+  const providers = new Map<string, { ok: number; partial: number; failed: number; unavailable: number }>();
+  for (const r of analyzed) {
+    for (const result of Object.values(r.analysis!.views)) {
+      if (!result) continue;
+      for (const ocr of result.ocr) {
+        const key = ocr.provider.startsWith("xiaomi_detail") ? "xiaomi_detail" : ocr.provider;
+        const row = providers.get(key) ?? { ok: 0, partial: 0, failed: 0, unavailable: 0 };
+        row[ocr.status] += 1;
+        providers.set(key, row);
       }
     }
-    load();
-  }, []);
+  }
+  const jevRan = analyzed.filter((r) => r.analysis!.decision.status === "ok").length;
+
+  const categories = (Object.keys(CATEGORY_LABEL) as ProductCategory[]).map((key) => ({
+    key,
+    total: records.filter((r) => r.productCategory === key).length,
+    analyzed: analyzed.filter((r) => r.productCategory === key).length,
+  }));
+
+  return { analyzed, fields, optics, providers: [...providers.entries()], jevRan, categories };
+}
+
+function Legend({ items }: { items: [string, string][] }) {
+  return (
+    <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-ink-2">
+      {items.map(([label, color]) => (
+        <li key={label} className="inline-flex items-center gap-1.5">
+          <span className={`size-2.5 rounded-sm ${color}`} aria-hidden="true" />
+          {label}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+export default function AnalyticsPage() {
+  const { records, error, reload } = useInspections();
+  const data = useMemo(() => (records ? summarize(records) : null), [records]);
 
   return (
-    <div className="space-y-6">
-      {/* Title */}
-      <div className="pb-4 border-b border-slate-200">
-        <div className="flex items-center space-x-2">
-          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-            Compliance Analytics & Screening Trends
-          </h1>
-          <span
-            className={`text-[10px] px-2 py-0.5 rounded font-mono font-bold uppercase tracking-wider ${
-              isLiveDataset
-                ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
-                : "bg-amber-100 text-amber-800 border border-amber-300"
-            }`}
-          >
-            {isLiveDataset ? "Live Sync Active" : "Demonstrator Dataset"}
-          </span>
-        </div>
-        <p className="text-xs text-slate-500 mt-1">
-          Aggregate performance statistics and statutory violation patterns across audited packaged commodities.
-        </p>
-      </div>
+    <div className="page-stack">
+      <TopBarContent
+        title="Analytics"
+        lede="Counts computed in the browser from the inspections stored on the API. Repeated test runs of the same package are counted separately. None of these figures is a compliance rate."
+      />
 
-      {/* Dataset Notice Banner */}
-      <div className="p-3 bg-slate-100 border border-slate-200 rounded-xl text-xs flex items-center justify-between text-slate-700">
-        <div className="flex items-center space-x-2">
-          <svg className="w-4 h-4 text-teal-600 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-              clipRule="evenodd"
-            />
-          </svg>
-          <span>
-            <strong>Analytics Baseline Notice:</strong> Aggregate metrics include verified reference benchmarks across Britannia, Amul, and Dettol commodities, plus your live session screenings.
-          </span>
-        </div>
-        <span className="text-[10px] font-mono text-slate-500 hidden sm:inline">LMPC 2011 Model</span>
-      </div>
+      {error && <LoadError error={error} onRetry={reload} />}
+      {!error && !records && <Loading label="Loading inspections from the API" />}
 
-      <LegalDisclaimer compact />
+      {records && data && records.length === 0 && <EmptyState title="Nothing to count yet">Analytics fill in once inspections are stored.</EmptyState>}
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          title="Total Commodities Screened"
-          value={data ? data.totalInspections : "64"}
-          subtitle="Audit sample size"
-          trend="+8 this week"
-          trendType="positive"
-        />
-        <StatCard
-          title="Overall Compliance Rate"
-          value={data ? `${data.complianceRate}%` : "78.1%"}
-          subtitle="Satisfied all implemented checks"
-          trend="Healthy"
-          trendType="positive"
-        />
-        <StatCard
-          title="Potential Violations"
-          value={data ? data.potentialViolations : "9"}
-          subtitle="Non-compliance notices pending"
-          trend="Action required"
-          trendType="negative"
-        />
-        <StatCard
-          title="Manual Review Rate"
-          value={
-            data && data.totalInspections > 0
-              ? `${((data.manualReviewQueue / data.totalInspections) * 100).toFixed(1)}%`
-              : "7.8%"
-          }
-          subtitle="Due to blur or missing scale marker"
-          trend="Calibration queue"
-          trendType="neutral"
-        />
-      </div>
-
-      {/* Charts / Distribution Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Most Frequent Non-Compliance Infractions */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
-          <h2 className="text-sm font-bold text-slate-900 mb-1">
-            Top Statutory Infractions Observed
-          </h2>
-          <p className="text-xs text-slate-500 mb-4">
-            Frequency of flagged non-compliances by Legal Metrology clause.
-          </p>
-
-          <div className="space-y-3.5">
+      {records && data && records.length > 0 && (
+        <>
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
             {[
-              { rule: "Rule 5 & Sched. II (Deficient Character Height)", count: 5, pct: "55%" },
-              { rule: "Rule 6(1)(e) (Incomplete Consumer Care Email/Phone)", count: 3, pct: "33%" },
-              { rule: "Rule 6(1)(da) (Improper MRP / Missing 'Incl. of All Taxes')", count: 2, pct: "22%" },
-              { rule: "Rule 6(1)(d) (Obscured / Indecipherable Packing Date)", count: 1, pct: "11%" },
-            ].map((infraction) => (
-              <div key={infraction.rule} className="space-y-1">
-                <div className="flex justify-between text-xs">
-                  <span className="font-semibold text-slate-800">{infraction.rule}</span>
-                  <span className="text-rose-600 font-bold">{infraction.count} flags</span>
-                </div>
-                <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                  <div className="bg-rose-500 h-2 rounded-full" style={{ width: infraction.pct }} />
-                </div>
+              ["Inspections", records.length, "Stored on the API"],
+              ["Analyzed", data.analyzed.length, "OCR and extraction run"],
+              ["Photos awaiting analysis", records.filter((r) => progressOf(r) === "awaiting").length, "Captured, not yet read"],
+              ["Jev ranking used", data.jevRan, `Of ${data.analyzed.length} analyses`],
+            ].map(([label, value, detail]) => (
+              <div key={label as string} className="rounded-xl border border-rule bg-sheet px-5 py-4">
+                <span className="block text-sm font-medium text-ink-2">{label}</span>
+                <span className="tabular mt-1 block text-xl font-semibold text-ink">{value}</span>
+                <span className="mt-0.5 block text-xs text-ink-3">{detail}</span>
               </div>
             ))}
           </div>
-        </div>
 
-        {/* Category Breakdown & Marker Scale Telemetry */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-6">
-          <div>
-            <h2 className="text-sm font-bold text-slate-900 mb-1">
-              Category Compliance Comparison
-            </h2>
-            <p className="text-xs text-slate-500 mb-4">
-              Compliance performance across the 4 approved commodity sectors.
-            </p>
+          <Card
+            title={`Declaration readings across ${data.analyzed.length} analyzed inspection${data.analyzed.length === 1 ? "" : "s"}`}
+            aside={<Legend items={[["Read", "bg-accent"], ["Conflicting", "bg-amber-500"], ["Not found", "bg-slate-300"]]} />}
+          >
+            {data.analyzed.length === 0 ? (
+              <p className="text-sm text-ink-3">No analyzed inspections yet.</p>
+            ) : (
+              <>
+                <ul className="space-y-3">
+                  {data.fields.map((f) => (
+                    <li key={f.field} className="grid gap-1.5 sm:grid-cols-[10rem_minmax(0,1fr)_12rem] sm:items-center sm:gap-4">
+                      <span className="text-sm text-ink">{fieldLabel(f.field)}</span>
+                      <span className="flex h-2.5 overflow-hidden rounded-full bg-slate-100" role="img" aria-label={`${f.observed} read, ${f.conflict} conflicting, ${f.missing} not found`}>
+                        {f.total > 0 && (
+                          <>
+                            <span className="bg-accent" style={{ width: `${(f.observed / f.total) * 100}%` }} />
+                            <span className="bg-amber-500" style={{ width: `${(f.conflict / f.total) * 100}%` }} />
+                            <span className="bg-slate-300" style={{ width: `${(f.missing / f.total) * 100}%` }} />
+                          </>
+                        )}
+                      </span>
+                      <span className="tabular text-xs text-ink-2 sm:text-right">
+                        {f.observed} read · {f.conflict} conflict · {f.missing} none
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-4 text-xs text-ink-3">&ldquo;Not found&rdquo; means OCR returned no matching text on the captured panels. It is not proof the declaration is absent from the package.</p>
+              </>
+            )}
+          </Card>
 
-            <div className="space-y-3">
-              {[
-                { name: "Food & Grocery", total: 34, compliant: 28, rate: "82.3%", color: "text-blue-600" },
-                { name: "Beverages", total: 12, compliant: 10, rate: "83.3%", color: "text-teal-600" },
-                { name: "Personal Care", total: 11, compliant: 8, rate: "72.7%", color: "text-purple-600" },
-                { name: "Household", total: 7, compliant: 5, rate: "71.4%", color: "text-indigo-600" },
-              ].map((c) => (
-                <div key={c.name} className="flex items-center justify-between text-xs py-1.5 border-b border-slate-100">
-                  <span className="font-medium text-slate-700">{c.name}</span>
-                  <div className="flex items-center space-x-3">
-                    <span className="text-slate-400 font-mono text-[11px]">{c.compliant}/{c.total} items</span>
-                    <span className={`font-bold ${c.color}`}>{c.rate}</span>
-                  </div>
-                </div>
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Card title="Photo optics by panel" bodyClass="">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <thead className="border-b border-rule bg-ground/70 text-xs text-ink-3">
+                    <tr>
+                      <th scope="col" className="px-5 py-2.5 font-medium">Panel</th>
+                      <th scope="col" className="px-3 py-2.5 text-right font-medium">Photos</th>
+                      <th scope="col" className="px-3 py-2.5 text-right font-medium">Median score</th>
+                      <th scope="col" className="px-3 py-2.5 text-right font-medium">Pass / warn / retake</th>
+                    </tr>
+                  </thead>
+                  <tbody className="tabular divide-y divide-rule">
+                    {data.optics.map((o) => (
+                      <tr key={o.view}>
+                        <td className="px-5 py-2.5 font-medium text-ink">{VIEW_LABEL[o.view]}</td>
+                        <td className="px-3 py-2.5 text-right text-ink-2">{o.photos}</td>
+                        <td className="px-3 py-2.5 text-right text-ink">{o.median ?? "—"}</td>
+                        <td className="px-3 py-2.5 text-right text-ink-2">
+                          {o.pass} / {o.warning} / {o.retake}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="border-t border-rule px-5 py-3 text-xs text-ink-3">
+                The optical score (0–100) rates sharpness, exposure, contrast, glare and resolution of the original photo. It is not OCR accuracy and says nothing about compliance.
+              </p>
+            </Card>
+
+            <Card title="OCR runs" bodyClass="">
+              <ul className="divide-y divide-rule text-sm">
+                {data.providers.length === 0 && <li className="px-5 py-3 text-ink-3">No OCR runs recorded yet.</li>}
+                {data.providers.map(([provider, row]) => {
+                  const total = row.ok + row.partial + row.failed + row.unavailable;
+                  return (
+                    <li key={provider} className="space-y-1.5 px-5 py-3">
+                      <span className="flex items-baseline justify-between gap-3">
+                        <span className="font-medium text-ink">{provider === "xiaomi_detail" ? "Xiaomi-OCR detail scans" : providerLabel(provider)}</span>
+                        <span className="tabular text-xs text-ink-2">
+                          {row.ok} ok{row.failed ? ` · ${row.failed} failed` : ""}
+                          {row.partial ? ` · ${row.partial} incomplete` : ""}
+                          {row.unavailable ? ` · ${row.unavailable} unavailable` : ""}
+                        </span>
+                      </span>
+                      <Meter value={row.ok} max={total} />
+                    </li>
+                  );
+                })}
+              </ul>
+              <p className="border-t border-rule px-5 py-3 text-xs text-ink-3">
+                Xiaomi-OCR is the primary reading. Tesseract supplies line positions only where its text matches.
+              </p>
+            </Card>
+          </div>
+
+          <Card title="Inspections by category" bodyClass="">
+            <ul className="divide-y divide-rule text-sm">
+              {data.categories.map((c) => (
+                <li key={c.key} className="grid gap-1.5 px-5 py-3 sm:grid-cols-[12rem_minmax(0,1fr)_9rem] sm:items-center sm:gap-4">
+                  <span className="text-ink">{CATEGORY_LABEL[c.key]}</span>
+                  <Meter value={c.total} max={records.length} tone={c.total ? "accent" : "neutral"} />
+                  <span className="tabular text-xs text-ink-2 sm:text-right">
+                    {c.total} stored · {c.analyzed} analyzed
+                  </span>
+                </li>
               ))}
-            </div>
-          </div>
-
-          <div className="pt-2 border-t border-slate-100">
-            <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">
-              Reference Scale Calibration Telemetry
-            </h3>
-            <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-                <span className="text-slate-500 block text-[11px]">Marker Detection Rate</span>
-                <span className="text-base font-bold text-emerald-700">92.2%</span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">ArUco 4x4 (50mm)</span>
-              </div>
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-                <span className="text-slate-500 block text-[11px]">Mean Pixel Scale</span>
-                <span className="text-base font-bold text-slate-800">4.96 px/mm</span>
-                <span className="text-[10px] text-slate-400 block mt-0.5">1080p camera capture</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+            </ul>
+          </Card>
+        </>
+      )}
     </div>
   );
 }

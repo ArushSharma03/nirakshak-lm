@@ -1,431 +1,434 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import ViewStep from "@/components/ViewStep";
-import ReviewPanel from "@/components/ReviewPanel";
-import ReferenceMarkerModal from "@/components/common/ReferenceMarkerModal";
-import {
-  createInspection,
-  uploadInspectionView,
-  getInspectionById,
-  type MarkerDetectionResult,
-} from "@/lib/api";
-import { InspectionRecord, QualityAssessment } from "@/types";
-import { analyzeInspection, removeInspectionView, type ProfileInputs } from "@/lib/analysis";
+import { TopBarContent } from "@/components/layout/TopBarContent";
 
-type ViewType = "front" | "rear" | "side";
+import { Suspense, useCallback, useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import CameraCapture from "@/components/CameraCapture";
+import QualityResult from "@/components/QualityResult";
+import { InspectionTable, LoadError, progressOf, useInspections } from "@/components/InspectionLedger";
+import { Badge, ButtonLink, Card, EmptyState, Icon, Loading, Notice, buttonClass, inputClass, qualityTone } from "@/components/ui";
+import { ApiUnavailableError, getInspectionById, removeInspectionView, uploadInspectionView } from "@/lib/api";
+import { analyzeInspection, type ProfileInputs } from "@/lib/analysis";
+import { VIEWS, VIEW_LABEL, errorText, type ViewName } from "@/lib/format";
+import type { InspectionRecord, QualityAssessment } from "@/types";
+
+type Phase = "empty" | "uploading" | "stored" | "failed";
 
 interface ViewState {
-  uploaded: boolean;
+  phase: Phase;
   blob: Blob | null;
   previewUrl: string | null;
   processedUrl: string | null;
-  markerResult: MarkerDetectionResult | null;
-  markerLoading: boolean;
-  qualityAssessment: QualityAssessment | null;
-  qualityLoading: boolean;
+  quality: QualityAssessment | null;
+  error: string | null;
 }
 
-function InspectCaptureFlow() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const inspectionId = searchParams.get("id");
+const EMPTY: ViewState = { phase: "empty", blob: null, previewUrl: null, processedUrl: null, quality: null, error: null };
 
-  const [step, setStep] = useState<number>(0);
-  const [showMarkerGuide, setShowMarkerGuide] = useState<boolean>(false);
-  const [inspection, setInspection] = useState<InspectionRecord | null>(null);
-  const [origin, setOrigin] = useState<ProfileInputs["origin"]>("unknown");
-  const [asOf, setAsOf] = useState(new Date().toISOString().slice(0, 10));
-  const [coplanarViews, setCoplanarViews] = useState<ViewType[]>([]);
-  const [processing, setProcessing] = useState(false);
-  const [useJev, setUseJev] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [, setLoadingRecord] = useState<boolean>(!!inspectionId);
+const GUIDANCE: Record<ViewName, string> = {
+  front: "The principal display panel: brand, product name and usually the net quantity.",
+  rear: "The declaration panel: manufacturer or packer address, MRP, dates, consumer care. Get all small print in focus.",
+  side: "Any side panel with batch codes, dates or remaining declarations.",
+};
 
-  const [views, setViews] = useState<Record<ViewType, ViewState>>({
-    front: { uploaded: false, blob: null, previewUrl: null, processedUrl: null, markerResult: null, markerLoading: false, qualityAssessment: null, qualityLoading: false },
-    rear: { uploaded: false, blob: null, previewUrl: null, processedUrl: null, markerResult: null, markerLoading: false, qualityAssessment: null, qualityLoading: false },
-    side: { uploaded: false, blob: null, previewUrl: null, processedUrl: null, markerResult: null, markerLoading: false, qualityAssessment: null, qualityLoading: false },
-  });
-
-  // Load inspection record if ID is provided in query params
-  useEffect(() => {
-    if (!inspectionId) return;
-
-    let isMounted = true;
-    async function load() {
-      setLoadingRecord(true);
-      const rec = await getInspectionById(inspectionId!);
-      if (isMounted && rec) {
-        setInspection(rec);
-
-        // Populate previously captured views if available
-        if (rec.images) {
-          setViews((prev) => {
-            const next = { ...prev };
-            for (const vt of ["front", "rear", "side"] as const) {
-              if (rec.images?.[vt]) {
-                const img = rec.images[vt];
-                next[vt] = {
-                  uploaded: true,
-                  blob: null,
-                  previewUrl: img.previewUrl || null,
-                  processedUrl: img.processedUrl || null,
-                  markerResult: {
-                    detected: !!img.marker_detected,
-                    bounding_box: null,
-                    pixel_width: img.pixel_width || null,
-                    pixel_height: img.pixel_height || null,
-                    score: img.score || null,
-                    estimated_ppm: img.estimated_ppm || null,
-                    message: img.marker_detected
-                      ? "Calibrated reference marker detected."
-                      : "Reference marker not detected.",
-                  },
-                  markerLoading: false,
-                  qualityAssessment: img.quality_assessment || null,
-                  qualityLoading: false,
-                };
-              }
-            }
-            return next;
-          });
-        }
-      }
-      if (isMounted) setLoadingRecord(false);
-    }
-
-    load();
-    return () => {
-      isMounted = false;
+function viewsFromRecord(record: InspectionRecord): Record<ViewName, ViewState> {
+  const out = { front: EMPTY, rear: EMPTY, side: EMPTY };
+  for (const view of VIEWS) {
+    const img = record.images[view];
+    if (!img) continue;
+    out[view] = {
+      phase: "stored",
+      blob: null,
+      previewUrl: img.previewUrl ?? null,
+      processedUrl: img.processedUrl ?? null,
+      quality: img.quality_assessment ?? null,
+      error: null,
     };
+  }
+  return out;
+}
+
+type Tab = ViewName | "analyze";
+
+function InspectFlow({ inspectionId }: { inspectionId: string }) {
+  const router = useRouter();
+  const [record, setRecord] = useState<InspectionRecord | null>(null);
+  const [loadState, setLoadState] = useState<"loading" | "ready" | "missing" | "error">("loading");
+  const [loadError, setLoadError] = useState("");
+  const [views, setViews] = useState<Record<ViewName, ViewState>>({ front: EMPTY, rear: EMPTY, side: EMPTY });
+  const [tab, setTab] = useState<Tab>("front");
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  const [origin, setOrigin] = useState<ProfileInputs["origin"]>("unknown");
+  const [asOf, setAsOf] = useState(() => new Date().toISOString().slice(0, 10));
+  const [useJev, setUseJev] = useState(false);
+  const [reuseOcr, setReuseOcr] = useState(false);
+  const [processing, setProcessing] = useState(false);
+
+  const load = useCallback(async () => {
+    setLoadState("loading");
+    try {
+      const found = await getInspectionById(inspectionId);
+      if (!found) {
+        setLoadState("missing");
+        return;
+      }
+      setRecord(found);
+      if (found.analysis) {
+        setOrigin(found.analysis.profile.inputs.origin);
+        setAsOf(found.analysis.profile.inputs.as_of);
+      }
+      const initial = viewsFromRecord(found);
+      setViews(initial);
+      const firstMissing = VIEWS.find((v) => initial[v].phase === "empty");
+      setTab(found.analysis ? "analyze" : (firstMissing ?? "analyze"));
+      setLoadState("ready");
+    } catch (cause) {
+      setLoadError(cause instanceof ApiUnavailableError ? "The inspection API is offline. Start the backend on port 8000 and try again." : errorText(cause, "Could not load the inspection."));
+      setLoadState("error");
+    }
   }, [inspectionId]);
 
-  const updateView = (type: ViewType, updates: Partial<ViewState>) => {
-    setViews((prev) => ({
-      ...prev,
-      [type]: { ...prev[type], ...updates },
-    }));
-  };
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void load();
+  }, [load]);
 
-  const handleCapture = async (type: ViewType, blob: Blob, previewUrl: string) => {
-    setError(null);
-    updateView(type, {
-      uploaded: false,
-      processedUrl: null,
-      blob,
-      previewUrl,
-      markerLoading: true,
-      qualityLoading: true,
-      markerResult: null,
-      qualityAssessment: null,
-    });
+  const patch = (view: ViewName, next: Partial<ViewState>) => setViews((prev) => ({ ...prev, [view]: { ...prev[view], ...next } }));
 
-    let currentId = inspection?.id || inspectionId;
-    if (!currentId) {
-      try {
-        const created = await createInspection({
-          productName: "Generic Packaged Commodity",
-          productCategory: "food_grocery",
-          brand: "Standard Test Commodity",
-        });
-        currentId = created.id;
-        setInspection(created);
-      } catch {
-        currentId = `INS-LOCAL-${Date.now()}`;
-      }
-    }
-
+  async function upload(view: ViewName, blob: Blob, previewUrl: string) {
+    setActionError(null);
+    patch(view, { ...EMPTY, phase: "uploading", blob, previewUrl });
     try {
-      const uploadRes = await uploadInspectionView(currentId, type, blob);
-      updateView(type, {
-        uploaded: uploadRes.record !== null,
-        markerResult: uploadRes.markerResult,
-        qualityAssessment: uploadRes.qualityAssessment,
-        processedUrl: uploadRes.processedUrl,
-        markerLoading: false,
-        qualityLoading: false,
-      });
-      if (uploadRes.record) {
-        setInspection(uploadRes.record);
-      }
-    } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : "Unknown error";
-      setError(errorMessage);
-      updateView(type, {
-        markerLoading: false,
-        qualityLoading: false,
-        markerResult: {
-          detected: false,
-          bounding_box: null,
-          pixel_width: null,
-          pixel_height: null,
-          score: null,
-          message: `Detection failed: ${errorMessage}`,
-        },
-      });
+      const result = await uploadInspectionView(inspectionId, view, blob);
+      setRecord(result.record);
+      patch(view, { phase: "stored", quality: result.qualityAssessment, processedUrl: result.processedUrl, error: null });
+    } catch (cause) {
+      patch(view, { phase: "failed", error: errorText(cause, "Upload failed.") });
     }
-  };
+  }
 
-  const handleRetake = async (type: ViewType) => {
-    const targetId = inspection?.id || inspectionId;
-    if (targetId) {
+  async function discard(view: ViewName) {
+    setActionError(null);
+    if (views[view].phase === "stored") {
       try {
-        await removeInspectionView(targetId, type);
-      } catch (error) {
-        setError(error instanceof Error ? error.message : "Could not remove stored view. Retry when the backend is available.");
+        setRecord(await removeInspectionView(inspectionId, view));
+      } catch (cause) {
+        setActionError(`The stored ${view} photo was not removed: ${errorText(cause, "the API did not respond")}.`);
         return;
       }
     }
-    setCoplanarViews((current) => current.filter((view) => view !== type));
-    updateView(type, {
-      uploaded: false,
-      blob: null,
-      previewUrl: null,
-      processedUrl: null,
-      markerResult: null,
-      markerLoading: false,
-      qualityAssessment: null,
-      qualityLoading: false,
-    });
-  };
+    patch(view, EMPTY);
+  }
 
-  const handleSubmit = async () => {
-    const targetId = inspection?.id || inspectionId;
-    if (targetId) {
-      setProcessing(true);
-      setError(null);
-      try {
-        await analyzeInspection(targetId, { origin, as_of: asOf, coplanar_views: coplanarViews, use_jev: useJev });
-        router.push(`/reports?id=${encodeURIComponent(targetId)}`);
-      } catch (error) {
-        setError(error instanceof Error ? error.message : "Analysis failed. Check backend availability and retry.");
-      } finally {
-        setProcessing(false);
-      }
-    } else {
-      router.push("/inspections");
+  async function analyze() {
+    setProcessing(true);
+    setActionError(null);
+    try {
+      await analyzeInspection(inspectionId, { origin, as_of: asOf, use_jev: useJev, reuse_ocr: reuseOcr && Boolean(record?.analysis) });
+      router.push(`/reports?id=${encodeURIComponent(inspectionId)}`);
+    } catch (cause) {
+      setActionError(`Analysis did not complete: ${errorText(cause, "check that the API is online")}. Your photos are still stored; try again.`);
+      setProcessing(false);
     }
-  };
+  }
 
-  const steps = ["Start", "Front", "Rear", "Side", "Review"];
+  if (loadState === "loading") return <Loading label={`Loading ${inspectionId}`} />;
+  if (loadState === "missing")
+    return (
+      <Notice tone="danger" title={`No inspection ${inspectionId} on the API`} action={<ButtonLink href="/inspections/new">New inspection</ButtonLink>}>
+        It may have been created against another backend. Start a new inspection instead.
+      </Notice>
+    );
+  if (loadState === "error" || !record)
+    return (
+      <Notice tone="danger" title="The inspection could not be loaded" action={<button type="button" onClick={load} className={buttonClass.secondary}>Try again</button>}>
+        {loadError}
+      </Notice>
+    );
+
+  const stored = VIEWS.filter((v) => views[v].phase === "stored");
+  const busy = VIEWS.some((v) => views[v].phase === "uploading") || processing;
 
   return (
-    <div className="min-h-full bg-gray-50 flex flex-col">
-      <header className="bg-white border-b border-gray-200 px-6 py-4 flex flex-col items-center">
-        <div className="w-full max-w-2xl flex flex-col sm:flex-row items-center justify-between gap-2 mb-4">
-          <h1 className="text-xl font-bold text-gray-800">Inspection Capture</h1>
+    <div className="page-stack">
+      <TopBarContent
+        title={`Guided capture · ${record.productName}`}
+        lede={<><span className="serial">{record.id}</span>{record.notes && <> · Photo source: {record.notes}</>}</>}
+        actions={<>
+          <ButtonLink href="/inspections" variant="secondary">Inspection history</ButtonLink>
+          {record.analysis && <ButtonLink href={`/reports?id=${encodeURIComponent(record.id)}`} variant="secondary">Open report</ButtonLink>}
+        </>}
+      />
 
-          {/* Active Inspection Profile Pill */}
-          {inspection && (
-            <div className="bg-slate-100 border border-slate-200 rounded-lg px-3 py-1 text-xs flex items-center space-x-2 text-slate-700">
-              <span className="font-mono font-bold text-slate-900">{inspection.id}</span>
-              <span>&bull;</span>
-              <span className="font-semibold truncate max-w-[140px] sm:max-w-[200px]">
-                {inspection.productName}
+      <nav aria-label="Capture steps" className="grid grid-cols-4 overflow-hidden rounded-xl border border-rule bg-sheet shadow-[0_1px_2px_rgb(15_23_42/0.04)]">
+        {[...VIEWS, "analyze" as const].map((key) => {
+          const active = tab === key;
+          const state = key === "analyze" ? null : views[key];
+          return (
+            <button
+              key={key}
+              type="button"
+              aria-current={active ? "step" : undefined}
+              onClick={() => setTab(key)}
+              disabled={processing}
+              className={`relative flex min-h-14 flex-col items-start justify-center gap-0.5 border-r border-rule px-3 text-left last:border-r-0 sm:px-4 transition-colors ${active ? "bg-accent-wash" : "hover:bg-ground"}`}
+            >
+              <span className={`text-sm font-semibold ${active ? "text-accent" : "text-ink"}`}>{key === "analyze" ? "Analyze" : VIEW_LABEL[key]}</span>
+              <span className="hidden text-xs text-ink-3 sm:block">
+                {state === null
+                  ? `${stored.length} of 3 photos`
+                  : state.phase === "stored"
+                    ? "Stored"
+                    : state.phase === "uploading"
+                      ? "Uploading…"
+                      : state.phase === "failed"
+                        ? "Upload failed"
+                        : "No photo"}
               </span>
-              <span className="hidden sm:inline">&bull;</span>
-              <span className="hidden sm:inline text-slate-500">Net: {inspection.declaredNetQty}</span>
-            </div>
-          )}
-        </div>
+              {state?.phase === "stored" && <Icon name="check" className="absolute right-2 top-2 size-3.5 text-ok sm:right-3 sm:top-3" />}
+              {active && <span className="absolute inset-x-0 bottom-0 h-0.5 bg-accent" />}
+            </button>
+          );
+        })}
+      </nav>
 
-        {/* Progress indicator */}
-        <div className="flex items-center space-x-2 text-sm max-w-lg w-full justify-between">
-          {steps.map((s, i) => (
-            <div key={s} className="flex items-center">
-              <span
-                className={`w-8 h-8 rounded-full flex items-center justify-center font-medium ${
-                  step === i
-                    ? "bg-blue-600 text-white"
-                    : step > i
-                    ? "bg-green-100 text-green-700"
-                    : "bg-gray-100 text-gray-500"
-                }`}
-              >
-                {step > i ? "✓" : i}
-              </span>
-              <span
-                className={`ml-2 hidden sm:block ${
-                  step === i ? "text-gray-900 font-medium" : "text-gray-500"
-                }`}
-              >
-                {s}
-              </span>
-              {i < steps.length - 1 && (
-                <div className="w-4 sm:w-8 h-[2px] mx-2 bg-gray-200"></div>
-              )}
-            </div>
-          ))}
-        </div>
-      </header>
+      {actionError && <Notice tone="danger" title="Something did not work">{actionError}</Notice>}
 
-      <main className="flex-grow p-6 flex items-center justify-center">
-        {error && <p role="alert" className="p-3 text-sm text-red-800 bg-red-50 border border-red-200 rounded">{error}</p>}
-        {step === 0 && (
-          <div className="max-w-xl mx-auto p-8 bg-white rounded-xl shadow-sm border border-gray-100 text-center">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
-              {inspection ? `Capture: ${inspection.productName}` : "New Inspection Capture"}
-            </h2>
-            <p className="text-gray-600 mb-6 text-sm leading-relaxed">
-              You will be guided to capture three views of the packaged commodity: front, rear, and side panels.
-              Each capture automatically evaluates sharpness, exposure balance, contrast, and specular glare,
-              and generates a contrast-enhanced preprocessed copy.
-            </p>
-
-            {inspection && (
-              <div className="p-4 mb-6 bg-blue-50/70 border border-blue-200 rounded-lg text-left text-xs space-y-1.5">
-                <div className="flex justify-between items-center text-blue-900 font-semibold">
-                  <span>Registered Inspection Record:</span>
-                  <span className="font-mono bg-white px-2 py-0.5 rounded border border-blue-200 text-blue-800">
-                    {inspection.id}
-                  </span>
-                </div>
-                <div className="text-slate-600">
-                  Brand: <strong>{inspection.brand}</strong> &bull; Declared Net Qty: <strong>{inspection.declaredNetQty}</strong> &bull; MRP: <strong>₹{inspection.declaredMRP}</strong>
-                </div>
-              </div>
-            )}
-
-            <div className="p-4 mb-6 bg-slate-50 border border-slate-200 rounded-lg text-left text-xs space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-slate-900 uppercase tracking-wide">Standard Reference Marker:</span>
-                <span className="px-2 py-0.5 rounded font-mono font-bold bg-teal-100 text-teal-800 border border-teal-300">
-                  ArUco 4x4_50 (ID 0)
-                </span>
-              </div>
-              <p className="text-slate-600 leading-normal">
-                Standard calibrated side-length is 50.0 mm (5.0 cm). The outer white margin (quiet zone) must remain completely visible for contour detection.
+      {tab !== "analyze" ? (
+        <ViewPanel
+          view={tab}
+          state={views[tab]}
+          onCapture={(blob, url) => upload(tab, blob, url)}
+          onRetry={() => views[tab].blob && views[tab].previewUrl && upload(tab, views[tab].blob!, views[tab].previewUrl!)}
+          onDiscard={() => discard(tab)}
+          onNext={() => setTab(tab === "front" ? "rear" : tab === "rear" ? "side" : "analyze")}
+        />
+      ) : (
+        <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
+          <div className="space-y-4">
+            <h2 className="text-base font-semibold">Photos going into analysis</h2>
+            <ul className="grid gap-3 sm:grid-cols-3">
+              {VIEWS.map((view) => {
+                const state = views[view];
+                return (
+                  <li key={view} className="overflow-hidden rounded-xl border border-rule bg-sheet shadow-[0_1px_2px_rgb(15_23_42/0.04)]">
+                    <div className="aspect-[4/3] bg-ground">
+                      {state.phase === "stored" && state.previewUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={state.previewUrl} alt={`${VIEW_LABEL[view]} panel`} className="size-full object-contain" />
+                      ) : (
+                        <span className="grid size-full place-items-center text-sm text-ink-3">No photo</span>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2.5">
+                      <span className="text-sm font-semibold">{VIEW_LABEL[view]}</span>
+                      {state.quality ? (
+                        <Badge tone={qualityTone(state.quality.overall_status)}>Optics {state.quality.composite_score}</Badge>
+                      ) : (
+                        <button type="button" onClick={() => setTab(view)} className="text-xs font-semibold text-accent hover:underline">
+                          Add photo
+                        </button>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+            {stored.length > 0 && stored.length < 3 && (
+              <p className="text-sm text-ink-2">
+                Missing panels are recorded as &ldquo;no captured evidence&rdquo;. Declarations printed only on those panels will show as missing.
               </p>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
-              >
-                Start Capture
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowMarkerGuide(true)}
-                className="px-5 py-3 bg-slate-100 text-slate-800 font-medium rounded-lg hover:bg-slate-200 transition-colors border border-slate-300 text-sm flex items-center space-x-1.5"
-              >
-                <svg className="w-4 h-4 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
-                  />
-                </svg>
-                <span>View / Print 50mm Marker</span>
-              </button>
-            </div>
-
-            <ReferenceMarkerModal isOpen={showMarkerGuide} onClose={() => setShowMarkerGuide(false)} />
+            )}
+            {stored.some((v) => views[v].quality?.overall_status === "Retake Recommended") && (
+              <Notice tone="warn" title="Retake recommended for some photos">
+                OCR may miss small print on {stored.filter((v) => views[v].quality?.overall_status === "Retake Recommended").map((v) => VIEW_LABEL[v].toLowerCase()).join(", ")}. You can still analyze.
+              </Notice>
+            )}
+            {record.analysis && (
+              <p className="text-sm text-ink-2">
+                This inspection already has an analysis.{" "}
+                <Link href={`/reports?id=${encodeURIComponent(record.id)}`} className="font-semibold text-accent hover:underline">
+                  Open the report
+                </Link>{" "}
+                or run it again to replace it.
+              </p>
+            )}
           </div>
-        )}
 
-        {step === 1 && (
-          <ViewStep
-            viewType="front"
-            label="Front View"
-            instructions="Position the front panel of the package facing the camera. Place the reference marker visibly in the frame."
-            capturedBlob={views.front.blob}
-            capturedPreview={views.front.previewUrl}
-            markerResult={views.front.markerResult}
-            markerLoading={views.front.markerLoading}
-            qualityAssessment={views.front.qualityAssessment}
-            qualityLoading={views.front.qualityLoading}
-            processedUrl={views.front.processedUrl}
-            onCapture={(blob, url) => handleCapture("front", blob, url)}
-            onRetake={() => handleRetake("front")}
-            onNext={() => setStep(2)}
-            canProceed={views.front.uploaded && !!views.front.previewUrl && !views.front.markerLoading && !views.front.qualityLoading}
-          />
-        )}
-
-        {step === 2 && (
-          <ViewStep
-            viewType="rear"
-            label="Rear View"
-            instructions="Position the rear panel of the package facing the camera. Ensure all text and barcode are clearly visible. Place the reference marker in frame."
-            capturedBlob={views.rear.blob}
-            capturedPreview={views.rear.previewUrl}
-            markerResult={views.rear.markerResult}
-            markerLoading={views.rear.markerLoading}
-            qualityAssessment={views.rear.qualityAssessment}
-            qualityLoading={views.rear.qualityLoading}
-            processedUrl={views.rear.processedUrl}
-            onCapture={(blob, url) => handleCapture("rear", blob, url)}
-            onRetake={() => handleRetake("rear")}
-            onNext={() => setStep(3)}
-            canProceed={views.rear.uploaded && !!views.rear.previewUrl && !views.rear.markerLoading && !views.rear.qualityLoading}
-          />
-        )}
-
-        {step === 3 && (
-          <ViewStep
-            viewType="side"
-            label="Side View"
-            instructions="Position the side panel of the package facing the camera. Place the reference marker in the frame."
-            capturedBlob={views.side.blob}
-            capturedPreview={views.side.previewUrl}
-            markerResult={views.side.markerResult}
-            markerLoading={views.side.markerLoading}
-            qualityAssessment={views.side.qualityAssessment}
-            qualityLoading={views.side.qualityLoading}
-            processedUrl={views.side.processedUrl}
-            onCapture={(blob, url) => handleCapture("side", blob, url)}
-            onRetake={() => handleRetake("side")}
-            onNext={() => setStep(4)}
-            canProceed={views.side.uploaded && !!views.side.previewUrl && !views.side.markerLoading && !views.side.qualityLoading}
-          />
-        )}
-
-        {step === 4 && (
-          <div className="w-full max-w-4xl space-y-4">
-            <div className="bg-white border rounded-lg p-4 text-sm space-y-3">
-              <h2 className="font-bold">Analysis inputs</h2>
-              <label className="flex items-center gap-2"><input type="checkbox" checked={useJev} onChange={(event) => setUseJev(event.target.checked)} />Use Jev for evidence recommendations, consumes TypeSafe credits</label>
-              <label className="block">Package origin <select className="border rounded ml-2 p-1" value={origin} onChange={(event) => {
-                const value = event.target.value;
-                if (value === "domestic" || value === "imported" || value === "unknown") setOrigin(value);
-              }}><option value="unknown">Unknown, review required</option><option value="domestic">Domestic</option><option value="imported">Imported</option></select></label>
-              <label className="block">Rule effective date <input className="border rounded ml-2 p-1" type="date" value={asOf} onChange={(event) => setAsOf(event.target.value)} /></label>
-              <p className="text-xs text-slate-600">Confirm each view only if the printed marker measures 50 mm and lies in the same flat plane as the label.</p>
-              {(["front", "rear", "side"] as const).map((view) => <label key={view} className="inline-flex items-center gap-2 mr-4"><input type="checkbox" checked={coplanarViews.includes(view)} onChange={(event) => setCoplanarViews((current) => event.target.checked ? [...current, view] : current.filter((item) => item !== view))} />{view}</label>)}
-              {processing && <p role="status">Running local OCR, extraction, fusion and profile selection. The first run downloads model weights and can take several minutes.</p>}
-            </div>
-          <ReviewPanel
-            processing={processing}
-            views={[
-              { viewType: "front", label: "Front View", previewUrl: views.front.previewUrl, processedUrl: views.front.processedUrl, markerResult: views.front.markerResult, qualityAssessment: views.front.qualityAssessment },
-              { viewType: "rear", label: "Rear View", previewUrl: views.rear.previewUrl, processedUrl: views.rear.processedUrl, markerResult: views.rear.markerResult, qualityAssessment: views.rear.qualityAssessment },
-              { viewType: "side", label: "Side View", previewUrl: views.side.previewUrl, processedUrl: views.side.processedUrl, markerResult: views.side.markerResult, qualityAssessment: views.side.qualityAssessment },
-            ]}
-            onRetake={(type) => {
-              if (processing) return;
-              if (type === "front") setStep(1);
-              if (type === "rear") setStep(2);
-              if (type === "side") setStep(3);
+          <form
+            className="h-fit space-y-5 rounded-xl border border-rule bg-sheet p-5 shadow-[0_1px_2px_rgb(15_23_42/0.04)] lg:sticky lg:top-6"
+            onSubmit={(e) => {
+              e.preventDefault();
+              void analyze();
             }}
-            onSubmit={handleSubmit}
-          />
-          </div>
-        )}
-      </main>
+          >
+            <h2 className="text-base font-bold">Analysis settings</h2>
+            {record.analysis && (
+              <label className="flex items-start gap-2 text-sm">
+                <input type="checkbox" checked={reuseOcr} onChange={(e) => setReuseOcr(e.target.checked)} className="mt-1" />
+                <span>Use stored transcripts<span className="mt-1 block text-xs text-ink-3">Rebuild extraction and checks without running OCR. Incomplete or misread text still needs a fresh photo analysis.</span></span>
+              </label>
+            )}
+            <label className="block text-sm font-medium">
+              Package origin
+              <select value={origin} onChange={(e) => setOrigin(e.target.value as ProfileInputs["origin"])} className={inputClass}>
+                <option value="unknown">Unknown (profile needs review)</option>
+                <option value="domestic">Domestic</option>
+                <option value="imported">Imported</option>
+              </select>
+            </label>
+            <label className="block text-sm font-medium">
+              Rules in force on
+              <input type="date" required value={asOf} onChange={(e) => setAsOf(e.target.value)} className={inputClass} />
+            </label>
+            <label className="flex items-start gap-2 text-sm">
+              <input type="checkbox" checked={useJev} onChange={(e) => setUseJev(e.target.checked)} className="mt-0.5 size-4 accent-accent" />
+              <span>
+                Ask Jev to rank candidate readings
+                <span className="block text-xs text-ink-3">Optional. Uses paid TypeSafe credits.</span>
+              </span>
+            </label>
+            <button type="submit" disabled={stored.length === 0 || busy} className={`${buttonClass.primary} w-full`}>
+              {processing ? "Analyzing…" : stored.length === 0 ? "Add a photo first" : reuseOcr && record.analysis ? "Rebuild from stored text" : `Analyze ${stored.length} photo${stored.length > 1 ? "s" : ""}`}
+            </button>
+            {processing && (
+              <p role="status" className="text-xs leading-relaxed text-ink-2">
+                {reuseOcr && record.analysis ? "Rebuilding extraction and checks from the stored transcripts. No OCR model is running." : "Running OCR, extraction and profile selection on the server. On CPU, or on the first run while model weights download, this can take several minutes. Keep this tab open."}
+              </p>
+            )}
+          </form>
+        </section>
+      )}
+
     </div>
   );
 }
 
+function ViewPanel({
+  view,
+  state,
+  onCapture,
+  onRetry,
+  onDiscard,
+  onNext,
+}: {
+  view: ViewName;
+  state: ViewState;
+  onCapture: (blob: Blob, url: string) => void;
+  onRetry: () => void;
+  onDiscard: () => void;
+  onNext: () => void;
+}) {
+  const nextLabel = view === "front" ? "Rear" : view === "rear" ? "Side" : "Analyze";
+  return (
+    <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start">
+      <div className="space-y-3">
+        <div>
+          <h2 className="text-base font-semibold">{VIEW_LABEL[view]} panel</h2>
+          <p className="text-sm text-ink-2">{GUIDANCE[view]}</p>
+        </div>
+        {state.phase === "empty" ? (
+          <CameraCapture onCapture={onCapture} />
+        ) : (
+          <div className="space-y-3">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-slate-900">
+              {state.previewUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={state.previewUrl} alt={`${VIEW_LABEL[view]} panel photo`} className="size-full object-contain" />
+              )}
+              {state.phase === "uploading" && (
+                <p role="status" className="absolute inset-x-0 bottom-0 bg-slate-900/85 px-3 py-2 text-sm text-white">
+                  Uploading and checking optics…
+                </p>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {state.phase === "failed" && (
+                <button type="button" onClick={onRetry} className={buttonClass.primary}>
+                  Retry upload
+                </button>
+              )}
+              <button type="button" onClick={onDiscard} disabled={state.phase === "uploading"} className={buttonClass.secondary}>
+                <Icon name="retake" />
+                {state.phase === "stored" ? "Remove and retake" : "Discard"}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="space-y-3">
+        {state.phase === "failed" && (
+          <Notice tone="danger" title="This photo is not stored">
+            {state.error} Retry, or discard and take it again.
+          </Notice>
+        )}
+        {state.phase === "empty" && (
+          <div className="hidden rounded-xl border border-dashed border-rule-strong px-4 py-6 text-sm text-ink-2 lg:block">
+            After upload you will see the photo&rsquo;s optical check. Panels are optional; skip any that carry no declarations.
+          </div>
+        )}
+        {state.phase === "stored" && (
+          <>
+            <QualityResult assessment={state.quality} rawPreviewUrl={state.previewUrl} processedUrl={state.processedUrl} />
+          </>
+        )}
+        <div className="flex justify-end pt-1">
+          <button type="button" onClick={onNext} disabled={state.phase === "uploading"} className={state.phase === "stored" ? buttonClass.primary : buttonClass.secondary}>
+            {state.phase === "stored" ? "Next" : "Skip"}: {nextLabel}
+            <Icon name="arrowRight" />
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ContinueList() {
+  const { records, error, reload } = useInspections();
+  const open = records?.filter((r) => progressOf(r) !== "analyzed") ?? [];
+  return (
+    <div className="page-stack">
+      <TopBarContent
+        title="Guided capture"
+        lede="Photos are stored against an inspection. Continue one that still needs photos or analysis, or set up a new package."
+        actions={
+          <ButtonLink href="/inspections/new">
+            <Icon name="plus" />
+            New inspection
+          </ButtonLink>
+        }
+      />
+      {error && <LoadError error={error} onRetry={reload} />}
+      {!error && records === null && <Loading label="Loading inspections from the API" />}
+      {records && (
+        <Card title="Waiting for photos or analysis" aside={<span className="text-xs text-ink-3">{open.length} of {records.length}</span>} bodyClass="">
+          {open.length > 0 ? (
+            <InspectionTable records={open} compact />
+          ) : (
+            <div className="p-5">
+              <EmptyState title="Nothing in progress">Every stored inspection has been analyzed. Start a new one to photograph another package.</EmptyState>
+            </div>
+          )}
+        </Card>
+      )}
+    </div>
+  );
+}
+
+function InspectRoute() {
+  const id = useSearchParams().get("id");
+  if (!id) return <ContinueList />;
+  return <InspectFlow key={id} inspectionId={id} />;
+}
+
 export default function InspectPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center text-slate-500 text-sm">Loading inspection capture session...</div>}>
-      <InspectCaptureFlow />
+    <Suspense fallback={<Loading label="Loading capture" />}>
+      <InspectRoute />
     </Suspense>
   );
 }

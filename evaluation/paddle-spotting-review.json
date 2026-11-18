@@ -1,0 +1,6118 @@
+{
+  "model": "PaddlePaddle/PaddleOCR-VL-1.6",
+  "revision": "132c45f52c0a26ed5a6b2f6bd8e3985794cc27dd",
+  "prompt": "Spotting:",
+  "device": "cpu",
+  "dtype": "float32",
+  "threads": 4,
+  "torch": "2.14.0+cpu",
+  "transformers": "5.17.0",
+  "platform": "Linux-7.3.4-1-cachyos-bore-lto-x86_64-with-glibc2.44",
+  "max_new_tokens": 4096,
+  "max_time_seconds": 300,
+  "min_pixels": 112896,
+  "max_pixels": 1605632,
+  "scope": "Three catalogue images, no crops or second OCR model. Raw spotting quality and CPU feasibility diagnostic; not full accuracy or physical camera validation.",
+  "results": [
+    {
+      "id": "maggi",
+      "file": "maggi-single.jpg",
+      "sha256": "f4690723bc0eae0ca32045f2be49a5bf875feb6aa192eec89fe95e26c53c139e",
+      "original_dimensions": [
+        2000,
+        2000
+      ],
+      "processed_dimensions": [
+        2000,
+        2000
+      ],
+      "elapsed_seconds": 299.67,
+      "generated_tokens": 2083,
+      "completed_eos": false,
+      "raw_output": "Terms and Conditions:<|LOC_606|><|LOC_130|><|LOC_646|><|LOC_130|><|LOC_646|><|LOC_143|><|LOC_606|><|LOC_143|>\nLimited Period Program on MAGSO® Noodles 70 g and 40 g, Program valid For<|LOC_608|><|LOC_143|><|LOC_744|><|LOC_143|><|LOC_744|><|LOC_158|><|LOC_608|><|LOC_158|>\nSTEP 1:<|LOC_511|><|LOC_158|><|LOC_537|><|LOC_158|><|LOC_537|><|LOC_173|><|LOC_511|><|LOC_173|>\nIndia including Tamil Nadu for a period from 1st August 2000 to 30th September.<|LOC_608|><|LOC_158|><|LOC_744|><|LOC_158|><|LOC_744|><|LOC_172|><|LOC_608|><|LOC_172|>\nScan the QR Code<|LOC_511|><|LOC_174|><|LOC_567|><|LOC_174|><|LOC_567|><|LOC_190|><|LOC_511|><|LOC_190|>\n2001. One entry allowed from one mobile number. Participation is optional. For<|LOC_608|><|LOC_172|><|LOC_744|><|LOC_172|><|LOC_744|><|LOC_186|><|LOC_608|><|LOC_186|>\nSCAN TO PARTICIPATE<|LOC_277|><|LOC_185|><|LOC_392|><|LOC_184|><|LOC_392|><|LOC_210|><|LOC_277|><|LOC_211|>\nSTEP 2:<|LOC_511|><|LOC_195|><|LOC_537|><|LOC_195|><|LOC_537|><|LOC_210|><|LOC_511|><|LOC_210|>\nTamil Nadu - Participant will answer a question while registering and Use winner<|LOC_608|><|LOC_186|><|LOC_744|><|LOC_186|><|LOC_744|><|LOC_200|><|LOC_608|><|LOC_200|>\nwill be chosen basis creatively and unipotency of response during the entire<|LOC_608|><|LOC_200|><|LOC_744|><|LOC_200|><|LOC_744|><|LOC_214|><|LOC_608|><|LOC_214|>\nEnter details - Name.<|LOC_511|><|LOC_211|><|LOC_577|><|LOC_211|><|LOC_577|><|LOC_227|><|LOC_511|><|LOC_227|>\nprogram period. Minutes stand-up to win a gold low worth 75 Lacs and<|LOC_608|><|LOC_214|><|LOC_744|><|LOC_214|><|LOC_744|><|LOC_228|><|LOC_608|><|LOC_228|>\nMobile Number, State and<|LOC_511|><|LOC_227|><|LOC_591|><|LOC_227|><|LOC_591|><|LOC_242|><|LOC_511|><|LOC_242|>\ngold muchers worth 2000. For queries participants can call +1951194508<|LOC_608|><|LOC_228|><|LOC_744|><|LOC_228|><|LOC_744|><|LOC_242|><|LOC_608|><|LOC_242|>\nLot No. (Find the lot number<|LOC_511|><|LOC_242|><|LOC_597|><|LOC_242|><|LOC_597|><|LOC_257|><|LOC_511|><|LOC_257|>\nor email us at customersare@Him.co.in from Monday to Friday between 10:00-12:00.<|LOC_608|><|LOC_242|><|LOC_744|><|LOC_242|><|LOC_744|><|LOC_256|><|LOC_608|><|LOC_256|>\non the side panel of pack<|LOC_511|><|LOC_257|><|LOC_590|><|LOC_257|><|LOC_590|><|LOC_273|><|LOC_511|><|LOC_273|>\nAM to 8:00 PM and Saturday between 10:00 AM to 2:00 PM except Sunday public<|LOC_608|><|LOC_256|><|LOC_744|><|LOC_256|><|LOC_744|><|LOC_270|><|LOC_608|><|LOC_270|>\nSTEP 3:<|LOC_511|><|LOC_275|><|LOC_537|><|LOC_275|><|LOC_537|><|LOC_291|><|LOC_511|><|LOC_291|>\nholidays. Meets India will not be able for complaints regarding the quality of the<|LOC_608|><|LOC_270|><|LOC_744|><|LOC_270|><|LOC_744|><|LOC_284|><|LOC_608|><|LOC_284|>\nprices, how will be governed by the privacy policy of India, India, Meets reserves<|LOC_608|><|LOC_284|><|LOC_744|><|LOC_284|><|LOC_744|><|LOC_298|><|LOC_608|><|LOC_298|>\nStand a Chance to win a<|LOC_511|><|LOC_293|><|LOC_586|><|LOC_293|><|LOC_586|><|LOC_308|><|LOC_511|><|LOC_308|>\nthe right to cancel or modify the program without any notice. Participation<|LOC_608|><|LOC_298|><|LOC_744|><|LOC_298|><|LOC_744|><|LOC_311|><|LOC_608|><|LOC_311|>\ngold bowl and gold<|LOC_511|><|LOC_308|><|LOC_571|><|LOC_308|><|LOC_571|><|LOC_324|><|LOC_511|><|LOC_324|>\nindicates consent despite being registered with DINDCPR. Standard internet<|LOC_608|><|LOC_311|><|LOC_744|><|LOC_311|><|LOC_744|><|LOC_325|><|LOC_608|><|LOC_325|>\nvouchers worth ₹ 2000/-<|LOC_511|><|LOC_323|><|LOC_589|><|LOC_323|><|LOC_589|><|LOC_338|><|LOC_511|><|LOC_338|>\nrates apply. Parks without offer are also available. For detailed TIC of the<|LOC_608|><|LOC_325|><|LOC_744|><|LOC_325|><|LOC_744|><|LOC_339|><|LOC_608|><|LOC_339|>\nLET'S TALK<|LOC_252|><|LOC_330|><|LOC_307|><|LOC_330|><|LOC_307|><|LOC_348|><|LOC_252|><|LOC_348|>\nprogram, visit www.winalgud.theflae.co.in.<|LOC_608|><|LOC_339|><|LOC_682|><|LOC_339|><|LOC_682|><|LOC_353|><|LOC_608|><|LOC_353|>\nNESTLE CONSUMER CARE,<|LOC_264|><|LOC_348|><|LOC_382|><|LOC_348|><|LOC_382|><|LOC_371|><|LOC_264|><|LOC_371|>\nNEUS<|LOC_509|><|LOC_360|><|LOC_531|><|LOC_360|><|LOC_531|><|LOC_369|><|LOC_509|><|LOC_369|>\nNUTRITIONAL INFORMATION<|LOC_617|><|LOC_357|><|LOC_740|><|LOC_357|><|LOC_740|><|LOC_374|><|LOC_617|><|LOC_374|>\nP.O. BAG NO. 2, NEW DELHI-110001<|LOC_252|><|LOC_369|><|LOC_418|><|LOC_369|><|LOC_418|><|LOC_391|><|LOC_252|><|LOC_391|>\nGood food, Good life.<|LOC_509|><|LOC_368|><|LOC_567|><|LOC_368|><|LOC_567|><|LOC_378|><|LOC_509|><|LOC_378|>\nApproximate Values<|LOC_509|><|LOC_377|><|LOC_584|><|LOC_377|><|LOC_584|><|LOC_392|><|LOC_509|><|LOC_392|>\nIf a serve is 70 g<|LOC_618|><|LOC_374|><|LOC_671|><|LOC_374|><|LOC_671|><|LOC_390|><|LOC_618|><|LOC_390|>\nWECARE@IN.NESTLE.COM<|LOC_252|><|LOC_390|><|LOC_383|><|LOC_390|><|LOC_383|><|LOC_411|><|LOC_252|><|LOC_411|>\nKNOW YOUR PORTION<|LOC_509|><|LOC_393|><|LOC_591|><|LOC_393|><|LOC_591|><|LOC_410|><|LOC_509|><|LOC_410|>\nNUTRITION<|LOC_619|><|LOC_389|><|LOC_661|><|LOC_389|><|LOC_661|><|LOC_403|><|LOC_619|><|LOC_403|>\nINFORMATION<|LOC_619|><|LOC_402|><|LOC_666|><|LOC_402|><|LOC_666|><|LOC_416|><|LOC_619|><|LOC_416|>\nPer Per<|LOC_698|><|LOC_389|><|LOC_723|><|LOC_389|><|LOC_723|><|LOC_402|><|LOC_698|><|LOC_402|>\n100 g serve<|LOC_698|><|LOC_403|><|LOC_725|><|LOC_403|><|LOC_725|><|LOC_416|><|LOC_698|><|LOC_416|>\n100A<|LOC_725|><|LOC_389|><|LOC_741|><|LOC_389|><|LOC_741|><|LOC_402|><|LOC_725|><|LOC_402|>\nPer Per serve Per serve<|LOC_723|><|LOC_403|><|LOC_744|><|LOC_403|><|LOC_744|><|LOC_416|><|LOC_723|><|LOC_416|>\n18001031947<|LOC_252|><|LOC_411|><|LOC_330|><|LOC_411|><|LOC_330|><|LOC_432|><|LOC_252|><|LOC_432|>\nPack contains 1 serve. 1 serve = 70 g.<|LOC_509|><|LOC_410|><|LOC_613|><|LOC_410|><|LOC_613|><|LOC_425|><|LOC_509|><|LOC_425|>\nPer serve contribution to RDA -<|LOC_509|><|LOC_424|><|LOC_607|><|LOC_424|><|LOC_607|><|LOC_438|><|LOC_509|><|LOC_438|>\nEnergy (kcal)<|LOC_618|><|LOC_418|><|LOC_651|><|LOC_418|><|LOC_651|><|LOC_432|><|LOC_618|><|LOC_432|>\n384<|LOC_698|><|LOC_418|><|LOC_711|><|LOC_418|><|LOC_711|><|LOC_431|><|LOC_698|><|LOC_431|>\n269<|LOC_715|><|LOC_418|><|LOC_725|><|LOC_418|><|LOC_725|><|LOC_431|><|LOC_715|><|LOC_431|>\n13%<|LOC_725|><|LOC_418|><|LOC_738|><|LOC_418|><|LOC_738|><|LOC_431|><|LOC_725|><|LOC_431|>\nGOOD TO KNOW<|LOC_253|><|LOC_433|><|LOC_327|><|LOC_433|><|LOC_327|><|LOC_451|><|LOC_253|><|LOC_451|>\n13% energy, 2% added sugar,<|LOC_509|><|LOC_437|><|LOC_607|><|LOC_437|><|LOC_607|><|LOC_451|><|LOC_509|><|LOC_451|>\nProtein (g)<|LOC_618|><|LOC_434|><|LOC_645|><|LOC_434|><|LOC_645|><|LOC_448|><|LOC_618|><|LOC_448|>\n8.2<|LOC_698|><|LOC_434|><|LOC_710|><|LOC_434|><|LOC_710|><|LOC_447|><|LOC_698|><|LOC_447|>\n5.7<|LOC_715|><|LOC_434|><|LOC_725|><|LOC_434|><|LOC_725|><|LOC_447|><|LOC_715|><|LOC_447|>\n11%<|LOC_725|><|LOC_434|><|LOC_738|><|LOC_434|><|LOC_738|><|LOC_447|><|LOC_725|><|LOC_447|>\nOne serve (70 g) of MAGSO® Masala Noodles meets<|LOC_252|><|LOC_451|><|LOC_418|><|LOC_451|><|LOC_418|><|LOC_466|><|LOC_252|><|LOC_466|>\n13% total fat, 26% saturated fat,<|LOC_509|><|LOC_450|><|LOC_607|><|LOC_450|><|LOC_607|><|LOC_464|><|LOC_509|><|LOC_464|>\nCarbohydrate (g)<|LOC_618|><|LOC_449|><|LOC_661|><|LOC_449|><|LOC_661|><|LOC_464|><|LOC_618|><|LOC_464|>\n59.6<|LOC_698|><|LOC_450|><|LOC_711|><|LOC_450|><|LOC_711|><|LOC_462|><|LOC_698|><|LOC_462|>\n41.7<|LOC_715|><|LOC_450|><|LOC_725|><|LOC_450|><|LOC_725|><|LOC_462|><|LOC_715|><|LOC_462|>\n16%<|LOC_725|><|LOC_450|><|LOC_738|><|LOC_450|><|LOC_738|><|LOC_462|><|LOC_725|><|LOC_462|>\n16% Iron RDA for sedentary adults and 15% Iron RDA<|LOC_253|><|LOC_464|><|LOC_418|><|LOC_464|><|LOC_418|><|LOC_478|><|LOC_253|><|LOC_478|>\n5% trans fat and 35% sodium.<|LOC_509|><|LOC_463|><|LOC_598|><|LOC_463|><|LOC_598|><|LOC_477|><|LOC_509|><|LOC_477|>\n- Total Sugars (g)<|LOC_619|><|LOC_464|><|LOC_661|><|LOC_464|><|LOC_661|><|LOC_479|><|LOC_619|><|LOC_479|>\n1.8<|LOC_699|><|LOC_464|><|LOC_710|><|LOC_464|><|LOC_710|><|LOC_477|><|LOC_699|><|LOC_477|>\n1.3<|LOC_716|><|LOC_464|><|LOC_725|><|LOC_464|><|LOC_725|><|LOC_477|><|LOC_716|><|LOC_477|>\n1%<|LOC_726|><|LOC_464|><|LOC_736|><|LOC_464|><|LOC_736|><|LOC_477|><|LOC_726|><|LOC_477|>\nfor 16-17 year old teenagers (ICMR, 2020)<|LOC_253|><|LOC_477|><|LOC_382|><|LOC_477|><|LOC_382|><|LOC_492|><|LOC_253|><|LOC_492|>\nInstant Noodles with Seasoning*<|LOC_509|><|LOC_476|><|LOC_607|><|LOC_476|><|LOC_607|><|LOC_491|><|LOC_509|><|LOC_491|>\n- Added Sugars (g)<|LOC_622|><|LOC_479|><|LOC_668|><|LOC_479|><|LOC_668|><|LOC_494|><|LOC_622|><|LOC_494|>\n1.1<|LOC_699|><|LOC_479|><|LOC_710|><|LOC_479|><|LOC_710|><|LOC_492|><|LOC_699|><|LOC_492|>\n0.8<|LOC_716|><|LOC_479|><|LOC_725|><|LOC_479|><|LOC_725|><|LOC_492|><|LOC_716|><|LOC_492|>\nSee side panel for:<|LOC_250|><|LOC_492|><|LOC_318|><|LOC_492|><|LOC_318|><|LOC_506|><|LOC_250|><|LOC_506|>\nINGREDIENTS<|LOC_509|><|LOC_491|><|LOC_577|><|LOC_491|><|LOC_577|><|LOC_508|><|LOC_509|><|LOC_508|>\nTotal Fat (g)<|LOC_619|><|LOC_494|><|LOC_649|><|LOC_494|><|LOC_649|><|LOC_508|><|LOC_619|><|LOC_508|>\n12.5<|LOC_698|><|LOC_494|><|LOC_710|><|LOC_494|><|LOC_710|><|LOC_506|><|LOC_698|><|LOC_506|>\n8.8<|LOC_715|><|LOC_494|><|LOC_725|><|LOC_494|><|LOC_725|><|LOC_506|><|LOC_715|><|LOC_506|>\n13%<|LOC_725|><|LOC_494|><|LOC_738|><|LOC_494|><|LOC_738|><|LOC_506|><|LOC_725|><|LOC_506|>\nMRP (incl. of all taxes):<|LOC_250|><|LOC_503|><|LOC_407|><|LOC_503|><|LOC_407|><|LOC_527|><|LOC_250|><|LOC_527|>\nNoodles. Refined wheat flour<|LOC_509|><|LOC_508|><|LOC_613|><|LOC_508|><|LOC_613|><|LOC_523|><|LOC_509|><|LOC_523|>\n- Saturated Fat (g) (not more than)<|LOC_619|><|LOC_508|><|LOC_690|><|LOC_508|><|LOC_690|><|LOC_523|><|LOC_619|><|LOC_523|>\n8.2<|LOC_698|><|LOC_508|><|LOC_710|><|LOC_508|><|LOC_710|><|LOC_521|><|LOC_698|><|LOC_521|>\n5.8<|LOC_715|><|LOC_508|><|LOC_725|><|LOC_508|><|LOC_725|><|LOC_521|><|LOC_715|><|LOC_521|>\n29%<|LOC_725|><|LOC_508|><|LOC_738|><|LOC_508|><|LOC_738|><|LOC_521|><|LOC_725|><|LOC_521|>\nLot No.:<|LOC_250|><|LOC_521|><|LOC_305|><|LOC_521|><|LOC_305|><|LOC_543|><|LOC_250|><|LOC_543|>\n(Maida), Palm oil, Iodized salt,<|LOC_509|><|LOC_522|><|LOC_613|><|LOC_522|><|LOC_613|><|LOC_537|><|LOC_509|><|LOC_537|>\n- Trans Fat (g) (not more than)<|LOC_619|><|LOC_523|><|LOC_688|><|LOC_523|><|LOC_688|><|LOC_537|><|LOC_619|><|LOC_537|>\n0.13<|LOC_698|><|LOC_523|><|LOC_710|><|LOC_523|><|LOC_710|><|LOC_535|><|LOC_698|><|LOC_535|>\n0.10<|LOC_715|><|LOC_523|><|LOC_725|><|LOC_523|><|LOC_725|><|LOC_535|><|LOC_715|><|LOC_535|>\nMFD.-USE BY-MFG.By:<|LOC_250|><|LOC_537|><|LOC_399|><|LOC_537|><|LOC_399|><|LOC_562|><|LOC_250|><|LOC_562|>\nWheat gluten, Thickeners (508 &<|LOC_509|><|LOC_535|><|LOC_613|><|LOC_535|><|LOC_613|><|LOC_550|><|LOC_509|><|LOC_550|>\n412), Acidity regulators (501ii) &<|LOC_509|><|LOC_549|><|LOC_613|><|LOC_549|><|LOC_613|><|LOC_564|><|LOC_509|><|LOC_564|>\nSodium (mg)<|LOC_618|><|LOC_539|><|LOC_651|><|LOC_539|><|LOC_651|><|LOC_553|><|LOC_618|><|LOC_553|>\n1000.0700<|LOC_698|><|LOC_539|><|LOC_725|><|LOC_539|><|LOC_725|><|LOC_552|><|LOC_698|><|LOC_552|>\n29%<|LOC_725|><|LOC_539|><|LOC_738|><|LOC_539|><|LOC_738|><|LOC_552|><|LOC_725|><|LOC_552|>\n9.80A<|LOC_725|><|LOC_554|><|LOC_741|><|LOC_554|><|LOC_741|><|LOC_565|><|LOC_725|><|LOC_565|>\n(Refer letter after Use by and see below)<|LOC_250|><|LOC_558|><|LOC_380|><|LOC_558|><|LOC_380|><|LOC_572|><|LOC_250|><|LOC_572|>\n500(ii) and Humectant (451ii).<|LOC_509|><|LOC_563|><|LOC_600|><|LOC_563|><|LOC_600|><|LOC_578|><|LOC_509|><|LOC_578|>\nper serve<|LOC_725|><|LOC_565|><|LOC_744|><|LOC_565|><|LOC_744|><|LOC_574|><|LOC_725|><|LOC_574|>\nMfg. By: Nestlé India Limited,<|LOC_249|><|LOC_571|><|LOC_344|><|LOC_571|><|LOC_344|><|LOC_585|><|LOC_249|><|LOC_585|>\nMasala *TASTEMAKER*: Mixed<|LOC_509|><|LOC_577|><|LOC_613|><|LOC_577|><|LOC_613|><|LOC_592|><|LOC_509|><|LOC_592|>\nIron (mg)<|LOC_619|><|LOC_573|><|LOC_643|><|LOC_573|><|LOC_643|><|LOC_585|><|LOC_619|><|LOC_585|>\n6.90<|LOC_698|><|LOC_573|><|LOC_710|><|LOC_573|><|LOC_710|><|LOC_584|><|LOC_698|><|LOC_584|>\n4.83<|LOC_714|><|LOC_573|><|LOC_725|><|LOC_573|><|LOC_725|><|LOC_585|><|LOC_714|><|LOC_585|>\n16%<|LOC_725|><|LOC_573|><|LOC_738|><|LOC_573|><|LOC_738|><|LOC_585|><|LOC_725|><|LOC_585|>\nA) Ludhiana - Ferozepur Road, Moga - 142001, (Punjab).<|LOC_249|><|LOC_583|><|LOC_418|><|LOC_583|><|LOC_418|><|LOC_598|><|LOC_249|><|LOC_598|>\nSpices (26.2%) [Onion powder,<|LOC_509|><|LOC_591|><|LOC_613|><|LOC_591|><|LOC_613|><|LOC_606|><|LOC_509|><|LOC_606|>\nGuideline Daily Amounts of an average adult (2000 kcal)<|LOC_618|><|LOC_587|><|LOC_741|><|LOC_587|><|LOC_741|><|LOC_603|><|LOC_618|><|LOC_603|>\nLic. No. 10012063000064<|LOC_259|><|LOC_596|><|LOC_405|><|LOC_596|><|LOC_405|><|LOC_618|><|LOC_259|><|LOC_618|>\nCoriander powder, Red chilli powder, Turmeric powder, Gartic powder, Cumin<|LOC_509|><|LOC_604|><|LOC_744|><|LOC_604|><|LOC_744|><|LOC_619|><|LOC_509|><|LOC_619|>\nB) Village Meulinguem (North), Bicholim Taluika - 403 504, [Goal].<|LOC_249|><|LOC_614|><|LOC_418|><|LOC_614|><|LOC_418|><|LOC_630|><|LOC_249|><|LOC_630|>\npowder, Aniseed powder, Ginger powder, Fenugreek powder, Black pepper<|LOC_509|><|LOC_618|><|LOC_744|><|LOC_618|><|LOC_744|><|LOC_633|><|LOC_509|><|LOC_633|>\nLic. No",
+      "expected_quantity": "70g",
+      "visual_note": "NET QUANTITY: 70 g. Numeric MRP, lot and date are on another panel and not shown. Manufacturer Nestle India Limited is printed.",
+      "baseline_pipeline_seconds": 315.46,
+      "parsed_lines": 114,
+      "rejected_boxes": 0,
+      "polygons": [
+        {
+          "text": "Terms and Conditions:",
+          "points": [
+            [
+              1212.0,
+              260.0
+            ],
+            [
+              1292.0,
+              260.0
+            ],
+            [
+              1292.0,
+              286.0
+            ],
+            [
+              1212.0,
+              286.0
+            ]
+          ]
+        },
+        {
+          "text": "Limited Period Program on MAGSO® Noodles 70 g and 40 g, Program valid For",
+          "points": [
+            [
+              1216.0,
+              286.0
+            ],
+            [
+              1488.0,
+              286.0
+            ],
+            [
+              1488.0,
+              316.0
+            ],
+            [
+              1216.0,
+              316.0
+            ]
+          ]
+        },
+        {
+          "text": "STEP 1:",
+          "points": [
+            [
+              1022.0,
+              316.0
+            ],
+            [
+              1074.0,
+              316.0
+            ],
+            [
+              1074.0,
+              346.0
+            ],
+            [
+              1022.0,
+              346.0
+            ]
+          ]
+        },
+        {
+          "text": "India including Tamil Nadu for a period from 1st August 2000 to 30th September.",
+          "points": [
+            [
+              1216.0,
+              316.0
+            ],
+            [
+              1488.0,
+              316.0
+            ],
+            [
+              1488.0,
+              344.0
+            ],
+            [
+              1216.0,
+              344.0
+            ]
+          ]
+        },
+        {
+          "text": "Scan the QR Code",
+          "points": [
+            [
+              1022.0,
+              348.0
+            ],
+            [
+              1134.0,
+              348.0
+            ],
+            [
+              1134.0,
+              380.0
+            ],
+            [
+              1022.0,
+              380.0
+            ]
+          ]
+        },
+        {
+          "text": "2001. One entry allowed from one mobile number. Participation is optional. For",
+          "points": [
+            [
+              1216.0,
+              344.0
+            ],
+            [
+              1488.0,
+              344.0
+            ],
+            [
+              1488.0,
+              372.0
+            ],
+            [
+              1216.0,
+              372.0
+            ]
+          ]
+        },
+        {
+          "text": "SCAN TO PARTICIPATE",
+          "points": [
+            [
+              554.0,
+              370.0
+            ],
+            [
+              784.0,
+              368.0
+            ],
+            [
+              784.0,
+              420.0
+            ],
+            [
+              554.0,
+              422.0
+            ]
+          ]
+        },
+        {
+          "text": "STEP 2:",
+          "points": [
+            [
+              1022.0,
+              390.0
+            ],
+            [
+              1074.0,
+              390.0
+            ],
+            [
+              1074.0,
+              420.0
+            ],
+            [
+              1022.0,
+              420.0
+            ]
+          ]
+        },
+        {
+          "text": "Tamil Nadu - Participant will answer a question while registering and Use winner",
+          "points": [
+            [
+              1216.0,
+              372.0
+            ],
+            [
+              1488.0,
+              372.0
+            ],
+            [
+              1488.0,
+              400.0
+            ],
+            [
+              1216.0,
+              400.0
+            ]
+          ]
+        },
+        {
+          "text": "will be chosen basis creatively and unipotency of response during the entire",
+          "points": [
+            [
+              1216.0,
+              400.0
+            ],
+            [
+              1488.0,
+              400.0
+            ],
+            [
+              1488.0,
+              428.0
+            ],
+            [
+              1216.0,
+              428.0
+            ]
+          ]
+        },
+        {
+          "text": "Enter details - Name.",
+          "points": [
+            [
+              1022.0,
+              422.0
+            ],
+            [
+              1154.0,
+              422.0
+            ],
+            [
+              1154.0,
+              454.0
+            ],
+            [
+              1022.0,
+              454.0
+            ]
+          ]
+        },
+        {
+          "text": "program period. Minutes stand-up to win a gold low worth 75 Lacs and",
+          "points": [
+            [
+              1216.0,
+              428.0
+            ],
+            [
+              1488.0,
+              428.0
+            ],
+            [
+              1488.0,
+              456.0
+            ],
+            [
+              1216.0,
+              456.0
+            ]
+          ]
+        },
+        {
+          "text": "Mobile Number, State and",
+          "points": [
+            [
+              1022.0,
+              454.0
+            ],
+            [
+              1182.0,
+              454.0
+            ],
+            [
+              1182.0,
+              484.0
+            ],
+            [
+              1022.0,
+              484.0
+            ]
+          ]
+        },
+        {
+          "text": "gold muchers worth 2000. For queries participants can call +1951194508",
+          "points": [
+            [
+              1216.0,
+              456.0
+            ],
+            [
+              1488.0,
+              456.0
+            ],
+            [
+              1488.0,
+              484.0
+            ],
+            [
+              1216.0,
+              484.0
+            ]
+          ]
+        },
+        {
+          "text": "Lot No. (Find the lot number",
+          "points": [
+            [
+              1022.0,
+              484.0
+            ],
+            [
+              1194.0,
+              484.0
+            ],
+            [
+              1194.0,
+              514.0
+            ],
+            [
+              1022.0,
+              514.0
+            ]
+          ]
+        },
+        {
+          "text": "or email us at customersare@Him.co.in from Monday to Friday between 10:00-12:00.",
+          "points": [
+            [
+              1216.0,
+              484.0
+            ],
+            [
+              1488.0,
+              484.0
+            ],
+            [
+              1488.0,
+              512.0
+            ],
+            [
+              1216.0,
+              512.0
+            ]
+          ]
+        },
+        {
+          "text": "on the side panel of pack",
+          "points": [
+            [
+              1022.0,
+              514.0
+            ],
+            [
+              1180.0,
+              514.0
+            ],
+            [
+              1180.0,
+              546.0
+            ],
+            [
+              1022.0,
+              546.0
+            ]
+          ]
+        },
+        {
+          "text": "AM to 8:00 PM and Saturday between 10:00 AM to 2:00 PM except Sunday public",
+          "points": [
+            [
+              1216.0,
+              512.0
+            ],
+            [
+              1488.0,
+              512.0
+            ],
+            [
+              1488.0,
+              540.0
+            ],
+            [
+              1216.0,
+              540.0
+            ]
+          ]
+        },
+        {
+          "text": "STEP 3:",
+          "points": [
+            [
+              1022.0,
+              550.0
+            ],
+            [
+              1074.0,
+              550.0
+            ],
+            [
+              1074.0,
+              582.0
+            ],
+            [
+              1022.0,
+              582.0
+            ]
+          ]
+        },
+        {
+          "text": "holidays. Meets India will not be able for complaints regarding the quality of the",
+          "points": [
+            [
+              1216.0,
+              540.0
+            ],
+            [
+              1488.0,
+              540.0
+            ],
+            [
+              1488.0,
+              568.0
+            ],
+            [
+              1216.0,
+              568.0
+            ]
+          ]
+        },
+        {
+          "text": "prices, how will be governed by the privacy policy of India, India, Meets reserves",
+          "points": [
+            [
+              1216.0,
+              568.0
+            ],
+            [
+              1488.0,
+              568.0
+            ],
+            [
+              1488.0,
+              596.0
+            ],
+            [
+              1216.0,
+              596.0
+            ]
+          ]
+        },
+        {
+          "text": "Stand a Chance to win a",
+          "points": [
+            [
+              1022.0,
+              586.0
+            ],
+            [
+              1172.0,
+              586.0
+            ],
+            [
+              1172.0,
+              616.0
+            ],
+            [
+              1022.0,
+              616.0
+            ]
+          ]
+        },
+        {
+          "text": "the right to cancel or modify the program without any notice. Participation",
+          "points": [
+            [
+              1216.0,
+              596.0
+            ],
+            [
+              1488.0,
+              596.0
+            ],
+            [
+              1488.0,
+              622.0
+            ],
+            [
+              1216.0,
+              622.0
+            ]
+          ]
+        },
+        {
+          "text": "gold bowl and gold",
+          "points": [
+            [
+              1022.0,
+              616.0
+            ],
+            [
+              1142.0,
+              616.0
+            ],
+            [
+              1142.0,
+              648.0
+            ],
+            [
+              1022.0,
+              648.0
+            ]
+          ]
+        },
+        {
+          "text": "indicates consent despite being registered with DINDCPR. Standard internet",
+          "points": [
+            [
+              1216.0,
+              622.0
+            ],
+            [
+              1488.0,
+              622.0
+            ],
+            [
+              1488.0,
+              650.0
+            ],
+            [
+              1216.0,
+              650.0
+            ]
+          ]
+        },
+        {
+          "text": "vouchers worth ₹ 2000/-",
+          "points": [
+            [
+              1022.0,
+              646.0
+            ],
+            [
+              1178.0,
+              646.0
+            ],
+            [
+              1178.0,
+              676.0
+            ],
+            [
+              1022.0,
+              676.0
+            ]
+          ]
+        },
+        {
+          "text": "rates apply. Parks without offer are also available. For detailed TIC of the",
+          "points": [
+            [
+              1216.0,
+              650.0
+            ],
+            [
+              1488.0,
+              650.0
+            ],
+            [
+              1488.0,
+              678.0
+            ],
+            [
+              1216.0,
+              678.0
+            ]
+          ]
+        },
+        {
+          "text": "LET'S TALK",
+          "points": [
+            [
+              504.0,
+              660.0
+            ],
+            [
+              614.0,
+              660.0
+            ],
+            [
+              614.0,
+              696.0
+            ],
+            [
+              504.0,
+              696.0
+            ]
+          ]
+        },
+        {
+          "text": "program, visit www.winalgud.theflae.co.in.",
+          "points": [
+            [
+              1216.0,
+              678.0
+            ],
+            [
+              1364.0,
+              678.0
+            ],
+            [
+              1364.0,
+              706.0
+            ],
+            [
+              1216.0,
+              706.0
+            ]
+          ]
+        },
+        {
+          "text": "NESTLE CONSUMER CARE,",
+          "points": [
+            [
+              528.0,
+              696.0
+            ],
+            [
+              764.0,
+              696.0
+            ],
+            [
+              764.0,
+              742.0
+            ],
+            [
+              528.0,
+              742.0
+            ]
+          ]
+        },
+        {
+          "text": "NEUS",
+          "points": [
+            [
+              1018.0,
+              720.0
+            ],
+            [
+              1062.0,
+              720.0
+            ],
+            [
+              1062.0,
+              738.0
+            ],
+            [
+              1018.0,
+              738.0
+            ]
+          ]
+        },
+        {
+          "text": "NUTRITIONAL INFORMATION",
+          "points": [
+            [
+              1234.0,
+              714.0
+            ],
+            [
+              1480.0,
+              714.0
+            ],
+            [
+              1480.0,
+              748.0
+            ],
+            [
+              1234.0,
+              748.0
+            ]
+          ]
+        },
+        {
+          "text": "P.O. BAG NO. 2, NEW DELHI-110001",
+          "points": [
+            [
+              504.0,
+              738.0
+            ],
+            [
+              836.0,
+              738.0
+            ],
+            [
+              836.0,
+              782.0
+            ],
+            [
+              504.0,
+              782.0
+            ]
+          ]
+        },
+        {
+          "text": "Good food, Good life.",
+          "points": [
+            [
+              1018.0,
+              736.0
+            ],
+            [
+              1134.0,
+              736.0
+            ],
+            [
+              1134.0,
+              756.0
+            ],
+            [
+              1018.0,
+              756.0
+            ]
+          ]
+        },
+        {
+          "text": "Approximate Values",
+          "points": [
+            [
+              1018.0,
+              754.0
+            ],
+            [
+              1168.0,
+              754.0
+            ],
+            [
+              1168.0,
+              784.0
+            ],
+            [
+              1018.0,
+              784.0
+            ]
+          ]
+        },
+        {
+          "text": "If a serve is 70 g",
+          "points": [
+            [
+              1236.0,
+              748.0
+            ],
+            [
+              1342.0,
+              748.0
+            ],
+            [
+              1342.0,
+              780.0
+            ],
+            [
+              1236.0,
+              780.0
+            ]
+          ]
+        },
+        {
+          "text": "WECARE@IN.NESTLE.COM",
+          "points": [
+            [
+              504.0,
+              780.0
+            ],
+            [
+              766.0,
+              780.0
+            ],
+            [
+              766.0,
+              822.0
+            ],
+            [
+              504.0,
+              822.0
+            ]
+          ]
+        },
+        {
+          "text": "KNOW YOUR PORTION",
+          "points": [
+            [
+              1018.0,
+              786.0
+            ],
+            [
+              1182.0,
+              786.0
+            ],
+            [
+              1182.0,
+              820.0
+            ],
+            [
+              1018.0,
+              820.0
+            ]
+          ]
+        },
+        {
+          "text": "NUTRITION",
+          "points": [
+            [
+              1238.0,
+              778.0
+            ],
+            [
+              1322.0,
+              778.0
+            ],
+            [
+              1322.0,
+              806.0
+            ],
+            [
+              1238.0,
+              806.0
+            ]
+          ]
+        },
+        {
+          "text": "INFORMATION",
+          "points": [
+            [
+              1238.0,
+              804.0
+            ],
+            [
+              1332.0,
+              804.0
+            ],
+            [
+              1332.0,
+              832.0
+            ],
+            [
+              1238.0,
+              832.0
+            ]
+          ]
+        },
+        {
+          "text": "Per Per",
+          "points": [
+            [
+              1396.0,
+              778.0
+            ],
+            [
+              1446.0,
+              778.0
+            ],
+            [
+              1446.0,
+              804.0
+            ],
+            [
+              1396.0,
+              804.0
+            ]
+          ]
+        },
+        {
+          "text": "100 g serve",
+          "points": [
+            [
+              1396.0,
+              806.0
+            ],
+            [
+              1450.0,
+              806.0
+            ],
+            [
+              1450.0,
+              832.0
+            ],
+            [
+              1396.0,
+              832.0
+            ]
+          ]
+        },
+        {
+          "text": "100A",
+          "points": [
+            [
+              1450.0,
+              778.0
+            ],
+            [
+              1482.0,
+              778.0
+            ],
+            [
+              1482.0,
+              804.0
+            ],
+            [
+              1450.0,
+              804.0
+            ]
+          ]
+        },
+        {
+          "text": "Per Per serve Per serve",
+          "points": [
+            [
+              1446.0,
+              806.0
+            ],
+            [
+              1488.0,
+              806.0
+            ],
+            [
+              1488.0,
+              832.0
+            ],
+            [
+              1446.0,
+              832.0
+            ]
+          ]
+        },
+        {
+          "text": "18001031947",
+          "points": [
+            [
+              504.0,
+              822.0
+            ],
+            [
+              660.0,
+              822.0
+            ],
+            [
+              660.0,
+              864.0
+            ],
+            [
+              504.0,
+              864.0
+            ]
+          ]
+        },
+        {
+          "text": "Pack contains 1 serve. 1 serve = 70 g.",
+          "points": [
+            [
+              1018.0,
+              820.0
+            ],
+            [
+              1226.0,
+              820.0
+            ],
+            [
+              1226.0,
+              850.0
+            ],
+            [
+              1018.0,
+              850.0
+            ]
+          ]
+        },
+        {
+          "text": "Per serve contribution to RDA -",
+          "points": [
+            [
+              1018.0,
+              848.0
+            ],
+            [
+              1214.0,
+              848.0
+            ],
+            [
+              1214.0,
+              876.0
+            ],
+            [
+              1018.0,
+              876.0
+            ]
+          ]
+        },
+        {
+          "text": "Energy (kcal)",
+          "points": [
+            [
+              1236.0,
+              836.0
+            ],
+            [
+              1302.0,
+              836.0
+            ],
+            [
+              1302.0,
+              864.0
+            ],
+            [
+              1236.0,
+              864.0
+            ]
+          ]
+        },
+        {
+          "text": "384",
+          "points": [
+            [
+              1396.0,
+              836.0
+            ],
+            [
+              1422.0,
+              836.0
+            ],
+            [
+              1422.0,
+              862.0
+            ],
+            [
+              1396.0,
+              862.0
+            ]
+          ]
+        },
+        {
+          "text": "269",
+          "points": [
+            [
+              1430.0,
+              836.0
+            ],
+            [
+              1450.0,
+              836.0
+            ],
+            [
+              1450.0,
+              862.0
+            ],
+            [
+              1430.0,
+              862.0
+            ]
+          ]
+        },
+        {
+          "text": "13%",
+          "points": [
+            [
+              1450.0,
+              836.0
+            ],
+            [
+              1476.0,
+              836.0
+            ],
+            [
+              1476.0,
+              862.0
+            ],
+            [
+              1450.0,
+              862.0
+            ]
+          ]
+        },
+        {
+          "text": "GOOD TO KNOW",
+          "points": [
+            [
+              506.0,
+              866.0
+            ],
+            [
+              654.0,
+              866.0
+            ],
+            [
+              654.0,
+              902.0
+            ],
+            [
+              506.0,
+              902.0
+            ]
+          ]
+        },
+        {
+          "text": "13% energy, 2% added sugar,",
+          "points": [
+            [
+              1018.0,
+              874.0
+            ],
+            [
+              1214.0,
+              874.0
+            ],
+            [
+              1214.0,
+              902.0
+            ],
+            [
+              1018.0,
+              902.0
+            ]
+          ]
+        },
+        {
+          "text": "Protein (g)",
+          "points": [
+            [
+              1236.0,
+              868.0
+            ],
+            [
+              1290.0,
+              868.0
+            ],
+            [
+              1290.0,
+              896.0
+            ],
+            [
+              1236.0,
+              896.0
+            ]
+          ]
+        },
+        {
+          "text": "8.2",
+          "points": [
+            [
+              1396.0,
+              868.0
+            ],
+            [
+              1420.0,
+              868.0
+            ],
+            [
+              1420.0,
+              894.0
+            ],
+            [
+              1396.0,
+              894.0
+            ]
+          ]
+        },
+        {
+          "text": "5.7",
+          "points": [
+            [
+              1430.0,
+              868.0
+            ],
+            [
+              1450.0,
+              868.0
+            ],
+            [
+              1450.0,
+              894.0
+            ],
+            [
+              1430.0,
+              894.0
+            ]
+          ]
+        },
+        {
+          "text": "11%",
+          "points": [
+            [
+              1450.0,
+              868.0
+            ],
+            [
+              1476.0,
+              868.0
+            ],
+            [
+              1476.0,
+              894.0
+            ],
+            [
+              1450.0,
+              894.0
+            ]
+          ]
+        },
+        {
+          "text": "One serve (70 g) of MAGSO® Masala Noodles meets",
+          "points": [
+            [
+              504.0,
+              902.0
+            ],
+            [
+              836.0,
+              902.0
+            ],
+            [
+              836.0,
+              932.0
+            ],
+            [
+              504.0,
+              932.0
+            ]
+          ]
+        },
+        {
+          "text": "13% total fat, 26% saturated fat,",
+          "points": [
+            [
+              1018.0,
+              900.0
+            ],
+            [
+              1214.0,
+              900.0
+            ],
+            [
+              1214.0,
+              928.0
+            ],
+            [
+              1018.0,
+              928.0
+            ]
+          ]
+        },
+        {
+          "text": "Carbohydrate (g)",
+          "points": [
+            [
+              1236.0,
+              898.0
+            ],
+            [
+              1322.0,
+              898.0
+            ],
+            [
+              1322.0,
+              928.0
+            ],
+            [
+              1236.0,
+              928.0
+            ]
+          ]
+        },
+        {
+          "text": "59.6",
+          "points": [
+            [
+              1396.0,
+              900.0
+            ],
+            [
+              1422.0,
+              900.0
+            ],
+            [
+              1422.0,
+              924.0
+            ],
+            [
+              1396.0,
+              924.0
+            ]
+          ]
+        },
+        {
+          "text": "41.7",
+          "points": [
+            [
+              1430.0,
+              900.0
+            ],
+            [
+              1450.0,
+              900.0
+            ],
+            [
+              1450.0,
+              924.0
+            ],
+            [
+              1430.0,
+              924.0
+            ]
+          ]
+        },
+        {
+          "text": "16%",
+          "points": [
+            [
+              1450.0,
+              900.0
+            ],
+            [
+              1476.0,
+              900.0
+            ],
+            [
+              1476.0,
+              924.0
+            ],
+            [
+              1450.0,
+              924.0
+            ]
+          ]
+        },
+        {
+          "text": "16% Iron RDA for sedentary adults and 15% Iron RDA",
+          "points": [
+            [
+              506.0,
+              928.0
+            ],
+            [
+              836.0,
+              928.0
+            ],
+            [
+              836.0,
+              956.0
+            ],
+            [
+              506.0,
+              956.0
+            ]
+          ]
+        },
+        {
+          "text": "5% trans fat and 35% sodium.",
+          "points": [
+            [
+              1018.0,
+              926.0
+            ],
+            [
+              1196.0,
+              926.0
+            ],
+            [
+              1196.0,
+              954.0
+            ],
+            [
+              1018.0,
+              954.0
+            ]
+          ]
+        },
+        {
+          "text": "- Total Sugars (g)",
+          "points": [
+            [
+              1238.0,
+              928.0
+            ],
+            [
+              1322.0,
+              928.0
+            ],
+            [
+              1322.0,
+              958.0
+            ],
+            [
+              1238.0,
+              958.0
+            ]
+          ]
+        },
+        {
+          "text": "1.8",
+          "points": [
+            [
+              1398.0,
+              928.0
+            ],
+            [
+              1420.0,
+              928.0
+            ],
+            [
+              1420.0,
+              954.0
+            ],
+            [
+              1398.0,
+              954.0
+            ]
+          ]
+        },
+        {
+          "text": "1.3",
+          "points": [
+            [
+              1432.0,
+              928.0
+            ],
+            [
+              1450.0,
+              928.0
+            ],
+            [
+              1450.0,
+              954.0
+            ],
+            [
+              1432.0,
+              954.0
+            ]
+          ]
+        },
+        {
+          "text": "1%",
+          "points": [
+            [
+              1452.0,
+              928.0
+            ],
+            [
+              1472.0,
+              928.0
+            ],
+            [
+              1472.0,
+              954.0
+            ],
+            [
+              1452.0,
+              954.0
+            ]
+          ]
+        },
+        {
+          "text": "for 16-17 year old teenagers (ICMR, 2020)",
+          "points": [
+            [
+              506.0,
+              954.0
+            ],
+            [
+              764.0,
+              954.0
+            ],
+            [
+              764.0,
+              984.0
+            ],
+            [
+              506.0,
+              984.0
+            ]
+          ]
+        },
+        {
+          "text": "Instant Noodles with Seasoning*",
+          "points": [
+            [
+              1018.0,
+              952.0
+            ],
+            [
+              1214.0,
+              952.0
+            ],
+            [
+              1214.0,
+              982.0
+            ],
+            [
+              1018.0,
+              982.0
+            ]
+          ]
+        },
+        {
+          "text": "- Added Sugars (g)",
+          "points": [
+            [
+              1244.0,
+              958.0
+            ],
+            [
+              1336.0,
+              958.0
+            ],
+            [
+              1336.0,
+              988.0
+            ],
+            [
+              1244.0,
+              988.0
+            ]
+          ]
+        },
+        {
+          "text": "1.1",
+          "points": [
+            [
+              1398.0,
+              958.0
+            ],
+            [
+              1420.0,
+              958.0
+            ],
+            [
+              1420.0,
+              984.0
+            ],
+            [
+              1398.0,
+              984.0
+            ]
+          ]
+        },
+        {
+          "text": "0.8",
+          "points": [
+            [
+              1432.0,
+              958.0
+            ],
+            [
+              1450.0,
+              958.0
+            ],
+            [
+              1450.0,
+              984.0
+            ],
+            [
+              1432.0,
+              984.0
+            ]
+          ]
+        },
+        {
+          "text": "See side panel for:",
+          "points": [
+            [
+              500.0,
+              984.0
+            ],
+            [
+              636.0,
+              984.0
+            ],
+            [
+              636.0,
+              1012.0
+            ],
+            [
+              500.0,
+              1012.0
+            ]
+          ]
+        },
+        {
+          "text": "INGREDIENTS",
+          "points": [
+            [
+              1018.0,
+              982.0
+            ],
+            [
+              1154.0,
+              982.0
+            ],
+            [
+              1154.0,
+              1016.0
+            ],
+            [
+              1018.0,
+              1016.0
+            ]
+          ]
+        },
+        {
+          "text": "Total Fat (g)",
+          "points": [
+            [
+              1238.0,
+              988.0
+            ],
+            [
+              1298.0,
+              988.0
+            ],
+            [
+              1298.0,
+              1016.0
+            ],
+            [
+              1238.0,
+              1016.0
+            ]
+          ]
+        },
+        {
+          "text": "12.5",
+          "points": [
+            [
+              1396.0,
+              988.0
+            ],
+            [
+              1420.0,
+              988.0
+            ],
+            [
+              1420.0,
+              1012.0
+            ],
+            [
+              1396.0,
+              1012.0
+            ]
+          ]
+        },
+        {
+          "text": "8.8",
+          "points": [
+            [
+              1430.0,
+              988.0
+            ],
+            [
+              1450.0,
+              988.0
+            ],
+            [
+              1450.0,
+              1012.0
+            ],
+            [
+              1430.0,
+              1012.0
+            ]
+          ]
+        },
+        {
+          "text": "13%",
+          "points": [
+            [
+              1450.0,
+              988.0
+            ],
+            [
+              1476.0,
+              988.0
+            ],
+            [
+              1476.0,
+              1012.0
+            ],
+            [
+              1450.0,
+              1012.0
+            ]
+          ]
+        },
+        {
+          "text": "MRP (incl. of all taxes):",
+          "points": [
+            [
+              500.0,
+              1006.0
+            ],
+            [
+              814.0,
+              1006.0
+            ],
+            [
+              814.0,
+              1054.0
+            ],
+            [
+              500.0,
+              1054.0
+            ]
+          ]
+        },
+        {
+          "text": "Noodles. Refined wheat flour",
+          "points": [
+            [
+              1018.0,
+              1016.0
+            ],
+            [
+              1226.0,
+              1016.0
+            ],
+            [
+              1226.0,
+              1046.0
+            ],
+            [
+              1018.0,
+              1046.0
+            ]
+          ]
+        },
+        {
+          "text": "- Saturated Fat (g) (not more than)",
+          "points": [
+            [
+              1238.0,
+              1016.0
+            ],
+            [
+              1380.0,
+              1016.0
+            ],
+            [
+              1380.0,
+              1046.0
+            ],
+            [
+              1238.0,
+              1046.0
+            ]
+          ]
+        },
+        {
+          "text": "8.2",
+          "points": [
+            [
+              1396.0,
+              1016.0
+            ],
+            [
+              1420.0,
+              1016.0
+            ],
+            [
+              1420.0,
+              1042.0
+            ],
+            [
+              1396.0,
+              1042.0
+            ]
+          ]
+        },
+        {
+          "text": "5.8",
+          "points": [
+            [
+              1430.0,
+              1016.0
+            ],
+            [
+              1450.0,
+              1016.0
+            ],
+            [
+              1450.0,
+              1042.0
+            ],
+            [
+              1430.0,
+              1042.0
+            ]
+          ]
+        },
+        {
+          "text": "29%",
+          "points": [
+            [
+              1450.0,
+              1016.0
+            ],
+            [
+              1476.0,
+              1016.0
+            ],
+            [
+              1476.0,
+              1042.0
+            ],
+            [
+              1450.0,
+              1042.0
+            ]
+          ]
+        },
+        {
+          "text": "Lot No.:",
+          "points": [
+            [
+              500.0,
+              1042.0
+            ],
+            [
+              610.0,
+              1042.0
+            ],
+            [
+              610.0,
+              1086.0
+            ],
+            [
+              500.0,
+              1086.0
+            ]
+          ]
+        },
+        {
+          "text": "(Maida), Palm oil, Iodized salt,",
+          "points": [
+            [
+              1018.0,
+              1044.0
+            ],
+            [
+              1226.0,
+              1044.0
+            ],
+            [
+              1226.0,
+              1074.0
+            ],
+            [
+              1018.0,
+              1074.0
+            ]
+          ]
+        },
+        {
+          "text": "- Trans Fat (g) (not more than)",
+          "points": [
+            [
+              1238.0,
+              1046.0
+            ],
+            [
+              1376.0,
+              1046.0
+            ],
+            [
+              1376.0,
+              1074.0
+            ],
+            [
+              1238.0,
+              1074.0
+            ]
+          ]
+        },
+        {
+          "text": "0.13",
+          "points": [
+            [
+              1396.0,
+              1046.0
+            ],
+            [
+              1420.0,
+              1046.0
+            ],
+            [
+              1420.0,
+              1070.0
+            ],
+            [
+              1396.0,
+              1070.0
+            ]
+          ]
+        },
+        {
+          "text": "0.10",
+          "points": [
+            [
+              1430.0,
+              1046.0
+            ],
+            [
+              1450.0,
+              1046.0
+            ],
+            [
+              1450.0,
+              1070.0
+            ],
+            [
+              1430.0,
+              1070.0
+            ]
+          ]
+        },
+        {
+          "text": "MFD.-USE BY-MFG.By:",
+          "points": [
+            [
+              500.0,
+              1074.0
+            ],
+            [
+              798.0,
+              1074.0
+            ],
+            [
+              798.0,
+              1124.0
+            ],
+            [
+              500.0,
+              1124.0
+            ]
+          ]
+        },
+        {
+          "text": "Wheat gluten, Thickeners (508 &",
+          "points": [
+            [
+              1018.0,
+              1070.0
+            ],
+            [
+              1226.0,
+              1070.0
+            ],
+            [
+              1226.0,
+              1100.0
+            ],
+            [
+              1018.0,
+              1100.0
+            ]
+          ]
+        },
+        {
+          "text": "412), Acidity regulators (501ii) &",
+          "points": [
+            [
+              1018.0,
+              1098.0
+            ],
+            [
+              1226.0,
+              1098.0
+            ],
+            [
+              1226.0,
+              1128.0
+            ],
+            [
+              1018.0,
+              1128.0
+            ]
+          ]
+        },
+        {
+          "text": "Sodium (mg)",
+          "points": [
+            [
+              1236.0,
+              1078.0
+            ],
+            [
+              1302.0,
+              1078.0
+            ],
+            [
+              1302.0,
+              1106.0
+            ],
+            [
+              1236.0,
+              1106.0
+            ]
+          ]
+        },
+        {
+          "text": "1000.0700",
+          "points": [
+            [
+              1396.0,
+              1078.0
+            ],
+            [
+              1450.0,
+              1078.0
+            ],
+            [
+              1450.0,
+              1104.0
+            ],
+            [
+              1396.0,
+              1104.0
+            ]
+          ]
+        },
+        {
+          "text": "29%",
+          "points": [
+            [
+              1450.0,
+              1078.0
+            ],
+            [
+              1476.0,
+              1078.0
+            ],
+            [
+              1476.0,
+              1104.0
+            ],
+            [
+              1450.0,
+              1104.0
+            ]
+          ]
+        },
+        {
+          "text": "9.80A",
+          "points": [
+            [
+              1450.0,
+              1108.0
+            ],
+            [
+              1482.0,
+              1108.0
+            ],
+            [
+              1482.0,
+              1130.0
+            ],
+            [
+              1450.0,
+              1130.0
+            ]
+          ]
+        },
+        {
+          "text": "(Refer letter after Use by and see below)",
+          "points": [
+            [
+              500.0,
+              1116.0
+            ],
+            [
+              760.0,
+              1116.0
+            ],
+            [
+              760.0,
+              1144.0
+            ],
+            [
+              500.0,
+              1144.0
+            ]
+          ]
+        },
+        {
+          "text": "500(ii) and Humectant (451ii).",
+          "points": [
+            [
+              1018.0,
+              1126.0
+            ],
+            [
+              1200.0,
+              1126.0
+            ],
+            [
+              1200.0,
+              1156.0
+            ],
+            [
+              1018.0,
+              1156.0
+            ]
+          ]
+        },
+        {
+          "text": "per serve",
+          "points": [
+            [
+              1450.0,
+              1130.0
+            ],
+            [
+              1488.0,
+              1130.0
+            ],
+            [
+              1488.0,
+              1148.0
+            ],
+            [
+              1450.0,
+              1148.0
+            ]
+          ]
+        },
+        {
+          "text": "Mfg. By: Nestlé India Limited,",
+          "points": [
+            [
+              498.0,
+              1142.0
+            ],
+            [
+              688.0,
+              1142.0
+            ],
+            [
+              688.0,
+              1170.0
+            ],
+            [
+              498.0,
+              1170.0
+            ]
+          ]
+        },
+        {
+          "text": "Masala *TASTEMAKER*: Mixed",
+          "points": [
+            [
+              1018.0,
+              1154.0
+            ],
+            [
+              1226.0,
+              1154.0
+            ],
+            [
+              1226.0,
+              1184.0
+            ],
+            [
+              1018.0,
+              1184.0
+            ]
+          ]
+        },
+        {
+          "text": "Iron (mg)",
+          "points": [
+            [
+              1238.0,
+              1146.0
+            ],
+            [
+              1286.0,
+              1146.0
+            ],
+            [
+              1286.0,
+              1170.0
+            ],
+            [
+              1238.0,
+              1170.0
+            ]
+          ]
+        },
+        {
+          "text": "6.90",
+          "points": [
+            [
+              1396.0,
+              1146.0
+            ],
+            [
+              1420.0,
+              1146.0
+            ],
+            [
+              1420.0,
+              1168.0
+            ],
+            [
+              1396.0,
+              1168.0
+            ]
+          ]
+        },
+        {
+          "text": "4.83",
+          "points": [
+            [
+              1428.0,
+              1146.0
+            ],
+            [
+              1450.0,
+              1146.0
+            ],
+            [
+              1450.0,
+              1170.0
+            ],
+            [
+              1428.0,
+              1170.0
+            ]
+          ]
+        },
+        {
+          "text": "16%",
+          "points": [
+            [
+              1450.0,
+              1146.0
+            ],
+            [
+              1476.0,
+              1146.0
+            ],
+            [
+              1476.0,
+              1170.0
+            ],
+            [
+              1450.0,
+              1170.0
+            ]
+          ]
+        },
+        {
+          "text": "A) Ludhiana - Ferozepur Road, Moga - 142001, (Punjab).",
+          "points": [
+            [
+              498.0,
+              1166.0
+            ],
+            [
+              836.0,
+              1166.0
+            ],
+            [
+              836.0,
+              1196.0
+            ],
+            [
+              498.0,
+              1196.0
+            ]
+          ]
+        },
+        {
+          "text": "Spices (26.2%) [Onion powder,",
+          "points": [
+            [
+              1018.0,
+              1182.0
+            ],
+            [
+              1226.0,
+              1182.0
+            ],
+            [
+              1226.0,
+              1212.0
+            ],
+            [
+              1018.0,
+              1212.0
+            ]
+          ]
+        },
+        {
+          "text": "Guideline Daily Amounts of an average adult (2000 kcal)",
+          "points": [
+            [
+              1236.0,
+              1174.0
+            ],
+            [
+              1482.0,
+              1174.0
+            ],
+            [
+              1482.0,
+              1206.0
+            ],
+            [
+              1236.0,
+              1206.0
+            ]
+          ]
+        },
+        {
+          "text": "Lic. No. 10012063000064",
+          "points": [
+            [
+              518.0,
+              1192.0
+            ],
+            [
+              810.0,
+              1192.0
+            ],
+            [
+              810.0,
+              1236.0
+            ],
+            [
+              518.0,
+              1236.0
+            ]
+          ]
+        },
+        {
+          "text": "Coriander powder, Red chilli powder, Turmeric powder, Gartic powder, Cumin",
+          "points": [
+            [
+              1018.0,
+              1208.0
+            ],
+            [
+              1488.0,
+              1208.0
+            ],
+            [
+              1488.0,
+              1238.0
+            ],
+            [
+              1018.0,
+              1238.0
+            ]
+          ]
+        },
+        {
+          "text": "B) Village Meulinguem (North), Bicholim Taluika - 403 504, [Goal].",
+          "points": [
+            [
+              498.0,
+              1228.0
+            ],
+            [
+              836.0,
+              1228.0
+            ],
+            [
+              836.0,
+              1260.0
+            ],
+            [
+              498.0,
+              1260.0
+            ]
+          ]
+        },
+        {
+          "text": "powder, Aniseed powder, Ginger powder, Fenugreek powder, Black pepper",
+          "points": [
+            [
+              1018.0,
+              1236.0
+            ],
+            [
+              1488.0,
+              1236.0
+            ],
+            [
+              1488.0,
+              1266.0
+            ],
+            [
+              1018.0,
+              1266.0
+            ]
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "field": "generic_name",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "net_quantity",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "mrp",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "manufacturer",
+          "status": "observed",
+          "value": "Nestlé India Limited",
+          "evidence": [
+            {
+              "field": "manufacturer",
+              "value": "Nestlé India Limited",
+              "view": "rear",
+              "provider": "paddle_spotting",
+              "source_text": "Mfg. By: Nestlé India Limited,",
+              "box": {
+                "x0": 498.0,
+                "y0": 1142.0,
+                "x1": 688.0,
+                "y1": 1170.0
+              },
+              "confidence": null,
+              "height_mm": null,
+              "glyph_box": null
+            }
+          ],
+          "reason": "Unverified OCR transcription; inspector review required. Readings from the same photo or its crops are not independent confirmation."
+        },
+        {
+          "field": "date",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "consumer_care",
+          "status": "observed",
+          "value": "P.O. BAG NO. 2, NEW DELHI-110001\nWECARE@IN.NESTLE.COM\n18001031947",
+          "evidence": [
+            {
+              "field": "consumer_care",
+              "value": "P.O. BAG NO. 2, NEW DELHI-110001\nWECARE@IN.NESTLE.COM\n18001031947",
+              "view": "rear",
+              "provider": "paddle_spotting",
+              "source_text": "NESTLE CONSUMER CARE,\nP.O. BAG NO. 2, NEW DELHI-110001\nWECARE@IN.NESTLE.COM\n18001031947",
+              "box": {
+                "x0": 504.0,
+                "y0": 738.0,
+                "x1": 836.0,
+                "y1": 864.0
+              },
+              "confidence": null,
+              "height_mm": null,
+              "glyph_box": null
+            }
+          ],
+          "reason": "Unverified OCR transcription; inspector review required. Readings from the same photo or its crops are not independent confirmation."
+        },
+        {
+          "field": "country_of_origin",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        }
+      ],
+      "quantity_match": false,
+      "quantity_check": false,
+      "max_identical_region_repeats": 1,
+      "baseline_fields": [
+        {
+          "field": "generic_name",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "net_quantity",
+          "status": "observed",
+          "value": "70 g",
+          "evidence": [
+            {
+              "field": "net_quantity",
+              "value": "70 g",
+              "view": "rear",
+              "provider": "xiaomi_detail_2",
+              "source_text": "NET QUANTITY: 70 g",
+              "box": null,
+              "confidence": null,
+              "height_mm": null
+            }
+          ],
+          "reason": "Unverified OCR transcription; inspector review required. Readings from the same photo or its crops are not independent confirmation."
+        },
+        {
+          "field": "mrp",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "manufacturer",
+          "status": "conflict",
+          "value": null,
+          "evidence": [
+            {
+              "field": "manufacturer",
+              "value": "Nestlé India Limited",
+              "view": "rear",
+              "provider": "tesseract",
+              "source_text": "Mfg. By: Nestlé India Limited,",
+              "box": {
+                "x0": 557.0,
+                "y0": 1144.0,
+                "x1": 680.0,
+                "y1": 1165.0
+              },
+              "confidence": 0.8728868366666666,
+              "height_mm": null
+            },
+            {
+              "field": "manufacturer",
+              "value": "[Refer letter after Use by and see below]",
+              "view": "rear",
+              "provider": "xiaomi_detail_0",
+              "source_text": "MFD.-USE BY-MFG.By:\n[Refer letter after Use by and see below]",
+              "box": null,
+              "confidence": null,
+              "height_mm": null
+            },
+            {
+              "field": "manufacturer",
+              "value": "Nestlé India Limited",
+              "view": "rear",
+              "provider": "xiaomi_detail_0",
+              "source_text": "Mfg. By: Nestlé India Limited,",
+              "box": null,
+              "confidence": null,
+              "height_mm": null
+            }
+          ],
+          "reason": "OCR providers or views disagree. Inspector review required."
+        },
+        {
+          "field": "date",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "consumer_care",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "country_of_origin",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        }
+      ]
+    },
+    {
+      "id": "good-day",
+      "file": "good-day.jpg",
+      "sha256": "533ea5f6cd478284e23006768c187fb5529dc0717efa986d933496970b912f9b",
+      "original_dimensions": [
+        1000,
+        500
+      ],
+      "processed_dimensions": [
+        2000,
+        1000
+      ],
+      "elapsed_seconds": 300.22,
+      "generated_tokens": 1631,
+      "completed_eos": false,
+      "raw_output": "Nutrition Facts<|LOC_267|><|LOC_273|><|LOC_351|><|LOC_273|><|LOC_351|><|LOC_298|><|LOC_267|><|LOC_298|>\nتقديم التغذية<|LOC_284|><|LOC_298|><|LOC_348|><|LOC_298|><|LOC_348|><|LOC_323|><|LOC_284|><|LOC_323|>\n4 servings per container<|LOC_268|><|LOC_328|><|LOC_334|><|LOC_328|><|LOC_334|><|LOC_345|><|LOC_268|><|LOC_345|>\nServing size: 5 Biscuits (33g)<|LOC_268|><|LOC_363|><|LOC_344|><|LOC_363|><|LOC_344|><|LOC_382|><|LOC_268|><|LOC_382|>\nServing size: 5 servings (33g)<|LOC_268|><|LOC_364|><|LOC_344|><|LOC_364|><|LOC_344|><|LOC_382|><|LOC_268|><|LOC_382|>\n(33)<|LOC_268|><|LOC_386|><|LOC_344|><|LOC_386|><|LOC_344|><|LOC_405|><|LOC_268|><|LOC_405|>\nCalories<|LOC_268|><|LOC_412|><|LOC_294|><|LOC_412|><|LOC_294|><|LOC_431|><|LOC_268|><|LOC_431|>\nper serving<|LOC_268|><|LOC_433|><|LOC_295|><|LOC_433|><|LOC_295|><|LOC_448|><|LOC_268|><|LOC_448|>\n160<|LOC_327|><|LOC_416|><|LOC_348|><|LOC_416|><|LOC_348|><|LOC_444|><|LOC_327|><|LOC_444|>\nSodium<|LOC_350|><|LOC_416|><|LOC_366|><|LOC_416|><|LOC_366|><|LOC_431|><|LOC_350|><|LOC_431|>\n\\( 100 \\, g \\)<|LOC_370|><|LOC_418|><|LOC_395|><|LOC_418|><|LOC_395|><|LOC_434|><|LOC_370|><|LOC_434|>\n\\( 100 \\, g \\)<|LOC_370|><|LOC_416|><|LOC_395|><|LOC_416|><|LOC_395|><|LOC_432|><|LOC_370|><|LOC_432|>\n\\( 100 \\, g \\)<|LOC_370|><|LOC_412|><|LOC_395|><|LOC_412|><|LOC_395|><|LOC_431|><|LOC_370|><|LOC_431|>\n\\( 100 \\, g \\)<|LOC_370|><|LOC_364|><|LOC_397|><|LOC_364|><|LOC_397|><|LOC_382|><|LOC_370|><|LOC_382|>\n\\( 100 \\, g \\)<|LOC_370|><|LOC_388|><|LOC_397|><|LOC_388|><|LOC_397|><|LOC_406|><|LOC_370|><|LOC_406|>\n\\( 100 \\, g \\)<|LOC_370|><|LOC_412|><|LOC_395|><|LOC_412|><|LOC_395|><|LOC_431|><|LOC_370|><|LOC_431|>\n\\( 100 \\, g \\)<|LOC_370|><|LOC_364|><|LOC_397|><|LOC_364|><|LOC_397|><|LOC_382|><|LOC_370|><|LOC_382|>\n\\( 100 \\, g \\)<|LOC_370|><|LOC_364|><|LOC_397|><|LOC_364|><|LOC_397|><|LOC_382|><|LOC_370|><|LOC_382|>\n\\( 100 \\, g \\)<|LOC_413|><|LOC_388|><|LOC_430|><|LOC_388|><|LOC_430|><|LOC_405|><|LOC_413|><|LOC_405|>\n\\( 100 \\, g \\)<|LOC_413|><|LOC_412|><|LOC_430|><|LOC_412|><|LOC_430|><|LOC_431|><|LOC_413|><|LOC_431|>\n\\( 100 \\, g \\)<|LOC_413|><|LOC_364|><|LOC_430|><|LOC_364|><|LOC_430|><|LOC_382|><|LOC_413|><|LOC_382|>\n\\( 100 \\, g \\)<|LOC_413|><|LOC_388|><|LOC_430|><|LOC_388|><|LOC_430|><|LOC_406|><|LOC_413|><|LOC_406|>\n\\( 100 \\, g \\)<|LOC_413|><|LOC_412|><|LOC_430|><|LOC_412|><|LOC_430|><|LOC_431|><|LOC_413|><|LOC_431|>\n\\( 100 \\, g \\)<|LOC_454|><|LOC_388|><|LOC_471|><|LOC_388|><|LOC_471|><|LOC_406|><|LOC_454|><|LOC_406|>\n\\( 100 \\, g \\)<|LOC_454|><|LOC_412|><|LOC_471|><|LOC_412|><|LOC_471|><|LOC_431|><|LOC_454|><|LOC_431|>\n\\( 100 \\, g \\)<|LOC_454|><|LOC_364|><|LOC_471|><|LOC_364|><|LOC_471|><|LOC_382|><|LOC_454|><|LOC_382|>\n\\( 100 \\, g \\)<|LOC_454|><|LOC_388|><|LOC_471|><|LOC_388|><|LOC_471|><|LOC_406|><|LOC_454|><|LOC_406|>\n\\( 100 \\, g \\)<|LOC_454|><|LOC_412|><|LOC_471|><|LOC_412|><|LOC_471|><|LOC_431|><|LOC_454|><|LOC_431|>\n\\( 100 \\, g \\)<|LOC_505|><|LOC_412|><|LOC_518|><|LOC_412|><|LOC_518|><|LOC_431|><|LOC_505|><|LOC_431|>\n\\( 100 \\, g \\)<|LOC_505|><|LOC_412|><|LOC_518|><|LOC_412|><|LOC_518|><|LOC_431|><|LOC_505|><|LOC_431|>\n\\( 100 \\, g \\)<|LOC_505|><|LOC_364|><|LOC_518|><|LOC_364|><|LOC_518|><|LOC_382|><|LOC_505|><|LOC_382|>\n\\( 100 \\, g \\)<|LOC_505|><|LOC_388|><|LOC_518|><|LOC_388|><|LOC_518|><|LOC_406|><|LOC_505|><|LOC_406|>\n\\( 100 \\, g \\)<|LOC_505|><|LOC_413|><|LOC_518|><|LOC_413|><|LOC_518|><|LOC_431|><|LOC_505|><|LOC_431|>\nMANUFACTURED IN OWN BY AL SALAN FOOD INDUSTRIES CO. SAOC. PO BOX 570 INDUSTRIAL<|LOC_527|><|LOC_266|><|LOC_752|><|LOC_266|><|LOC_752|><|LOC_281|><|LOC_527|><|LOC_281|>\nAREA SOHAR SUSTAINTE OF OWN EMAL export@tanda.com UNDER LICENSE FROM BRITANNA<|LOC_527|><|LOC_280|><|LOC_752|><|LOC_280|><|LOC_752|><|LOC_295|><|LOC_527|><|LOC_295|>\nINDUSTRIES LIMITED, 51AHUNGERFORD STREET, KOLKATA, INDIA<|LOC_527|><|LOC_295|><|LOC_678|><|LOC_295|><|LOC_678|><|LOC_310|><|LOC_527|><|LOC_310|>\nMANUFACTURED IN OWN BY AL SALAN FOOD INDUSTRIES CO. SAOC. PO BOX 570 INDUSTRIAL<|LOC_527|><|LOC_264|><|LOC_752|><|LOC_264|><|LOC_752|><|LOC_280|><|LOC_527|><|LOC_280|>\nMADE IN OMAN / MOUA<|LOC_628|><|LOC_367|><|LOC_713|><|LOC_367|><|LOC_713|><|LOC_384|><|LOC_628|><|LOC_384|>\nSTORE IN A COOL AND DRY PLACE<|LOC_628|><|LOC_392|><|LOC_699|><|LOC_392|><|LOC_699|><|LOC_408|><|LOC_628|><|LOC_408|>\nARMAZENAR EM LOCAL FRESOO E SECO<|LOC_628|><|LOC_408|><|LOC_713|><|LOC_408|><|LOC_713|><|LOC_423|><|LOC_628|><|LOC_423|>\nBISCUITS NET WEIGHT: 120g<|LOC_628|><|LOC_440|><|LOC_700|><|LOC_440|><|LOC_700|><|LOC_460|><|LOC_628|><|LOC_460|>\nPESO LIQUIDO: 120g<|LOC_628|><|LOC_458|><|LOC_681|><|LOC_458|><|LOC_681|><|LOC_476|><|LOC_628|><|LOC_476|>\n8901063136779<|LOC_531|><|LOC_471|><|LOC_622|><|LOC_471|><|LOC_622|><|LOC_488|><|LOC_531|><|LOC_488|>\n\\( V \\)<|LOC_708|><|LOC_465|><|LOC_720|><|LOC_465|><|LOC_720|><|LOC_486|><|LOC_708|><|LOC_486|>\nINGREDIENTS: WHEAT FLOUR, VEGETABLE FAT (PALM) SUGAR, CHOCOLATE CHIPS (SUGAR, COCOA)<|LOC_256|><|LOC_523|><|LOC_497|><|LOC_523|><|LOC_497|><|LOC_537|><|LOC_256|><|LOC_537|>\nPOWDER COCOA BUTTER DEXTROSE SOYA LECITHIN (322) MULSIFERN AND VANILLA (ARTIFICIAL)<|LOC_256|><|LOC_533|><|LOC_496|><|LOC_533|><|LOC_496|><|LOC_548|><|LOC_256|><|LOC_548|>\nFLAVOURS: CHOCOLATE (75) GLASS, VEGETABLE FAT (PALM, COCOA POWDER, DEXTROSE SOYA)<|LOC_256|><|LOC_544|><|LOC_496|><|LOC_544|><|LOC_496|><|LOC_559|><|LOC_256|><|LOC_559|>\nLECITHIN (222) BENZOIC ACID (222) VANILLA (NATURAL FLAVOUR), SOJA MELANOBIC ACID (222) VANILLA (FLAVOUR), SOJA<|LOC_256|><|LOC_554|><|LOC_496|><|LOC_554|><|LOC_496|><|LOC_569|><|LOC_256|><|LOC_569|>\nFROXIC COCONUT OIL (200) VANILLA (FLAVOUR), SOJA MELANOBIC OIL (200) VANILLA (FLAVOUR), SOJA MELANOBIC OIL (200)<|LOC_256|><|LOC_558|><|LOC_496|><|LOC_558|><|LOC_496|><|LOC_573|><|LOC_256|><|LOC_573|>\nFROXIC COCONUT OIL (200) VANILLA (FLAVOUR), SOJA MELANOBIC OIL (200) VANILLA (FLAVOUR), SOJA<|LOC_256|><|LOC_568|><|LOC_496|><|LOC_568|><|LOC_496|><|LOC_583|><|LOC_256|><|LOC_583|>\nINGREDIENTS: WHEAT FLOUR, VEGETABLE FAT (PALM) SUGAR, CHOCOLATE CHIPS (SUGAR, COCOA)<|LOC_256|><|LOC_523|><|LOC_496|><|LOC_523|><|LOC_496|><|LOC_537|><|LOC_256|><|LOC_537|>\nINGREDIENTS: WHEAT FLOUR, VEGETABLE FAT (PALM) SUGAR, CHOCOLATE CHIPS (SUGAR, COCOA)<|LOC_256|><|LOC_523|><|LOC_496|><|LOC_523|><|LOC_496|><|LOC_537|><|LOC_256|><|LOC_537|>\nINGREDIENTS: WHEAT FLOUR, VEGETABLE FAT (PALM) SUGAR, CHOCOLATE CHIPS (SUGAR, COCOA)<|LOC_256|><|LOC_523|><|LOC_496|><|LOC_523|><|LOC_496|><|LOC_537|><|LOC_256|><|LOC_537|>\nINGREDIENTS: WHEAT FLOUR, VEGETABLE FAT (PALM) SUGAR, CHOCOLATE CHIPS (SUGAR, COCOA)<|LOC_256|><|LOC_523|><|LOC_496|><|LOC_523|><|LOC_496|><|LOC_537|><|LOC_256|><|LOC_537|>\nINGREDIENTS: WHEAT FLOUR, VEGETABLE FAT (PALM) SUGAR, CHOCOLATE CHIPS (SUGAR, COCOA)<|LOC_256|><|LOC_523|><|LOC_496|><|LOC_523|><|LOC_496|><|LOC_537|><|LOC_256|><|LOC_537|>\nINGREDIENTS: WHEAT FLOUR, VEGETABLE FAT (PALM) SUGAR, CHOCOLATE CHIPS (SUGAR, COCOA)<|LOC_256|><|LOC_523|><|LOC_496|><|LOC_523|><|LOC_496|><|LOC_537|><|LOC_256|><|LOC_537|>\nCONTAINS: WHEAT GLUTEN, MILK, SOYA ALMOND & CASHWICH<|LOC_256|><|LOC_617|><|LOC_403|><|LOC_617|><|LOC_403|><|LOC_631|><|LOC_256|><|LOC_631|>\nMANUFACTURED IN FACILITY THAT ALEO PROCESSES EGG & TREE NUTS (PISTACHIO & HAZELMUT)<|LOC_256|><|LOC_627|><|LOC_493|><|LOC_627|><|LOC_493|><|LOC_641|><|LOC_256|><|LOC_641|>\nCONTAINS: WHEAT GLUTEN, MILK, SOYA ALMOND & CASHWICH<|LOC_256|><|LOC_617|><|LOC_403|><|LOC_617|><|LOC_403|><|LOC_631|><|LOC_256|><|LOC_631|>\nCONTAINS: WHEAT GLUTEN, MILK, SOYA ALMOND & CASHWICH<|LOC_256|><|LOC_617|><|LOC_403|><|LOC_617|><|LOC_403|><|LOC_631|><|LOC_256|><|LOC_631|>\nCONTAINS: WHEAT GLUTEN, MILK, SOYA ALMOND & CASHWICH<|LOC_256|><|LOC_617|><|LOC_403|><|LOC_617|><|LOC_403|><|LOC_631|><|LOC_256|>",
+      "expected_quantity": "120g",
+      "visual_note": "NET WT: 120g; MADE IN OMAN. Manufacturer Al Sallan Food Industries Co SAOC. Blank PKD/EXP patch. Export pack, not proof of Indian retail applicability.",
+      "baseline_pipeline_seconds": 94.18,
+      "parsed_lines": 60,
+      "rejected_boxes": 0,
+      "polygons": [
+        {
+          "text": "Nutrition Facts",
+          "points": [
+            [
+              267.0,
+              136.5
+            ],
+            [
+              351.0,
+              136.5
+            ],
+            [
+              351.0,
+              149.0
+            ],
+            [
+              267.0,
+              149.0
+            ]
+          ]
+        },
+        {
+          "text": "تقديم التغذية",
+          "points": [
+            [
+              284.0,
+              149.0
+            ],
+            [
+              348.0,
+              149.0
+            ],
+            [
+              348.0,
+              161.5
+            ],
+            [
+              284.0,
+              161.5
+            ]
+          ]
+        },
+        {
+          "text": "4 servings per container",
+          "points": [
+            [
+              268.0,
+              164.0
+            ],
+            [
+              334.0,
+              164.0
+            ],
+            [
+              334.0,
+              172.5
+            ],
+            [
+              268.0,
+              172.5
+            ]
+          ]
+        },
+        {
+          "text": "Serving size: 5 Biscuits (33g)",
+          "points": [
+            [
+              268.0,
+              181.5
+            ],
+            [
+              344.0,
+              181.5
+            ],
+            [
+              344.0,
+              191.0
+            ],
+            [
+              268.0,
+              191.0
+            ]
+          ]
+        },
+        {
+          "text": "Serving size: 5 servings (33g)",
+          "points": [
+            [
+              268.0,
+              182.0
+            ],
+            [
+              344.0,
+              182.0
+            ],
+            [
+              344.0,
+              191.0
+            ],
+            [
+              268.0,
+              191.0
+            ]
+          ]
+        },
+        {
+          "text": "(33)",
+          "points": [
+            [
+              268.0,
+              193.0
+            ],
+            [
+              344.0,
+              193.0
+            ],
+            [
+              344.0,
+              202.5
+            ],
+            [
+              268.0,
+              202.5
+            ]
+          ]
+        },
+        {
+          "text": "Calories",
+          "points": [
+            [
+              268.0,
+              206.0
+            ],
+            [
+              294.0,
+              206.0
+            ],
+            [
+              294.0,
+              215.5
+            ],
+            [
+              268.0,
+              215.5
+            ]
+          ]
+        },
+        {
+          "text": "per serving",
+          "points": [
+            [
+              268.0,
+              216.5
+            ],
+            [
+              295.0,
+              216.5
+            ],
+            [
+              295.0,
+              224.0
+            ],
+            [
+              268.0,
+              224.0
+            ]
+          ]
+        },
+        {
+          "text": "160",
+          "points": [
+            [
+              327.0,
+              208.0
+            ],
+            [
+              348.0,
+              208.0
+            ],
+            [
+              348.0,
+              222.0
+            ],
+            [
+              327.0,
+              222.0
+            ]
+          ]
+        },
+        {
+          "text": "Sodium",
+          "points": [
+            [
+              350.0,
+              208.0
+            ],
+            [
+              366.0,
+              208.0
+            ],
+            [
+              366.0,
+              215.5
+            ],
+            [
+              350.0,
+              215.5
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              370.0,
+              209.0
+            ],
+            [
+              395.0,
+              209.0
+            ],
+            [
+              395.0,
+              217.0
+            ],
+            [
+              370.0,
+              217.0
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              370.0,
+              208.0
+            ],
+            [
+              395.0,
+              208.0
+            ],
+            [
+              395.0,
+              216.0
+            ],
+            [
+              370.0,
+              216.0
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              370.0,
+              206.0
+            ],
+            [
+              395.0,
+              206.0
+            ],
+            [
+              395.0,
+              215.5
+            ],
+            [
+              370.0,
+              215.5
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              370.0,
+              182.0
+            ],
+            [
+              397.0,
+              182.0
+            ],
+            [
+              397.0,
+              191.0
+            ],
+            [
+              370.0,
+              191.0
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              370.0,
+              194.0
+            ],
+            [
+              397.0,
+              194.0
+            ],
+            [
+              397.0,
+              203.0
+            ],
+            [
+              370.0,
+              203.0
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              370.0,
+              206.0
+            ],
+            [
+              395.0,
+              206.0
+            ],
+            [
+              395.0,
+              215.5
+            ],
+            [
+              370.0,
+              215.5
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              370.0,
+              182.0
+            ],
+            [
+              397.0,
+              182.0
+            ],
+            [
+              397.0,
+              191.0
+            ],
+            [
+              370.0,
+              191.0
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              370.0,
+              182.0
+            ],
+            [
+              397.0,
+              182.0
+            ],
+            [
+              397.0,
+              191.0
+            ],
+            [
+              370.0,
+              191.0
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              413.0,
+              194.0
+            ],
+            [
+              430.0,
+              194.0
+            ],
+            [
+              430.0,
+              202.5
+            ],
+            [
+              413.0,
+              202.5
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              413.0,
+              206.0
+            ],
+            [
+              430.0,
+              206.0
+            ],
+            [
+              430.0,
+              215.5
+            ],
+            [
+              413.0,
+              215.5
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              413.0,
+              182.0
+            ],
+            [
+              430.0,
+              182.0
+            ],
+            [
+              430.0,
+              191.0
+            ],
+            [
+              413.0,
+              191.0
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              413.0,
+              194.0
+            ],
+            [
+              430.0,
+              194.0
+            ],
+            [
+              430.0,
+              203.0
+            ],
+            [
+              413.0,
+              203.0
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              413.0,
+              206.0
+            ],
+            [
+              430.0,
+              206.0
+            ],
+            [
+              430.0,
+              215.5
+            ],
+            [
+              413.0,
+              215.5
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              454.0,
+              194.0
+            ],
+            [
+              471.0,
+              194.0
+            ],
+            [
+              471.0,
+              203.0
+            ],
+            [
+              454.0,
+              203.0
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              454.0,
+              206.0
+            ],
+            [
+              471.0,
+              206.0
+            ],
+            [
+              471.0,
+              215.5
+            ],
+            [
+              454.0,
+              215.5
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              454.0,
+              182.0
+            ],
+            [
+              471.0,
+              182.0
+            ],
+            [
+              471.0,
+              191.0
+            ],
+            [
+              454.0,
+              191.0
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              454.0,
+              194.0
+            ],
+            [
+              471.0,
+              194.0
+            ],
+            [
+              471.0,
+              203.0
+            ],
+            [
+              454.0,
+              203.0
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              454.0,
+              206.0
+            ],
+            [
+              471.0,
+              206.0
+            ],
+            [
+              471.0,
+              215.5
+            ],
+            [
+              454.0,
+              215.5
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              505.0,
+              206.0
+            ],
+            [
+              518.0,
+              206.0
+            ],
+            [
+              518.0,
+              215.5
+            ],
+            [
+              505.0,
+              215.5
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              505.0,
+              206.0
+            ],
+            [
+              518.0,
+              206.0
+            ],
+            [
+              518.0,
+              215.5
+            ],
+            [
+              505.0,
+              215.5
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              505.0,
+              182.0
+            ],
+            [
+              518.0,
+              182.0
+            ],
+            [
+              518.0,
+              191.0
+            ],
+            [
+              505.0,
+              191.0
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              505.0,
+              194.0
+            ],
+            [
+              518.0,
+              194.0
+            ],
+            [
+              518.0,
+              203.0
+            ],
+            [
+              505.0,
+              203.0
+            ]
+          ]
+        },
+        {
+          "text": "\\( 100 \\, g \\)",
+          "points": [
+            [
+              505.0,
+              206.5
+            ],
+            [
+              518.0,
+              206.5
+            ],
+            [
+              518.0,
+              215.5
+            ],
+            [
+              505.0,
+              215.5
+            ]
+          ]
+        },
+        {
+          "text": "MANUFACTURED IN OWN BY AL SALAN FOOD INDUSTRIES CO. SAOC. PO BOX 570 INDUSTRIAL",
+          "points": [
+            [
+              527.0,
+              133.0
+            ],
+            [
+              752.0,
+              133.0
+            ],
+            [
+              752.0,
+              140.5
+            ],
+            [
+              527.0,
+              140.5
+            ]
+          ]
+        },
+        {
+          "text": "AREA SOHAR SUSTAINTE OF OWN EMAL export@tanda.com UNDER LICENSE FROM BRITANNA",
+          "points": [
+            [
+              527.0,
+              140.0
+            ],
+            [
+              752.0,
+              140.0
+            ],
+            [
+              752.0,
+              147.5
+            ],
+            [
+              527.0,
+              147.5
+            ]
+          ]
+        },
+        {
+          "text": "INDUSTRIES LIMITED, 51AHUNGERFORD STREET, KOLKATA, INDIA",
+          "points": [
+            [
+              527.0,
+              147.5
+            ],
+            [
+              678.0,
+              147.5
+            ],
+            [
+              678.0,
+              155.0
+            ],
+            [
+              527.0,
+              155.0
+            ]
+          ]
+        },
+        {
+          "text": "MANUFACTURED IN OWN BY AL SALAN FOOD INDUSTRIES CO. SAOC. PO BOX 570 INDUSTRIAL",
+          "points": [
+            [
+              527.0,
+              132.0
+            ],
+            [
+              752.0,
+              132.0
+            ],
+            [
+              752.0,
+              140.0
+            ],
+            [
+              527.0,
+              140.0
+            ]
+          ]
+        },
+        {
+          "text": "MADE IN OMAN / MOUA",
+          "points": [
+            [
+              628.0,
+              183.5
+            ],
+            [
+              713.0,
+              183.5
+            ],
+            [
+              713.0,
+              192.0
+            ],
+            [
+              628.0,
+              192.0
+            ]
+          ]
+        },
+        {
+          "text": "STORE IN A COOL AND DRY PLACE",
+          "points": [
+            [
+              628.0,
+              196.0
+            ],
+            [
+              699.0,
+              196.0
+            ],
+            [
+              699.0,
+              204.0
+            ],
+            [
+              628.0,
+              204.0
+            ]
+          ]
+        },
+        {
+          "text": "ARMAZENAR EM LOCAL FRESOO E SECO",
+          "points": [
+            [
+              628.0,
+              204.0
+            ],
+            [
+              713.0,
+              204.0
+            ],
+            [
+              713.0,
+              211.5
+            ],
+            [
+              628.0,
+              211.5
+            ]
+          ]
+        },
+        {
+          "text": "BISCUITS NET WEIGHT: 120g",
+          "points": [
+            [
+              628.0,
+              220.0
+            ],
+            [
+              700.0,
+              220.0
+            ],
+            [
+              700.0,
+              230.0
+            ],
+            [
+              628.0,
+              230.0
+            ]
+          ]
+        },
+        {
+          "text": "PESO LIQUIDO: 120g",
+          "points": [
+            [
+              628.0,
+              229.0
+            ],
+            [
+              681.0,
+              229.0
+            ],
+            [
+              681.0,
+              238.0
+            ],
+            [
+              628.0,
+              238.0
+            ]
+          ]
+        },
+        {
+          "text": "8901063136779",
+          "points": [
+            [
+              531.0,
+              235.5
+            ],
+            [
+              622.0,
+              235.5
+            ],
+            [
+              622.0,
+              244.0
+            ],
+            [
+              531.0,
+              244.0
+            ]
+          ]
+        },
+        {
+          "text": "\\( V \\)",
+          "points": [
+            [
+              708.0,
+              232.5
+            ],
+            [
+              720.0,
+              232.5
+            ],
+            [
+              720.0,
+              243.0
+            ],
+            [
+              708.0,
+              243.0
+            ]
+          ]
+        },
+        {
+          "text": "INGREDIENTS: WHEAT FLOUR, VEGETABLE FAT (PALM) SUGAR, CHOCOLATE CHIPS (SUGAR, COCOA)",
+          "points": [
+            [
+              256.0,
+              261.5
+            ],
+            [
+              497.0,
+              261.5
+            ],
+            [
+              497.0,
+              268.5
+            ],
+            [
+              256.0,
+              268.5
+            ]
+          ]
+        },
+        {
+          "text": "POWDER COCOA BUTTER DEXTROSE SOYA LECITHIN (322) MULSIFERN AND VANILLA (ARTIFICIAL)",
+          "points": [
+            [
+              256.0,
+              266.5
+            ],
+            [
+              496.0,
+              266.5
+            ],
+            [
+              496.0,
+              274.0
+            ],
+            [
+              256.0,
+              274.0
+            ]
+          ]
+        },
+        {
+          "text": "FLAVOURS: CHOCOLATE (75) GLASS, VEGETABLE FAT (PALM, COCOA POWDER, DEXTROSE SOYA)",
+          "points": [
+            [
+              256.0,
+              272.0
+            ],
+            [
+              496.0,
+              272.0
+            ],
+            [
+              496.0,
+              279.5
+            ],
+            [
+              256.0,
+              279.5
+            ]
+          ]
+        },
+        {
+          "text": "LECITHIN (222) BENZOIC ACID (222) VANILLA (NATURAL FLAVOUR), SOJA MELANOBIC ACID (222) VANILLA (FLAVOUR), SOJA",
+          "points": [
+            [
+              256.0,
+              277.0
+            ],
+            [
+              496.0,
+              277.0
+            ],
+            [
+              496.0,
+              284.5
+            ],
+            [
+              256.0,
+              284.5
+            ]
+          ]
+        },
+        {
+          "text": "FROXIC COCONUT OIL (200) VANILLA (FLAVOUR), SOJA MELANOBIC OIL (200) VANILLA (FLAVOUR), SOJA MELANOBIC OIL (200)",
+          "points": [
+            [
+              256.0,
+              279.0
+            ],
+            [
+              496.0,
+              279.0
+            ],
+            [
+              496.0,
+              286.5
+            ],
+            [
+              256.0,
+              286.5
+            ]
+          ]
+        },
+        {
+          "text": "FROXIC COCONUT OIL (200) VANILLA (FLAVOUR), SOJA MELANOBIC OIL (200) VANILLA (FLAVOUR), SOJA",
+          "points": [
+            [
+              256.0,
+              284.0
+            ],
+            [
+              496.0,
+              284.0
+            ],
+            [
+              496.0,
+              291.5
+            ],
+            [
+              256.0,
+              291.5
+            ]
+          ]
+        },
+        {
+          "text": "INGREDIENTS: WHEAT FLOUR, VEGETABLE FAT (PALM) SUGAR, CHOCOLATE CHIPS (SUGAR, COCOA)",
+          "points": [
+            [
+              256.0,
+              261.5
+            ],
+            [
+              496.0,
+              261.5
+            ],
+            [
+              496.0,
+              268.5
+            ],
+            [
+              256.0,
+              268.5
+            ]
+          ]
+        },
+        {
+          "text": "INGREDIENTS: WHEAT FLOUR, VEGETABLE FAT (PALM) SUGAR, CHOCOLATE CHIPS (SUGAR, COCOA)",
+          "points": [
+            [
+              256.0,
+              261.5
+            ],
+            [
+              496.0,
+              261.5
+            ],
+            [
+              496.0,
+              268.5
+            ],
+            [
+              256.0,
+              268.5
+            ]
+          ]
+        },
+        {
+          "text": "INGREDIENTS: WHEAT FLOUR, VEGETABLE FAT (PALM) SUGAR, CHOCOLATE CHIPS (SUGAR, COCOA)",
+          "points": [
+            [
+              256.0,
+              261.5
+            ],
+            [
+              496.0,
+              261.5
+            ],
+            [
+              496.0,
+              268.5
+            ],
+            [
+              256.0,
+              268.5
+            ]
+          ]
+        },
+        {
+          "text": "INGREDIENTS: WHEAT FLOUR, VEGETABLE FAT (PALM) SUGAR, CHOCOLATE CHIPS (SUGAR, COCOA)",
+          "points": [
+            [
+              256.0,
+              261.5
+            ],
+            [
+              496.0,
+              261.5
+            ],
+            [
+              496.0,
+              268.5
+            ],
+            [
+              256.0,
+              268.5
+            ]
+          ]
+        },
+        {
+          "text": "INGREDIENTS: WHEAT FLOUR, VEGETABLE FAT (PALM) SUGAR, CHOCOLATE CHIPS (SUGAR, COCOA)",
+          "points": [
+            [
+              256.0,
+              261.5
+            ],
+            [
+              496.0,
+              261.5
+            ],
+            [
+              496.0,
+              268.5
+            ],
+            [
+              256.0,
+              268.5
+            ]
+          ]
+        },
+        {
+          "text": "INGREDIENTS: WHEAT FLOUR, VEGETABLE FAT (PALM) SUGAR, CHOCOLATE CHIPS (SUGAR, COCOA)",
+          "points": [
+            [
+              256.0,
+              261.5
+            ],
+            [
+              496.0,
+              261.5
+            ],
+            [
+              496.0,
+              268.5
+            ],
+            [
+              256.0,
+              268.5
+            ]
+          ]
+        },
+        {
+          "text": "CONTAINS: WHEAT GLUTEN, MILK, SOYA ALMOND & CASHWICH",
+          "points": [
+            [
+              256.0,
+              308.5
+            ],
+            [
+              403.0,
+              308.5
+            ],
+            [
+              403.0,
+              315.5
+            ],
+            [
+              256.0,
+              315.5
+            ]
+          ]
+        },
+        {
+          "text": "MANUFACTURED IN FACILITY THAT ALEO PROCESSES EGG & TREE NUTS (PISTACHIO & HAZELMUT)",
+          "points": [
+            [
+              256.0,
+              313.5
+            ],
+            [
+              493.0,
+              313.5
+            ],
+            [
+              493.0,
+              320.5
+            ],
+            [
+              256.0,
+              320.5
+            ]
+          ]
+        },
+        {
+          "text": "CONTAINS: WHEAT GLUTEN, MILK, SOYA ALMOND & CASHWICH",
+          "points": [
+            [
+              256.0,
+              308.5
+            ],
+            [
+              403.0,
+              308.5
+            ],
+            [
+              403.0,
+              315.5
+            ],
+            [
+              256.0,
+              315.5
+            ]
+          ]
+        },
+        {
+          "text": "CONTAINS: WHEAT GLUTEN, MILK, SOYA ALMOND & CASHWICH",
+          "points": [
+            [
+              256.0,
+              308.5
+            ],
+            [
+              403.0,
+              308.5
+            ],
+            [
+              403.0,
+              315.5
+            ],
+            [
+              256.0,
+              315.5
+            ]
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "field": "generic_name",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "net_quantity",
+          "status": "observed",
+          "value": "120g",
+          "evidence": [
+            {
+              "field": "net_quantity",
+              "value": "120g",
+              "view": "rear",
+              "provider": "paddle_spotting",
+              "source_text": "BISCUITS NET WEIGHT: 120g",
+              "box": {
+                "x0": 628.0,
+                "y0": 220.0,
+                "x1": 700.0,
+                "y1": 230.0
+              },
+              "confidence": null,
+              "height_mm": null,
+              "glyph_box": null
+            }
+          ],
+          "reason": "Unverified OCR transcription; inspector review required. Readings from the same photo or its crops are not independent confirmation."
+        },
+        {
+          "field": "mrp",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "manufacturer",
+          "status": "observed",
+          "value": "AL SALAN FOOD INDUSTRIES CO. SAOC. PO BOX 570 INDUSTRIAL",
+          "evidence": [
+            {
+              "field": "manufacturer",
+              "value": "AL SALAN FOOD INDUSTRIES CO. SAOC. PO BOX 570 INDUSTRIAL",
+              "view": "rear",
+              "provider": "paddle_spotting",
+              "source_text": "MANUFACTURED IN OWN BY AL SALAN FOOD INDUSTRIES CO. SAOC. PO BOX 570 INDUSTRIAL",
+              "box": {
+                "x0": 527.0,
+                "y0": 133.0,
+                "x1": 752.0,
+                "y1": 140.5
+              },
+              "confidence": null,
+              "height_mm": null,
+              "glyph_box": null
+            },
+            {
+              "field": "manufacturer",
+              "value": "AL SALAN FOOD INDUSTRIES CO. SAOC. PO BOX 570 INDUSTRIAL",
+              "view": "rear",
+              "provider": "paddle_spotting",
+              "source_text": "MANUFACTURED IN OWN BY AL SALAN FOOD INDUSTRIES CO. SAOC. PO BOX 570 INDUSTRIAL",
+              "box": {
+                "x0": 527.0,
+                "y0": 132.0,
+                "x1": 752.0,
+                "y1": 140.0
+              },
+              "confidence": null,
+              "height_mm": null,
+              "glyph_box": null
+            }
+          ],
+          "reason": "Unverified OCR transcription; inspector review required. Readings from the same photo or its crops are not independent confirmation."
+        },
+        {
+          "field": "date",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "consumer_care",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "country_of_origin",
+          "status": "observed",
+          "value": "OMAN / MOUA",
+          "evidence": [
+            {
+              "field": "country_of_origin",
+              "value": "OMAN / MOUA",
+              "view": "rear",
+              "provider": "paddle_spotting",
+              "source_text": "MADE IN OMAN / MOUA",
+              "box": {
+                "x0": 628.0,
+                "y0": 183.5,
+                "x1": 713.0,
+                "y1": 192.0
+              },
+              "confidence": null,
+              "height_mm": null,
+              "glyph_box": null
+            }
+          ],
+          "reason": "Unverified OCR transcription; inspector review required. Readings from the same photo or its crops are not independent confirmation."
+        }
+      ],
+      "quantity_match": true,
+      "quantity_check": false,
+      "max_identical_region_repeats": 6,
+      "baseline_fields": [
+        {
+          "field": "generic_name",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "net_quantity",
+          "status": "observed",
+          "value": "120g",
+          "evidence": [
+            {
+              "field": "net_quantity",
+              "value": "120g",
+              "view": "rear",
+              "provider": "xiaomi_detail_1",
+              "source_text": "NET WT.: 120g",
+              "box": null,
+              "confidence": null,
+              "height_mm": null
+            }
+          ],
+          "reason": "Unverified OCR transcription; inspector review required. Readings from the same photo or its crops are not independent confirmation."
+        },
+        {
+          "field": "mrp",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "manufacturer",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "date",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "consumer_care",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "country_of_origin",
+          "status": "conflict",
+          "value": null,
+          "evidence": [
+            {
+              "field": "country_of_origin",
+              "value": "MALAYSIA. MADE IN ORAN",
+              "view": "rear",
+              "provider": "xiaomi_detail_1",
+              "source_text": "PRODUCTS LIMITED BY A. SALAM FOOD MANUFACTURER CO., B.A.K. P.O. BOX 100, KUALA LUMPUR, MALAYSIA. ALL RIGHTS RESERVED. MADE IN MALAYSIA. MADE IN ORAN.",
+              "box": null,
+              "confidence": null,
+              "height_mm": null
+            },
+            {
+              "field": "country_of_origin",
+              "value": "ORAN",
+              "view": "rear",
+              "provider": "xiaomi_detail_1",
+              "source_text": "MADE IN ORAN.",
+              "box": null,
+              "confidence": null,
+              "height_mm": null
+            }
+          ],
+          "reason": "OCR providers or views disagree. Inspector review required."
+        }
+      ]
+    },
+    {
+      "id": "lays",
+      "file": "lays.jpg",
+      "sha256": "cf76c9f62cc708d5f2ff2d2ef99168cb827184a637c46fa3d7ec232c2f18f407",
+      "original_dimensions": [
+        1200,
+        1200
+      ],
+      "processed_dimensions": [
+        2400,
+        2400
+      ],
+      "elapsed_seconds": 247.59,
+      "generated_tokens": 1515,
+      "completed_eos": true,
+      "raw_output": "Lay's is a Trade Mark of PepsiCo, Inc.<|LOC_266|><|LOC_120|><|LOC_410|><|LOC_120|><|LOC_410|><|LOC_133|><|LOC_266|><|LOC_133|>\nFor feedback or queries, write (indicating<|LOC_266|><|LOC_135|><|LOC_444|><|LOC_135|><|LOC_444|><|LOC_147|><|LOC_266|><|LOC_147|>\nBatch No. and Manufacturing Date) to:<|LOC_266|><|LOC_146|><|LOC_433|><|LOC_146|><|LOC_433|><|LOC_157|><|LOC_266|><|LOC_157|>\nTHE CONSUMER SERVICES MANAGER,<|LOC_266|><|LOC_159|><|LOC_441|><|LOC_159|><|LOC_441|><|LOC_171|><|LOC_266|><|LOC_171|>\nLay's<|LOC_584|><|LOC_141|><|LOC_656|><|LOC_135|><|LOC_660|><|LOC_185|><|LOC_588|><|LOC_191|>\nPEPSICO INDIA HOLDINGS PVT. LTD.,<|LOC_266|><|LOC_172|><|LOC_432|><|LOC_172|><|LOC_432|><|LOC_184|><|LOC_266|><|LOC_184|>\nP.O. BOX 27, DLF QUTAB ENCLAVE, PHASE -1,<|LOC_266|><|LOC_186|><|LOC_462|><|LOC_186|><|LOC_462|><|LOC_198|><|LOC_266|><|LOC_198|>\nGURUGRAM - 122002, HARYANA, INDIA.<|LOC_266|><|LOC_197|><|LOC_438|><|LOC_197|><|LOC_438|><|LOC_208|><|LOC_266|><|LOC_208|>\nOR CALL US AT 1800 22 4020<|LOC_266|><|LOC_211|><|LOC_401|><|LOC_211|><|LOC_401|><|LOC_223|><|LOC_266|><|LOC_223|>\nOR EMAIL US AT<|LOC_266|><|LOC_224|><|LOC_343|><|LOC_224|><|LOC_343|><|LOC_236|><|LOC_266|><|LOC_236|>\nCONSUMER.FEEDBACK@PEPSICO.COM<|LOC_266|><|LOC_235|><|LOC_445|><|LOC_235|><|LOC_445|><|LOC_247|><|LOC_266|><|LOC_247|>\nBURSTING WITH FLAVOUR<|LOC_524|><|LOC_214|><|LOC_713|><|LOC_214|><|LOC_713|><|LOC_229|><|LOC_524|><|LOC_229|>\nIN EVERY BITE.<|LOC_587|><|LOC_229|><|LOC_649|><|LOC_229|><|LOC_649|><|LOC_239|><|LOC_587|><|LOC_239|>\nBased on internal grading and quality parameters.<|LOC_266|><|LOC_249|><|LOC_454|><|LOC_249|><|LOC_454|><|LOC_260|><|LOC_266|><|LOC_260|>\nPROPRIETARY FOOD - POTATO CHIPS (15.1)<|LOC_266|><|LOC_261|><|LOC_448|><|LOC_261|><|LOC_448|><|LOC_273|><|LOC_266|><|LOC_273|>\nINGREDIENTS: Potato (88%), Edible Vegetable Oil.<|LOC_266|><|LOC_274|><|LOC_445|><|LOC_274|><|LOC_445|><|LOC_285|><|LOC_266|><|LOC_285|>\nlodised Salt (1%).<|LOC_266|><|LOC_287|><|LOC_327|><|LOC_287|><|LOC_327|><|LOC_298|><|LOC_266|><|LOC_298|>\nTo know the specific type of oil used and its saturated fat<|LOC_266|><|LOC_303|><|LOC_462|><|LOC_303|><|LOC_462|><|LOC_314|><|LOC_266|><|LOC_314|>\nvalue, match the symbol \\( \\phi \\) or \\( \\phi \\) with the last character of<|LOC_266|><|LOC_317|><|LOC_455|><|LOC_317|><|LOC_455|><|LOC_327|><|LOC_266|><|LOC_327|>\nbatch number where \\( \\phi \\) denotes Palmolein and \\( \\phi \\) denotes<|LOC_266|><|LOC_329|><|LOC_457|><|LOC_329|><|LOC_457|><|LOC_339|><|LOC_266|><|LOC_339|>\nRice Bran Oil.<|LOC_266|><|LOC_341|><|LOC_314|><|LOC_341|><|LOC_314|><|LOC_351|><|LOC_266|><|LOC_351|>\nNUTRITIONAL INFORMATION\\*\\*<|LOC_271|><|LOC_363|><|LOC_379|><|LOC_363|><|LOC_379|><|LOC_373|><|LOC_271|><|LOC_373|>\nSERVE SIZE \\( 20g \\)™<|LOC_402|><|LOC_363|><|LOC_461|><|LOC_363|><|LOC_461|><|LOC_374|><|LOC_402|><|LOC_374|>\nTHE UNMISTAKABLE FLAVOUR OF LAY'S,<|LOC_535|><|LOC_360|><|LOC_701|><|LOC_360|><|LOC_701|><|LOC_371|><|LOC_535|><|LOC_371|>\nCOOKED & DELICIOUSLY<|LOC_533|><|LOC_369|><|LOC_703|><|LOC_369|><|LOC_703|><|LOC_384|><|LOC_533|><|LOC_384|>\nNutrients<|LOC_272|><|LOC_380|><|LOC_304|><|LOC_380|><|LOC_304|><|LOC_390|><|LOC_272|><|LOC_390|>\nPer 100 g<|LOC_352|><|LOC_380|><|LOC_386|><|LOC_380|><|LOC_386|><|LOC_391|><|LOC_352|><|LOC_391|>\n%RDA Per Serve<|LOC_400|><|LOC_380|><|LOC_458|><|LOC_380|><|LOC_458|><|LOC_390|><|LOC_400|><|LOC_390|>\nSEASONED TO PERFECTION.<|LOC_561|><|LOC_383|><|LOC_675|><|LOC_383|><|LOC_675|><|LOC_393|><|LOC_561|><|LOC_393|>\nEnergy<|LOC_272|><|LOC_397|><|LOC_297|><|LOC_397|><|LOC_297|><|LOC_407|><|LOC_272|><|LOC_407|>\n553 kcal<|LOC_353|><|LOC_396|><|LOC_384|><|LOC_396|><|LOC_384|><|LOC_406|><|LOC_353|><|LOC_406|>\n6%<|LOC_422|><|LOC_396|><|LOC_434|><|LOC_396|><|LOC_434|><|LOC_406|><|LOC_422|><|LOC_406|>\nProtein<|LOC_272|><|LOC_412|><|LOC_297|><|LOC_412|><|LOC_297|><|LOC_422|><|LOC_272|><|LOC_422|>\n6.7 g<|LOC_359|><|LOC_412|><|LOC_378|><|LOC_412|><|LOC_378|><|LOC_422|><|LOC_359|><|LOC_422|>\nCarbohydrate<|LOC_272|><|LOC_428|><|LOC_320|><|LOC_428|><|LOC_320|><|LOC_438|><|LOC_272|><|LOC_438|>\n52.6 g<|LOC_357|><|LOC_428|><|LOC_380|><|LOC_428|><|LOC_380|><|LOC_438|><|LOC_357|><|LOC_438|>\nTotal Sugars<|LOC_283|><|LOC_444|><|LOC_325|><|LOC_444|><|LOC_325|><|LOC_455|><|LOC_283|><|LOC_455|>\n0.6 g<|LOC_359|><|LOC_445|><|LOC_378|><|LOC_445|><|LOC_378|><|LOC_454|><|LOC_359|><|LOC_454|>\nAdded Sugars<|LOC_290|><|LOC_460|><|LOC_339|><|LOC_460|><|LOC_339|><|LOC_471|><|LOC_290|><|LOC_471|>\n0 g<|LOC_362|><|LOC_461|><|LOC_375|><|LOC_461|><|LOC_375|><|LOC_471|><|LOC_362|><|LOC_471|>\n0%<|LOC_422|><|LOC_461|><|LOC_434|><|LOC_461|><|LOC_434|><|LOC_471|><|LOC_422|><|LOC_471|>\nTotal Fat<|LOC_273|><|LOC_477|><|LOC_302|><|LOC_477|><|LOC_302|><|LOC_487|><|LOC_273|><|LOC_487|>\n35.1 g<|LOC_357|><|LOC_477|><|LOC_380|><|LOC_477|><|LOC_380|><|LOC_488|><|LOC_357|><|LOC_488|>\n10%<|LOC_421|><|LOC_477|><|LOC_436|><|LOC_477|><|LOC_436|><|LOC_487|><|LOC_421|><|LOC_487|>\nSaturated Fat\\(^{\\text{TM}}\\)<|LOC_282|><|LOC_491|><|LOC_332|><|LOC_491|><|LOC_332|><|LOC_502|><|LOC_282|><|LOC_502|>\n15.8 g<|LOC_356|><|LOC_491|><|LOC_381|><|LOC_491|><|LOC_381|><|LOC_502|><|LOC_356|><|LOC_502|>\n14%<|LOC_420|><|LOC_491|><|LOC_438|><|LOC_491|><|LOC_438|><|LOC_501|><|LOC_420|><|LOC_501|>\nOR<|LOC_362|><|LOC_502|><|LOC_375|><|LOC_502|><|LOC_375|><|LOC_511|><|LOC_362|><|LOC_511|>\nOR<|LOC_421|><|LOC_502|><|LOC_434|><|LOC_502|><|LOC_434|><|LOC_511|><|LOC_421|><|LOC_511|>\n8.1 g\\(^*\\)<|LOC_357|><|LOC_511|><|LOC_379|><|LOC_511|><|LOC_379|><|LOC_521|><|LOC_357|><|LOC_521|>\n7%<|LOC_420|><|LOC_511|><|LOC_436|><|LOC_511|><|LOC_436|><|LOC_521|><|LOC_420|><|LOC_521|>\nTrans Fat<|LOC_283|><|LOC_524|><|LOC_314|><|LOC_524|><|LOC_314|><|LOC_535|><|LOC_283|><|LOC_535|>\n0.1 g<|LOC_359|><|LOC_525|><|LOC_378|><|LOC_525|><|LOC_378|><|LOC_535|><|LOC_359|><|LOC_535|>\n1%<|LOC_422|><|LOC_525|><|LOC_434|><|LOC_525|><|LOC_434|><|LOC_535|><|LOC_422|><|LOC_535|>\nIS MADE WITH<|LOC_589|><|LOC_529|><|LOC_649|><|LOC_529|><|LOC_649|><|LOC_539|><|LOC_589|><|LOC_539|>\nSodium<|LOC_272|><|LOC_540|><|LOC_300|><|LOC_540|><|LOC_300|><|LOC_550|><|LOC_272|><|LOC_550|>\n500 mg<|LOC_355|><|LOC_540|><|LOC_382|><|LOC_540|><|LOC_382|><|LOC_551|><|LOC_355|><|LOC_551|>\n5%<|LOC_422|><|LOC_540|><|LOC_434|><|LOC_540|><|LOC_434|><|LOC_550|><|LOC_422|><|LOC_550|>\nFINEST POTATOES<|LOC_541|><|LOC_540|><|LOC_697|><|LOC_540|><|LOC_697|><|LOC_558|><|LOC_541|><|LOC_558|>\nApproximate Values<|LOC_272|><|LOC_556|><|LOC_347|><|LOC_556|><|LOC_347|><|LOC_568|><|LOC_272|><|LOC_568|>\n**Pack &lt;20 g is a single consumption pack.**<|LOC_266|><|LOC_572|><|LOC_438|><|LOC_572|><|LOC_438|><|LOC_585|><|LOC_266|><|LOC_585|>\npepsico<|LOC_597|><|LOC_572|><|LOC_672|><|LOC_572|><|LOC_672|><|LOC_587|><|LOC_597|><|LOC_587|>\nMRP<|LOC_266|><|LOC_591|><|LOC_291|><|LOC_591|><|LOC_291|><|LOC_602|><|LOC_266|><|LOC_602|>\nFood, Drinks, Smiles.<|LOC_596|><|LOC_588|><|LOC_653|><|LOC_588|><|LOC_653|><|LOC_596|><|LOC_596|><|LOC_596|>\nNET QTY:<|LOC_268|><|LOC_609|><|LOC_308|><|LOC_609|><|LOC_308|><|LOC_621|><|LOC_268|><|LOC_621|>\nMfg. & Mkt. by: PEPISCO INDIA HOLDINGS PVT. LTD.<|LOC_532|><|LOC_602|><|LOC_698|><|LOC_602|><|LOC_698|><|LOC_613|><|LOC_532|><|LOC_613|>\nUNIT SALE PRICE:<|LOC_268|><|LOC_624|><|LOC_343|><|LOC_624|><|LOC_343|><|LOC_637|><|LOC_268|><|LOC_637|>\nIssai<|LOC_563|><|LOC_614|><|LOC_596|><|LOC_614|><|LOC_596|><|LOC_631|><|LOC_563|><|LOC_631|>\nMkt. Lc. No. 10014064000435<|LOC_534|><|LOC_633|><|LOC_623|><|LOC_633|><|LOC_623|><|LOC_643|><|LOC_534|><|LOC_643|>\nNO. OF SERVES<|LOC_268|><|LOC_648|><|LOC_332|><|LOC_648|><|LOC_332|><|LOC_661|><|LOC_268|><|LOC_661|>\nFor Mkt. Address, scan Barcode via Smart Consumer App.<|LOC_534|><|LOC_643|><|LOC_685|><|LOC_643|><|LOC_685|><|LOC_653|><|LOC_534|><|LOC_653|>\nFor Manufacturer's Lc. No., see first two characters of batch no.<|LOC_534|><|LOC_653|><|LOC_698|><|LOC_653|><|LOC_698|><|LOC_662|><|LOC_534|><|LOC_662|>\nPER PACK/ B. NO.:<|LOC_268|><|LOC_662|><|LOC_344|><|LOC_662|><|LOC_344|><|LOC_674|><|LOC_268|><|LOC_674|>\nand see below.<|LOC_534|><|LOC_661|><|LOC_577|><|LOC_661|><|LOC_577|><|LOC_670|><|LOC_534|><|LOC_670|>\nN1: Lc. No. 10012063000110 N2: Lc. No. 10012022000339<|LOC_534|><|LOC_669|><|LOC_694|><|LOC_669|><|LOC_694|><|LOC_679|><|LOC_534|><|LOC_679|>\nN3: Lc. No. 10012031000120 N4: Lc. No. 12721999000033<|LOC_534|><|LOC_679|><|LOC_693|><|LOC_679|><|LOC_693|><|LOC_688|><|LOC_534|><|LOC_688|>\nMFD & USE BY:<|LOC_268|><|LOC_685|><|LOC_332|><|LOC_685|><|LOC_332|><|LOC_698|><|LOC_268|><|LOC_698|>\n*For details on PepsiCo<|LOC_584|><|LOC_711|><|LOC_662|><|LOC_711|><|LOC_662|><|LOC_721|><|LOC_584|><|LOC_721|>\npartnership with farmers.<|LOC_584|><|LOC_722|><|LOC_667|><|LOC_722|><|LOC_667|><|LOC_731|><|LOC_584|><|LOC_731|>\nvisit www.pepsicoindia.co.in<|LOC_584|><|LOC_732|><|LOC_680|><|LOC_732|><|LOC_680|><|LOC_741|><|LOC_584|><|LOC_741|>\nFind us on:<|LOC_584|><|LOC_756|><|LOC_614|><|LOC_756|><|LOC_614|><|LOC_764|><|LOC_584|><|LOC_764|>\nfacebook.com/taysindia<|LOC_584|><|LOC_764|><|LOC_654|><|LOC_764|><|LOC_654|><|LOC_772|><|LOC_584|><|LOC_772|>\n819014911001021<|LOC_538|><|LOC_821|><|LOC_649|><|LOC_821|><|LOC_649|><|LOC_832|><|LOC_538|><|LOC_832|>\nPotato Chips<|LOC_53|><|LOC_927|><|LOC_146|><|LOC_927|><|LOC_146|><|LOC_944|><|LOC_53|><|LOC_944|>\nLay's is the Registered Trade Mark of PepsiCo, Inc.<|LOC_21|><|LOC_945|><|LOC_371|><|LOC_945|><|LOC_371|><|LOC_963|><|LOC_21|><|LOC_963|>\nBased on internal grading and quality parameters.<|LOC_15|><|LOC_967|><|LOC_378|><|LOC_967|><|LOC_378|><|LOC_986|><|LOC_15|><|LOC_986|></s>",
+      "expected_quantity": null,
+      "visual_note": "NET QTY, MRP and MFD/USE BY spaces are blank. 20 g serving and per-100 g nutrition values are not net quantity. PepsiCo India Holdings Pvt Ltd is printed.",
+      "baseline_pipeline_seconds": 259.83,
+      "parsed_lines": 86,
+      "rejected_boxes": 0,
+      "polygons": [
+        {
+          "text": "Lay's is a Trade Mark of PepsiCo, Inc.",
+          "points": [
+            [
+              319.2,
+              144.0
+            ],
+            [
+              492.0,
+              144.0
+            ],
+            [
+              492.0,
+              159.6
+            ],
+            [
+              319.2,
+              159.6
+            ]
+          ]
+        },
+        {
+          "text": "For feedback or queries, write (indicating",
+          "points": [
+            [
+              319.2,
+              162.0
+            ],
+            [
+              532.8,
+              162.0
+            ],
+            [
+              532.8,
+              176.4
+            ],
+            [
+              319.2,
+              176.4
+            ]
+          ]
+        },
+        {
+          "text": "Batch No. and Manufacturing Date) to:",
+          "points": [
+            [
+              319.2,
+              175.2
+            ],
+            [
+              519.6,
+              175.2
+            ],
+            [
+              519.6,
+              188.4
+            ],
+            [
+              319.2,
+              188.4
+            ]
+          ]
+        },
+        {
+          "text": "THE CONSUMER SERVICES MANAGER,",
+          "points": [
+            [
+              319.2,
+              190.8
+            ],
+            [
+              529.2,
+              190.8
+            ],
+            [
+              529.2,
+              205.2
+            ],
+            [
+              319.2,
+              205.2
+            ]
+          ]
+        },
+        {
+          "text": "Lay's",
+          "points": [
+            [
+              700.8,
+              169.2
+            ],
+            [
+              787.2,
+              162.0
+            ],
+            [
+              792.0,
+              222.0
+            ],
+            [
+              705.6,
+              229.2
+            ]
+          ]
+        },
+        {
+          "text": "PEPSICO INDIA HOLDINGS PVT. LTD.,",
+          "points": [
+            [
+              319.2,
+              206.4
+            ],
+            [
+              518.4,
+              206.4
+            ],
+            [
+              518.4,
+              220.8
+            ],
+            [
+              319.2,
+              220.8
+            ]
+          ]
+        },
+        {
+          "text": "P.O. BOX 27, DLF QUTAB ENCLAVE, PHASE -1,",
+          "points": [
+            [
+              319.2,
+              223.2
+            ],
+            [
+              554.4,
+              223.2
+            ],
+            [
+              554.4,
+              237.6
+            ],
+            [
+              319.2,
+              237.6
+            ]
+          ]
+        },
+        {
+          "text": "GURUGRAM - 122002, HARYANA, INDIA.",
+          "points": [
+            [
+              319.2,
+              236.4
+            ],
+            [
+              525.6,
+              236.4
+            ],
+            [
+              525.6,
+              249.6
+            ],
+            [
+              319.2,
+              249.6
+            ]
+          ]
+        },
+        {
+          "text": "OR CALL US AT 1800 22 4020",
+          "points": [
+            [
+              319.2,
+              253.2
+            ],
+            [
+              481.2,
+              253.2
+            ],
+            [
+              481.2,
+              267.6
+            ],
+            [
+              319.2,
+              267.6
+            ]
+          ]
+        },
+        {
+          "text": "OR EMAIL US AT",
+          "points": [
+            [
+              319.2,
+              268.8
+            ],
+            [
+              411.6,
+              268.8
+            ],
+            [
+              411.6,
+              283.2
+            ],
+            [
+              319.2,
+              283.2
+            ]
+          ]
+        },
+        {
+          "text": "CONSUMER.FEEDBACK@PEPSICO.COM",
+          "points": [
+            [
+              319.2,
+              282.0
+            ],
+            [
+              534.0,
+              282.0
+            ],
+            [
+              534.0,
+              296.4
+            ],
+            [
+              319.2,
+              296.4
+            ]
+          ]
+        },
+        {
+          "text": "BURSTING WITH FLAVOUR",
+          "points": [
+            [
+              628.8,
+              256.8
+            ],
+            [
+              855.6,
+              256.8
+            ],
+            [
+              855.6,
+              274.8
+            ],
+            [
+              628.8,
+              274.8
+            ]
+          ]
+        },
+        {
+          "text": "IN EVERY BITE.",
+          "points": [
+            [
+              704.4,
+              274.8
+            ],
+            [
+              778.8,
+              274.8
+            ],
+            [
+              778.8,
+              286.8
+            ],
+            [
+              704.4,
+              286.8
+            ]
+          ]
+        },
+        {
+          "text": "Based on internal grading and quality parameters.",
+          "points": [
+            [
+              319.2,
+              298.8
+            ],
+            [
+              544.8,
+              298.8
+            ],
+            [
+              544.8,
+              312.0
+            ],
+            [
+              319.2,
+              312.0
+            ]
+          ]
+        },
+        {
+          "text": "PROPRIETARY FOOD - POTATO CHIPS (15.1)",
+          "points": [
+            [
+              319.2,
+              313.2
+            ],
+            [
+              537.6,
+              313.2
+            ],
+            [
+              537.6,
+              327.6
+            ],
+            [
+              319.2,
+              327.6
+            ]
+          ]
+        },
+        {
+          "text": "INGREDIENTS: Potato (88%), Edible Vegetable Oil.",
+          "points": [
+            [
+              319.2,
+              328.8
+            ],
+            [
+              534.0,
+              328.8
+            ],
+            [
+              534.0,
+              342.0
+            ],
+            [
+              319.2,
+              342.0
+            ]
+          ]
+        },
+        {
+          "text": "lodised Salt (1%).",
+          "points": [
+            [
+              319.2,
+              344.4
+            ],
+            [
+              392.4,
+              344.4
+            ],
+            [
+              392.4,
+              357.6
+            ],
+            [
+              319.2,
+              357.6
+            ]
+          ]
+        },
+        {
+          "text": "To know the specific type of oil used and its saturated fat",
+          "points": [
+            [
+              319.2,
+              363.6
+            ],
+            [
+              554.4,
+              363.6
+            ],
+            [
+              554.4,
+              376.8
+            ],
+            [
+              319.2,
+              376.8
+            ]
+          ]
+        },
+        {
+          "text": "value, match the symbol \\( \\phi \\) or \\( \\phi \\) with the last character of",
+          "points": [
+            [
+              319.2,
+              380.4
+            ],
+            [
+              546.0,
+              380.4
+            ],
+            [
+              546.0,
+              392.4
+            ],
+            [
+              319.2,
+              392.4
+            ]
+          ]
+        },
+        {
+          "text": "batch number where \\( \\phi \\) denotes Palmolein and \\( \\phi \\) denotes",
+          "points": [
+            [
+              319.2,
+              394.8
+            ],
+            [
+              548.4,
+              394.8
+            ],
+            [
+              548.4,
+              406.8
+            ],
+            [
+              319.2,
+              406.8
+            ]
+          ]
+        },
+        {
+          "text": "Rice Bran Oil.",
+          "points": [
+            [
+              319.2,
+              409.2
+            ],
+            [
+              376.8,
+              409.2
+            ],
+            [
+              376.8,
+              421.2
+            ],
+            [
+              319.2,
+              421.2
+            ]
+          ]
+        },
+        {
+          "text": "NUTRITIONAL INFORMATION\\*\\*",
+          "points": [
+            [
+              325.2,
+              435.6
+            ],
+            [
+              454.8,
+              435.6
+            ],
+            [
+              454.8,
+              447.6
+            ],
+            [
+              325.2,
+              447.6
+            ]
+          ]
+        },
+        {
+          "text": "SERVE SIZE \\( 20g \\)™",
+          "points": [
+            [
+              482.4,
+              435.6
+            ],
+            [
+              553.2,
+              435.6
+            ],
+            [
+              553.2,
+              448.8
+            ],
+            [
+              482.4,
+              448.8
+            ]
+          ]
+        },
+        {
+          "text": "THE UNMISTAKABLE FLAVOUR OF LAY'S,",
+          "points": [
+            [
+              642.0,
+              432.0
+            ],
+            [
+              841.2,
+              432.0
+            ],
+            [
+              841.2,
+              445.2
+            ],
+            [
+              642.0,
+              445.2
+            ]
+          ]
+        },
+        {
+          "text": "COOKED & DELICIOUSLY",
+          "points": [
+            [
+              639.6,
+              442.8
+            ],
+            [
+              843.6,
+              442.8
+            ],
+            [
+              843.6,
+              460.8
+            ],
+            [
+              639.6,
+              460.8
+            ]
+          ]
+        },
+        {
+          "text": "Nutrients",
+          "points": [
+            [
+              326.4,
+              456.0
+            ],
+            [
+              364.8,
+              456.0
+            ],
+            [
+              364.8,
+              468.0
+            ],
+            [
+              326.4,
+              468.0
+            ]
+          ]
+        },
+        {
+          "text": "Per 100 g",
+          "points": [
+            [
+              422.4,
+              456.0
+            ],
+            [
+              463.2,
+              456.0
+            ],
+            [
+              463.2,
+              469.2
+            ],
+            [
+              422.4,
+              469.2
+            ]
+          ]
+        },
+        {
+          "text": "%RDA Per Serve",
+          "points": [
+            [
+              480.0,
+              456.0
+            ],
+            [
+              549.6,
+              456.0
+            ],
+            [
+              549.6,
+              468.0
+            ],
+            [
+              480.0,
+              468.0
+            ]
+          ]
+        },
+        {
+          "text": "SEASONED TO PERFECTION.",
+          "points": [
+            [
+              673.2,
+              459.6
+            ],
+            [
+              810.0,
+              459.6
+            ],
+            [
+              810.0,
+              471.6
+            ],
+            [
+              673.2,
+              471.6
+            ]
+          ]
+        },
+        {
+          "text": "Energy",
+          "points": [
+            [
+              326.4,
+              476.4
+            ],
+            [
+              356.4,
+              476.4
+            ],
+            [
+              356.4,
+              488.4
+            ],
+            [
+              326.4,
+              488.4
+            ]
+          ]
+        },
+        {
+          "text": "553 kcal",
+          "points": [
+            [
+              423.6,
+              475.2
+            ],
+            [
+              460.8,
+              475.2
+            ],
+            [
+              460.8,
+              487.2
+            ],
+            [
+              423.6,
+              487.2
+            ]
+          ]
+        },
+        {
+          "text": "6%",
+          "points": [
+            [
+              506.4,
+              475.2
+            ],
+            [
+              520.8,
+              475.2
+            ],
+            [
+              520.8,
+              487.2
+            ],
+            [
+              506.4,
+              487.2
+            ]
+          ]
+        },
+        {
+          "text": "Protein",
+          "points": [
+            [
+              326.4,
+              494.4
+            ],
+            [
+              356.4,
+              494.4
+            ],
+            [
+              356.4,
+              506.4
+            ],
+            [
+              326.4,
+              506.4
+            ]
+          ]
+        },
+        {
+          "text": "6.7 g",
+          "points": [
+            [
+              430.8,
+              494.4
+            ],
+            [
+              453.6,
+              494.4
+            ],
+            [
+              453.6,
+              506.4
+            ],
+            [
+              430.8,
+              506.4
+            ]
+          ]
+        },
+        {
+          "text": "Carbohydrate",
+          "points": [
+            [
+              326.4,
+              513.6
+            ],
+            [
+              384.0,
+              513.6
+            ],
+            [
+              384.0,
+              525.6
+            ],
+            [
+              326.4,
+              525.6
+            ]
+          ]
+        },
+        {
+          "text": "52.6 g",
+          "points": [
+            [
+              428.4,
+              513.6
+            ],
+            [
+              456.0,
+              513.6
+            ],
+            [
+              456.0,
+              525.6
+            ],
+            [
+              428.4,
+              525.6
+            ]
+          ]
+        },
+        {
+          "text": "Total Sugars",
+          "points": [
+            [
+              339.6,
+              532.8
+            ],
+            [
+              390.0,
+              532.8
+            ],
+            [
+              390.0,
+              546.0
+            ],
+            [
+              339.6,
+              546.0
+            ]
+          ]
+        },
+        {
+          "text": "0.6 g",
+          "points": [
+            [
+              430.8,
+              534.0
+            ],
+            [
+              453.6,
+              534.0
+            ],
+            [
+              453.6,
+              544.8
+            ],
+            [
+              430.8,
+              544.8
+            ]
+          ]
+        },
+        {
+          "text": "Added Sugars",
+          "points": [
+            [
+              348.0,
+              552.0
+            ],
+            [
+              406.8,
+              552.0
+            ],
+            [
+              406.8,
+              565.2
+            ],
+            [
+              348.0,
+              565.2
+            ]
+          ]
+        },
+        {
+          "text": "0 g",
+          "points": [
+            [
+              434.4,
+              553.2
+            ],
+            [
+              450.0,
+              553.2
+            ],
+            [
+              450.0,
+              565.2
+            ],
+            [
+              434.4,
+              565.2
+            ]
+          ]
+        },
+        {
+          "text": "0%",
+          "points": [
+            [
+              506.4,
+              553.2
+            ],
+            [
+              520.8,
+              553.2
+            ],
+            [
+              520.8,
+              565.2
+            ],
+            [
+              506.4,
+              565.2
+            ]
+          ]
+        },
+        {
+          "text": "Total Fat",
+          "points": [
+            [
+              327.6,
+              572.4
+            ],
+            [
+              362.4,
+              572.4
+            ],
+            [
+              362.4,
+              584.4
+            ],
+            [
+              327.6,
+              584.4
+            ]
+          ]
+        },
+        {
+          "text": "35.1 g",
+          "points": [
+            [
+              428.4,
+              572.4
+            ],
+            [
+              456.0,
+              572.4
+            ],
+            [
+              456.0,
+              585.6
+            ],
+            [
+              428.4,
+              585.6
+            ]
+          ]
+        },
+        {
+          "text": "10%",
+          "points": [
+            [
+              505.2,
+              572.4
+            ],
+            [
+              523.2,
+              572.4
+            ],
+            [
+              523.2,
+              584.4
+            ],
+            [
+              505.2,
+              584.4
+            ]
+          ]
+        },
+        {
+          "text": "Saturated Fat\\(^{\\text{TM}}\\)",
+          "points": [
+            [
+              338.4,
+              589.2
+            ],
+            [
+              398.4,
+              589.2
+            ],
+            [
+              398.4,
+              602.4
+            ],
+            [
+              338.4,
+              602.4
+            ]
+          ]
+        },
+        {
+          "text": "15.8 g",
+          "points": [
+            [
+              427.2,
+              589.2
+            ],
+            [
+              457.2,
+              589.2
+            ],
+            [
+              457.2,
+              602.4
+            ],
+            [
+              427.2,
+              602.4
+            ]
+          ]
+        },
+        {
+          "text": "14%",
+          "points": [
+            [
+              504.0,
+              589.2
+            ],
+            [
+              525.6,
+              589.2
+            ],
+            [
+              525.6,
+              601.2
+            ],
+            [
+              504.0,
+              601.2
+            ]
+          ]
+        },
+        {
+          "text": "OR",
+          "points": [
+            [
+              434.4,
+              602.4
+            ],
+            [
+              450.0,
+              602.4
+            ],
+            [
+              450.0,
+              613.2
+            ],
+            [
+              434.4,
+              613.2
+            ]
+          ]
+        },
+        {
+          "text": "OR",
+          "points": [
+            [
+              505.2,
+              602.4
+            ],
+            [
+              520.8,
+              602.4
+            ],
+            [
+              520.8,
+              613.2
+            ],
+            [
+              505.2,
+              613.2
+            ]
+          ]
+        },
+        {
+          "text": "8.1 g\\(^*\\)",
+          "points": [
+            [
+              428.4,
+              613.2
+            ],
+            [
+              454.8,
+              613.2
+            ],
+            [
+              454.8,
+              625.2
+            ],
+            [
+              428.4,
+              625.2
+            ]
+          ]
+        },
+        {
+          "text": "7%",
+          "points": [
+            [
+              504.0,
+              613.2
+            ],
+            [
+              523.2,
+              613.2
+            ],
+            [
+              523.2,
+              625.2
+            ],
+            [
+              504.0,
+              625.2
+            ]
+          ]
+        },
+        {
+          "text": "Trans Fat",
+          "points": [
+            [
+              339.6,
+              628.8
+            ],
+            [
+              376.8,
+              628.8
+            ],
+            [
+              376.8,
+              642.0
+            ],
+            [
+              339.6,
+              642.0
+            ]
+          ]
+        },
+        {
+          "text": "0.1 g",
+          "points": [
+            [
+              430.8,
+              630.0
+            ],
+            [
+              453.6,
+              630.0
+            ],
+            [
+              453.6,
+              642.0
+            ],
+            [
+              430.8,
+              642.0
+            ]
+          ]
+        },
+        {
+          "text": "1%",
+          "points": [
+            [
+              506.4,
+              630.0
+            ],
+            [
+              520.8,
+              630.0
+            ],
+            [
+              520.8,
+              642.0
+            ],
+            [
+              506.4,
+              642.0
+            ]
+          ]
+        },
+        {
+          "text": "IS MADE WITH",
+          "points": [
+            [
+              706.8,
+              634.8
+            ],
+            [
+              778.8,
+              634.8
+            ],
+            [
+              778.8,
+              646.8
+            ],
+            [
+              706.8,
+              646.8
+            ]
+          ]
+        },
+        {
+          "text": "Sodium",
+          "points": [
+            [
+              326.4,
+              648.0
+            ],
+            [
+              360.0,
+              648.0
+            ],
+            [
+              360.0,
+              660.0
+            ],
+            [
+              326.4,
+              660.0
+            ]
+          ]
+        },
+        {
+          "text": "500 mg",
+          "points": [
+            [
+              426.0,
+              648.0
+            ],
+            [
+              458.4,
+              648.0
+            ],
+            [
+              458.4,
+              661.2
+            ],
+            [
+              426.0,
+              661.2
+            ]
+          ]
+        },
+        {
+          "text": "5%",
+          "points": [
+            [
+              506.4,
+              648.0
+            ],
+            [
+              520.8,
+              648.0
+            ],
+            [
+              520.8,
+              660.0
+            ],
+            [
+              506.4,
+              660.0
+            ]
+          ]
+        },
+        {
+          "text": "FINEST POTATOES",
+          "points": [
+            [
+              649.2,
+              648.0
+            ],
+            [
+              836.4,
+              648.0
+            ],
+            [
+              836.4,
+              669.6
+            ],
+            [
+              649.2,
+              669.6
+            ]
+          ]
+        },
+        {
+          "text": "Approximate Values",
+          "points": [
+            [
+              326.4,
+              667.2
+            ],
+            [
+              416.4,
+              667.2
+            ],
+            [
+              416.4,
+              681.6
+            ],
+            [
+              326.4,
+              681.6
+            ]
+          ]
+        },
+        {
+          "text": "**Pack &lt;20 g is a single consumption pack.**",
+          "points": [
+            [
+              319.2,
+              686.4
+            ],
+            [
+              525.6,
+              686.4
+            ],
+            [
+              525.6,
+              702.0
+            ],
+            [
+              319.2,
+              702.0
+            ]
+          ]
+        },
+        {
+          "text": "pepsico",
+          "points": [
+            [
+              716.4,
+              686.4
+            ],
+            [
+              806.4,
+              686.4
+            ],
+            [
+              806.4,
+              704.4
+            ],
+            [
+              716.4,
+              704.4
+            ]
+          ]
+        },
+        {
+          "text": "MRP",
+          "points": [
+            [
+              319.2,
+              709.2
+            ],
+            [
+              349.2,
+              709.2
+            ],
+            [
+              349.2,
+              722.4
+            ],
+            [
+              319.2,
+              722.4
+            ]
+          ]
+        },
+        {
+          "text": "Food, Drinks, Smiles.",
+          "points": [
+            [
+              715.2,
+              705.6
+            ],
+            [
+              783.6,
+              705.6
+            ],
+            [
+              783.6,
+              715.2
+            ],
+            [
+              715.2,
+              715.2
+            ]
+          ]
+        },
+        {
+          "text": "NET QTY:",
+          "points": [
+            [
+              321.6,
+              730.8
+            ],
+            [
+              369.6,
+              730.8
+            ],
+            [
+              369.6,
+              745.2
+            ],
+            [
+              321.6,
+              745.2
+            ]
+          ]
+        },
+        {
+          "text": "Mfg. & Mkt. by: PEPISCO INDIA HOLDINGS PVT. LTD.",
+          "points": [
+            [
+              638.4,
+              722.4
+            ],
+            [
+              837.6,
+              722.4
+            ],
+            [
+              837.6,
+              735.6
+            ],
+            [
+              638.4,
+              735.6
+            ]
+          ]
+        },
+        {
+          "text": "UNIT SALE PRICE:",
+          "points": [
+            [
+              321.6,
+              748.8
+            ],
+            [
+              411.6,
+              748.8
+            ],
+            [
+              411.6,
+              764.4
+            ],
+            [
+              321.6,
+              764.4
+            ]
+          ]
+        },
+        {
+          "text": "Issai",
+          "points": [
+            [
+              675.6,
+              736.8
+            ],
+            [
+              715.2,
+              736.8
+            ],
+            [
+              715.2,
+              757.2
+            ],
+            [
+              675.6,
+              757.2
+            ]
+          ]
+        },
+        {
+          "text": "Mkt. Lc. No. 10014064000435",
+          "points": [
+            [
+              640.8,
+              759.6
+            ],
+            [
+              747.6,
+              759.6
+            ],
+            [
+              747.6,
+              771.6
+            ],
+            [
+              640.8,
+              771.6
+            ]
+          ]
+        },
+        {
+          "text": "NO. OF SERVES",
+          "points": [
+            [
+              321.6,
+              777.6
+            ],
+            [
+              398.4,
+              777.6
+            ],
+            [
+              398.4,
+              793.2
+            ],
+            [
+              321.6,
+              793.2
+            ]
+          ]
+        },
+        {
+          "text": "For Mkt. Address, scan Barcode via Smart Consumer App.",
+          "points": [
+            [
+              640.8,
+              771.6
+            ],
+            [
+              822.0,
+              771.6
+            ],
+            [
+              822.0,
+              783.6
+            ],
+            [
+              640.8,
+              783.6
+            ]
+          ]
+        },
+        {
+          "text": "For Manufacturer's Lc. No., see first two characters of batch no.",
+          "points": [
+            [
+              640.8,
+              783.6
+            ],
+            [
+              837.6,
+              783.6
+            ],
+            [
+              837.6,
+              794.4
+            ],
+            [
+              640.8,
+              794.4
+            ]
+          ]
+        },
+        {
+          "text": "PER PACK/ B. NO.:",
+          "points": [
+            [
+              321.6,
+              794.4
+            ],
+            [
+              412.8,
+              794.4
+            ],
+            [
+              412.8,
+              808.8
+            ],
+            [
+              321.6,
+              808.8
+            ]
+          ]
+        },
+        {
+          "text": "and see below.",
+          "points": [
+            [
+              640.8,
+              793.2
+            ],
+            [
+              692.4,
+              793.2
+            ],
+            [
+              692.4,
+              804.0
+            ],
+            [
+              640.8,
+              804.0
+            ]
+          ]
+        },
+        {
+          "text": "N1: Lc. No. 10012063000110 N2: Lc. No. 10012022000339",
+          "points": [
+            [
+              640.8,
+              802.8
+            ],
+            [
+              832.8,
+              802.8
+            ],
+            [
+              832.8,
+              814.8
+            ],
+            [
+              640.8,
+              814.8
+            ]
+          ]
+        },
+        {
+          "text": "N3: Lc. No. 10012031000120 N4: Lc. No. 12721999000033",
+          "points": [
+            [
+              640.8,
+              814.8
+            ],
+            [
+              831.6,
+              814.8
+            ],
+            [
+              831.6,
+              825.6
+            ],
+            [
+              640.8,
+              825.6
+            ]
+          ]
+        },
+        {
+          "text": "MFD & USE BY:",
+          "points": [
+            [
+              321.6,
+              822.0
+            ],
+            [
+              398.4,
+              822.0
+            ],
+            [
+              398.4,
+              837.6
+            ],
+            [
+              321.6,
+              837.6
+            ]
+          ]
+        },
+        {
+          "text": "*For details on PepsiCo",
+          "points": [
+            [
+              700.8,
+              853.2
+            ],
+            [
+              794.4,
+              853.2
+            ],
+            [
+              794.4,
+              865.2
+            ],
+            [
+              700.8,
+              865.2
+            ]
+          ]
+        },
+        {
+          "text": "partnership with farmers.",
+          "points": [
+            [
+              700.8,
+              866.4
+            ],
+            [
+              800.4,
+              866.4
+            ],
+            [
+              800.4,
+              877.2
+            ],
+            [
+              700.8,
+              877.2
+            ]
+          ]
+        },
+        {
+          "text": "visit www.pepsicoindia.co.in",
+          "points": [
+            [
+              700.8,
+              878.4
+            ],
+            [
+              816.0,
+              878.4
+            ],
+            [
+              816.0,
+              889.2
+            ],
+            [
+              700.8,
+              889.2
+            ]
+          ]
+        },
+        {
+          "text": "Find us on:",
+          "points": [
+            [
+              700.8,
+              907.2
+            ],
+            [
+              736.8,
+              907.2
+            ],
+            [
+              736.8,
+              916.8
+            ],
+            [
+              700.8,
+              916.8
+            ]
+          ]
+        },
+        {
+          "text": "facebook.com/taysindia",
+          "points": [
+            [
+              700.8,
+              916.8
+            ],
+            [
+              784.8,
+              916.8
+            ],
+            [
+              784.8,
+              926.4
+            ],
+            [
+              700.8,
+              926.4
+            ]
+          ]
+        },
+        {
+          "text": "819014911001021",
+          "points": [
+            [
+              645.6,
+              985.2
+            ],
+            [
+              778.8,
+              985.2
+            ],
+            [
+              778.8,
+              998.4
+            ],
+            [
+              645.6,
+              998.4
+            ]
+          ]
+        },
+        {
+          "text": "Potato Chips",
+          "points": [
+            [
+              63.6,
+              1112.4
+            ],
+            [
+              175.2,
+              1112.4
+            ],
+            [
+              175.2,
+              1132.8
+            ],
+            [
+              63.6,
+              1132.8
+            ]
+          ]
+        },
+        {
+          "text": "Lay's is the Registered Trade Mark of PepsiCo, Inc.",
+          "points": [
+            [
+              25.2,
+              1134.0
+            ],
+            [
+              445.2,
+              1134.0
+            ],
+            [
+              445.2,
+              1155.6
+            ],
+            [
+              25.2,
+              1155.6
+            ]
+          ]
+        },
+        {
+          "text": "Based on internal grading and quality parameters.",
+          "points": [
+            [
+              18.0,
+              1160.4
+            ],
+            [
+              453.6,
+              1160.4
+            ],
+            [
+              453.6,
+              1183.2
+            ],
+            [
+              18.0,
+              1183.2
+            ]
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "field": "generic_name",
+          "status": "observed",
+          "value": "POTATO CHIPS (15.1)",
+          "evidence": [
+            {
+              "field": "generic_name",
+              "value": "POTATO CHIPS (15.1)",
+              "view": "rear",
+              "provider": "paddle_spotting",
+              "source_text": "PROPRIETARY FOOD - POTATO CHIPS (15.1)",
+              "box": {
+                "x0": 319.2,
+                "y0": 313.2,
+                "x1": 537.6,
+                "y1": 327.6
+              },
+              "confidence": null,
+              "height_mm": null,
+              "glyph_box": null
+            }
+          ],
+          "reason": "Unverified OCR transcription; inspector review required. Readings from the same photo or its crops are not independent confirmation."
+        },
+        {
+          "field": "net_quantity",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "mrp",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "manufacturer",
+          "status": "observed",
+          "value": "PEPISCO INDIA HOLDINGS PVT. LTD",
+          "evidence": [
+            {
+              "field": "manufacturer",
+              "value": "PEPISCO INDIA HOLDINGS PVT. LTD",
+              "view": "rear",
+              "provider": "paddle_spotting",
+              "source_text": "Mfg. & Mkt. by: PEPISCO INDIA HOLDINGS PVT. LTD.",
+              "box": {
+                "x0": 638.4,
+                "y0": 722.4,
+                "x1": 837.6,
+                "y1": 735.6
+              },
+              "confidence": null,
+              "height_mm": null,
+              "glyph_box": null
+            }
+          ],
+          "reason": "Unverified OCR transcription; inspector review required. Readings from the same photo or its crops are not independent confirmation."
+        },
+        {
+          "field": "date",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "consumer_care",
+          "status": "observed",
+          "value": "PEPSICO INDIA HOLDINGS PVT. LTD\nP.O. BOX 27, DLF QUTAB ENCLAVE, PHASE -1\nGURUGRAM - 122002, HARYANA, INDIA\nOR CALL US AT 1800 22 4020\nOR EMAIL US AT\nCONSUMER.FEEDBACK@PEPSICO.COM",
+          "evidence": [
+            {
+              "field": "consumer_care",
+              "value": "PEPSICO INDIA HOLDINGS PVT. LTD\nP.O. BOX 27, DLF QUTAB ENCLAVE, PHASE -1\nGURUGRAM - 122002, HARYANA, INDIA\nOR CALL US AT 1800 22 4020\nOR EMAIL US AT\nCONSUMER.FEEDBACK@PEPSICO.COM",
+              "view": "rear",
+              "provider": "paddle_spotting",
+              "source_text": "THE CONSUMER SERVICES MANAGER,\nPEPSICO INDIA HOLDINGS PVT. LTD.,\nP.O. BOX 27, DLF QUTAB ENCLAVE, PHASE -1,\nGURUGRAM - 122002, HARYANA, INDIA.\nOR CALL US AT 1800 22 4020\nOR EMAIL US AT\nCONSUMER.FEEDBACK@PEPSICO.COM",
+              "box": {
+                "x0": 319.2,
+                "y0": 206.4,
+                "x1": 554.4,
+                "y1": 296.4
+              },
+              "confidence": null,
+              "height_mm": null,
+              "glyph_box": null
+            }
+          ],
+          "reason": "Unverified OCR transcription; inspector review required. Readings from the same photo or its crops are not independent confirmation."
+        },
+        {
+          "field": "country_of_origin",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        }
+      ],
+      "quantity_match": true,
+      "quantity_check": true,
+      "max_identical_region_repeats": 1,
+      "baseline_fields": [
+        {
+          "field": "generic_name",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "net_quantity",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "mrp",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "manufacturer",
+          "status": "observed",
+          "value": "PEPSICO INDIA HOLDINGS PVT. LTD",
+          "evidence": [
+            {
+              "field": "manufacturer",
+              "value": "PEPSICO INDIA HOLDINGS PVT. LTD",
+              "view": "rear",
+              "provider": "xiaomi",
+              "source_text": "Mfg. & Mkt. by: PEPSICO INDIA HOLDINGS PVT. LTD.",
+              "box": null,
+              "confidence": null,
+              "height_mm": null
+            },
+            {
+              "field": "manufacturer",
+              "value": "PEPSICO INDIA HOLDINGS PVT. LTD",
+              "view": "rear",
+              "provider": "xiaomi_detail_3",
+              "source_text": "Mfg. & Mkt. by: PEPSICO INDIA HOLDINGS PVT. LTD.",
+              "box": null,
+              "confidence": null,
+              "height_mm": null
+            }
+          ],
+          "reason": "Unverified OCR transcription; inspector review required. Readings from the same photo or its crops are not independent confirmation."
+        },
+        {
+          "field": "date",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "consumer_care",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        },
+        {
+          "field": "country_of_origin",
+          "status": "missing",
+          "value": null,
+          "evidence": [],
+          "reason": "No anchored declaration extracted. Missing OCR is not proof of absence."
+        }
+      ]
+    }
+  ],
+  "load_seconds": 2.46
+}

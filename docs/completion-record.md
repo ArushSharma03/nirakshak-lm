@@ -1,5 +1,8 @@
 # Work through week 8
 
+> Historical milestone. See [Week 10](week-10.md) for current classification, reports, and capture behavior.
+
+
 Base: `origin/main` at `c6d88c7`. Branch: `feat/week-8-evidence-pipeline`.
 The checkout was clean. The user subsequently authorized a commit and push to
 open a PR against the original GitHub repository.
