@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CategoryTag, InspectionTable, LoadError, ProgressBadge, nextAction, progressOf, useInspections, type Progress } from "@/components/InspectionLedger";
 import { Badge, ButtonLink, Card, EmptyState, Field, Icon, Loading, buttonClass, inputClass, qualityTone } from "@/components/ui";
-import { CATEGORY_LABEL, VIEWS, VIEW_LABEL, fieldLabel, formatDate, storageLabel } from "@/lib/format";
+import { CATEGORY_LABEL, VIEWS, VIEW_LABEL, fieldLabel, formatDate, hasSetupNotes, storageLabel } from "@/lib/format";
 import type { InspectionRecord, ProductCategory } from "@/types";
 
 const FILTERS: { id: "all" | Progress; label: string }[] = [
@@ -80,6 +80,12 @@ function QuickLook({ record, onClose }: { record: InspectionRecord; onClose: () 
             <div className="space-y-2">
               <h3 className="text-sm font-semibold text-ink">Declarations read: {read} of {fields.length}</h3>
               <ul className="divide-y divide-rule rounded-lg border border-rule text-sm">
+                {record.labelBrand && (
+                  <li className="flex items-baseline justify-between gap-3 px-3 py-2">
+                    <span className="shrink-0 text-ink-2">Brand</span>
+                    <span className="truncate text-right font-medium text-ink">{record.labelBrand}</span>
+                  </li>
+                )}
                 {fields.map((field) => (
                   <li key={field.field} className="flex items-baseline justify-between gap-3 px-3 py-2">
                     <span className="shrink-0 text-ink-2">{fieldLabel(field.field)}</span>
@@ -92,16 +98,18 @@ function QuickLook({ record, onClose }: { record: InspectionRecord; onClose: () 
             </div>
           )}
 
-          <div className="space-y-2">
-            <h3 className="text-sm font-semibold text-ink">Setup notes</h3>
-            <p className="text-xs text-ink-3">Typed at setup, unverified and not read from the label. Older records may hold server placeholders.</p>
-            <div className="grid grid-cols-2 gap-3">
-              <Field label="Photo source">{record.notes || "Blank"}</Field>
-              <Field label="Brand">{record.brand || "Blank"}</Field>
-              <Field label="Net quantity">{record.declaredNetQty || "Blank"}</Field>
-              <Field label="MRP">{record.declaredMRP !== null ? `₹${record.declaredMRP.toFixed(2)}` : "Blank"}</Field>
+          {hasSetupNotes(record) && (
+            <div className="space-y-2">
+              <h3 className="text-sm font-semibold text-ink">Setup notes</h3>
+              <p className="text-xs text-ink-3">Typed at setup, unverified and not read from the label. Older records may hold server placeholders.</p>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="Photo source">{record.notes || "Blank"}</Field>
+                <Field label="Brand">{record.brand || "Blank"}</Field>
+                <Field label="Net quantity">{record.declaredNetQty || "Blank"}</Field>
+                <Field label="MRP">{record.declaredMRP !== null ? `₹${record.declaredMRP.toFixed(2)}` : "Blank"}</Field>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="flex gap-2 border-t border-rule px-5 py-4">

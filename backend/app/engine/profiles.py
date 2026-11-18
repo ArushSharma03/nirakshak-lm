@@ -45,4 +45,4 @@ def select_profile(request: ProfileRequest, ruleset: RuleSet | None = None) -> P
     rules = [r for r in data.rules if request.origin in r.origins and r.effective_from <= request.as_of
              and (r.effective_to is None or request.as_of < r.effective_to)]
     return Profile(status="selected", id=data.id, version=data.version, inputs=request, rules=rules,
-        reason=f"Selected by category, declared origin and date. Rule data review status: {data.review_status}.")
+        reason=f"Selected by category, declared origin and date. Rule data review status: {data.review_status.rstrip('.')}.")

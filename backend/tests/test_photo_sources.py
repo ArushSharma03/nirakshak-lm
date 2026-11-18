@@ -84,7 +84,7 @@ def test_primary_unavailable_does_not_silently_use_tesseract(tmp_path, monkeypat
     ("MFG DATE: 12/11/2026", "date", "12/11/2026"),
     ("MFD: 11/2026", "date", "11/2026"),
     ("Packed on: 2026-11-12", "date", "2026-11-12"),
-    ("MFG: NOV 2026", "date", "nov 2026"),
+    ("MFG: NOV 2026", "date", "NOV 2026"),
 ])
 def test_real_wrapper_labels_do_not_become_dates_or_punctuation_values(text, field, value):
     result = extract(OCRResult(provider="xiaomi", model="test", status="ok", lines=[OCRLine(text=text)]), "rear", Calibration(status="unavailable", reason="No marker"))

@@ -4,6 +4,8 @@ Nirikshak-LM — FastAPI Application Entry Point.
 This is the main application factory. All routers are registered here.
 """
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -14,9 +16,19 @@ from app.core.config import settings
 from app.api.profiles import router as profiles_router
 
 
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    # A fresh checkout opens with the shipped sample inspections; an existing store is untouched.
+    from app.services.seed import install_seed
+    if count := install_seed():
+        print(f"Installed {count} sample inspections from backend/seed.")
+    yield
+
+
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application instance."""
     application = FastAPI(
+        lifespan=lifespan,
         title=settings.APP_NAME,
         description=(
             "An Evidence-Calibrated Multiview System for "

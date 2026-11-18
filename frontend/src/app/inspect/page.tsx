@@ -61,9 +61,9 @@ function InspectFlow({ inspectionId }: { inspectionId: string }) {
   const [tab, setTab] = useState<Tab>("front");
   const [actionError, setActionError] = useState<string | null>(null);
 
-  const [origin, setOrigin] = useState<ProfileInputs["origin"]>("unknown");
+  const [origin, setOrigin] = useState<ProfileInputs["origin"] | "label">("label");
   const [asOf, setAsOf] = useState(() => new Date().toISOString().slice(0, 10));
-  const [useJev, setUseJev] = useState(false);
+  const [useJev, setUseJev] = useState(true);
   const [reuseOcr, setReuseOcr] = useState(false);
   const [processing, setProcessing] = useState(false);
 
@@ -127,7 +127,7 @@ function InspectFlow({ inspectionId }: { inspectionId: string }) {
     setProcessing(true);
     setActionError(null);
     try {
-      await analyzeInspection(inspectionId, { origin, as_of: asOf, use_jev: useJev, reuse_ocr: reuseOcr && Boolean(record?.analysis) });
+      await analyzeInspection(inspectionId, { origin: origin === "label" ? undefined : origin, as_of: asOf, use_jev: useJev, reuse_ocr: reuseOcr && Boolean(record?.analysis) });
       router.push(`/reports?id=${encodeURIComponent(inspectionId)}`);
     } catch (cause) {
       setActionError(`Analysis did not complete: ${errorText(cause, "check that the API is online")}. Your photos are still stored; try again.`);
@@ -201,7 +201,7 @@ function InspectFlow({ inspectionId }: { inspectionId: string }) {
         <ViewPanel
           view={tab}
           state={views[tab]}
-          onCapture={(blob, url) => upload(tab, blob, url)}
+          onCapture={([blob]) => upload(tab, blob, URL.createObjectURL(blob))}
           onRetry={() => views[tab].blob && views[tab].previewUrl && upload(tab, views[tab].blob!, views[tab].previewUrl!)}
           onDiscard={() => discard(tab)}
           onNext={() => setTab(tab === "front" ? "rear" : tab === "rear" ? "side" : "analyze")}
@@ -274,7 +274,8 @@ function InspectFlow({ inspectionId }: { inspectionId: string }) {
             )}
             <label className="block text-sm font-medium">
               Package origin
-              <select value={origin} onChange={(e) => setOrigin(e.target.value as ProfileInputs["origin"])} className={inputClass}>
+              <select value={origin} onChange={(e) => setOrigin(e.target.value as ProfileInputs["origin"] | "label")} className={inputClass}>
+                <option value="label">Read from the label</option>
                 <option value="unknown">Unknown (profile needs review)</option>
                 <option value="domestic">Domestic</option>
                 <option value="imported">Imported</option>
@@ -287,8 +288,8 @@ function InspectFlow({ inspectionId }: { inspectionId: string }) {
             <label className="flex items-start gap-2 text-sm">
               <input type="checkbox" checked={useJev} onChange={(e) => setUseJev(e.target.checked)} className="mt-0.5 size-4 accent-accent" />
               <span>
-                Ask Jev to rank candidate readings
-                <span className="block text-xs text-ink-3">Optional. Uses paid TypeSafe credits.</span>
+                Use Jev to rank readings and place unmatched lines
+                <span className="block text-xs text-ink-3">Sends OCR text (not photos) to TypeSafe and uses paid credits. Skipped when the server has no key.</span>
               </span>
             </label>
             <button type="submit" disabled={stored.length === 0 || busy} className={`${buttonClass.primary} w-full`}>
@@ -317,7 +318,7 @@ function ViewPanel({
 }: {
   view: ViewName;
   state: ViewState;
-  onCapture: (blob: Blob, url: string) => void;
+  onCapture: (photos: Blob[]) => void;
   onRetry: () => void;
   onDiscard: () => void;
   onNext: () => void;

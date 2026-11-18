@@ -2,6 +2,7 @@
 
 import csv
 import io
+import re
 import subprocess
 import math
 from functools import lru_cache
@@ -43,6 +44,11 @@ def xiaomi_ocr(image_bytes: bytes) -> OCRResult:
             processor, model = _xiaomi()
             # Match OpenCV and browser display orientation while preserving source bytes.
             image = ImageOps.exif_transpose(Image.open(io.BytesIO(image_bytes))).convert("RGB")
+            # The processor never upsamples, so small photos and detail crops keep print a few pixels
+            # tall and the model skips it. Enlarge toward the pixel budget (at most 3x).
+            scale = min(3.0, (settings.OCR_MAX_PIXELS / (image.width * image.height)) ** .5)
+            if scale > 1.2:
+                image = image.resize((round(image.width * scale), round(image.height * scale)), Image.Resampling.LANCZOS)
             messages = [{"role": "user", "content": [
                 {"type": "image", "image": image},
                 {"type": "text", "text": "Extract the text in the image."},
@@ -132,6 +138,42 @@ def tesseract_ocr(image_bytes: bytes) -> OCRResult:
 
 def recognize(image_bytes: bytes) -> list[OCRResult]:
     return [xiaomi_ocr(image_bytes), tesseract_ocr(image_bytes)]
+
+
+# Tesseract OSD's "Rotate: N" means turn N degrees clockwise to make the text upright.
+_ROTATIONS = {90: cv2.ROTATE_90_CLOCKWISE, 180: cv2.ROTATE_180, 270: cv2.ROTATE_90_COUNTERCLOCKWISE}
+
+
+def orientation(image_bytes: bytes) -> int:
+    """Clockwise turn that makes most text upright, from Tesseract OSD; 0 when unsure or unavailable."""
+    try:
+        process = subprocess.run(["tesseract", "stdin", "stdout", "--psm", "0"], input=image_bytes,
+                                 capture_output=True, timeout=30, check=True)
+    except (FileNotFoundError, subprocess.CalledProcessError, subprocess.TimeoutExpired):
+        return 0  # e.g. "Too few characters" on a mostly graphic panel
+    text = process.stdout.decode(errors="replace")
+    rotate = re.search(r"Rotate:\s*(\d+)", text)
+    confidence = re.search(r"Orientation confidence:\s*([\d.]+)", text)
+    if not rotate or not confidence or float(confidence[1]) < 1.0:
+        return 0
+    return int(rotate[1]) if int(rotate[1]) in _ROTATIONS else 0
+
+
+def turned(image_bytes: bytes, turn: int) -> bytes:
+    """The photo turned `turn` degrees clockwise, as PNG."""
+    image = cv2.imdecode(np.frombuffer(image_bytes, np.uint8), cv2.IMREAD_COLOR)
+    return cv2.imencode(".png", cv2.rotate(image, _ROTATIONS[turn]))[1].tobytes()
+
+
+def rotated_reads(image_bytes: bytes, degrees: list[int]):
+    """Primary reads of the photo turned clockwise, for coding prints that run sideways."""
+    if cv2.imdecode(np.frombuffer(image_bytes, np.uint8), cv2.IMREAD_COLOR) is None:
+        return
+    for turn in degrees:
+        result = xiaomi_ocr(turned(image_bytes, turn))
+        result.provider = f"xiaomi_rot{turn}"
+        result.message = f"Read with the photo turned {turn}° clockwise; printed text on this panel runs sideways. " + result.message
+        yield result
 
 
 def detail_regions(image_bytes: bytes, *, boxes: list[Box] | None = None, include_quadrants: bool = False):

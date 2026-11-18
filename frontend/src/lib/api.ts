@@ -65,6 +65,7 @@ interface BackendInspectionRecord {
   product_name?: string;
   product_category?: string;
   brand?: string;
+  label_brand?: string;
   declared_net_qty?: string;
   declared_mrp?: number | null;
   location?: string;
@@ -101,6 +102,7 @@ function mapBackendRecord(item: BackendInspectionRecord): InspectionRecord {
     productName: item.product_name || "Untitled package",
     productCategory: (item.product_category as ProductCategory) || "food_grocery",
     brand: item.brand || "",
+    labelBrand: item.label_brand || "",
     declaredNetQty: item.declared_net_qty || "",
     declaredMRP: typeof item.declared_mrp === "number" ? item.declared_mrp : null,
     location: item.location,
@@ -152,33 +154,12 @@ export async function getInspectionById(id: string): Promise<InspectionRecord | 
   return mapBackendRecord(await response.json());
 }
 
-export interface InspectionSetup {
-  productName: string;
-  productCategory: ProductCategory;
-  brand?: string;
-  declaredNetQty?: string;
-  declaredMRP?: number | null;
-  location?: string;
-  inspectorName?: string;
-  notes?: string;
-}
-
-export async function createInspection(setup: InspectionSetup): Promise<InspectionRecord> {
-  const blankToNull = (value?: string) => (value && value.trim() ? value.trim() : null);
+/** Creates an unnamed inspection; the server names it from the label after analysis. */
+export async function createInspection(): Promise<InspectionRecord> {
   const response = await request("/inspections/", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      product_name: setup.productName.trim(),
-      product_category: setup.productCategory,
-      brand: blankToNull(setup.brand),
-      declared_net_qty: blankToNull(setup.declaredNetQty),
-      declared_mrp: setup.declaredMRP ?? null,
-      location: blankToNull(setup.location),
-      inspector_name: blankToNull(setup.inspectorName),
-      notes: blankToNull(setup.notes),
-      views_captured: { front: false, rear: false, side: false },
-    }),
+    body: "{}",
   });
   if (!response.ok) throw await errorFrom(response, "Could not create the inspection");
   return mapBackendRecord(await response.json());
