@@ -46,10 +46,17 @@ export function storageLabel(record: InspectionRecord): string {
   return record.databaseSaved ? "PostgreSQL" : "API file store";
 }
 
+const FIELD_LABEL: Record<string, string> = { mrp: "MRP", date: "Mfg / packing date", expiry: "Best before / use by" };
+
 export function fieldLabel(field: string): string {
-  if (field === "mrp") return "MRP";
+  if (FIELD_LABEL[field]) return FIELD_LABEL[field];
   const text = field.replaceAll("_", " ");
   return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+/** Older records were set up through a form; photo-only records have nothing typed. */
+export function hasSetupNotes(record: InspectionRecord): boolean {
+  return Boolean(record.notes || record.brand || record.declaredNetQty || record.declaredMRP !== null || record.inspectorName);
 }
 
 export function errorText(error: unknown, fallback: string): string {

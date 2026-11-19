@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const probability = z.number().min(0).max(1);
 const view = z.enum(["front", "rear", "side"]);
-const fieldName = z.enum(["generic_name", "net_quantity", "mrp", "manufacturer", "date", "consumer_care", "country_of_origin"]);
+const fieldName = z.enum(["generic_name", "net_quantity", "mrp", "manufacturer", "date", "expiry", "consumer_care", "country_of_origin"]);
 const box = z.object({ x0: z.number(), y0: z.number(), x1: z.number(), y1: z.number() });
 const line = z.object({ text: z.string(), box: box.nullable(), confidence: probability.nullable() });
 const candidate = z.object({
@@ -86,7 +86,8 @@ async function checkedResponse(response: Response): Promise<unknown> {
   return data;
 }
 
-export async function analyzeInspection(id: string, input: Omit<ProfileInputs, "category"> & { use_jev: boolean; reuse_ocr?: boolean }): Promise<Analysis> {
+/** Omitted origin is read from the label; omitted date means today on the server. */
+export async function analyzeInspection(id: string, input: Partial<Omit<ProfileInputs, "category">> & { use_jev?: boolean; reuse_ocr?: boolean }): Promise<Analysis> {
   const response = await fetch(`${API_BASE}/inspections/${encodeURIComponent(id)}/analyze`, {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input),
   });

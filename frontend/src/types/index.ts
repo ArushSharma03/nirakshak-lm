@@ -95,6 +95,8 @@ export interface InspectionRecord {
   productCategory: ProductCategory;
   /** Setup metadata typed by the inspector (or a server placeholder); never read from the label. */
   brand: string;
+  /** Brand read from the front panel; empty until analysis picks one. */
+  labelBrand: string;
   declaredNetQty: string;
   declaredMRP: number | null;
   location?: string;

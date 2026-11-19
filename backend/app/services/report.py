@@ -19,6 +19,7 @@ FIELD_NAMES = {
     "mrp": "Retail sale price (MRP)",
     "manufacturer": "Manufacturer / packer",
     "date": "Date of manufacture / packing",
+    "expiry": "Best before / use by",
     "consumer_care": "Consumer care contact",
     "country_of_origin": "Country of origin",
 }
@@ -46,7 +47,8 @@ HINTS = {
     "net_quantity": r"\bnet\s*(?:wt|weight|quantity|qty|content)",
     "mrp": r"\bm\.?\s?r\.?\s?p\b|retail\s+(?:sale\s+)?price",
     "manufacturer": r"\b(?:manufactured|mfd\.?|mkt\.?|marketed|packed|imported)\s*(?:by|for)\b|\bmanufacturer\b|\bpvt\.?\s*ltd\b|\blimited\b",
-    "date": r"\b(?:best\s+before|use\s+by|mfd|mfg|pkd|packed\s+on|date\s+of|expiry|exp\.?)\b",
+    "date": r"\b(?:mfd|mfg|pkd|packed\s+on|date\s+of)\b",
+    "expiry": r"\b(?:best\s+before|use\s+by|ubd|expiry|exp\.?)\b",
     "consumer_care": r"consumer\s+care|customer\s+care|toll[-\s]?free|e-?mail|phone|\btel\b",
     "country_of_origin": r"country\s+of\s+origin|made\s+in|product\s+of",
 }
@@ -399,7 +401,7 @@ def render_report(record: dict, analysis: Analysis) -> str:
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
 <title>Inspection report {identity}</title><style>{STYLE.replace("%(id)s", footer_id)}</style></head><body>
 <div class="masthead"><strong>NIRIKSHAK-LM · LABEL SCREENING REPORT</strong><span class="mono">{identity}</span></div>
-<header><h1>{escape(record["product_name"])}</h1><div class="meta">{meta_html}</div></header>
+<header><h1>{escape(record["product_name"] or "Untitled package")}</h1><div class="meta">{meta_html}</div></header>
 <section class="outcome{tone}"><div class="verdict">{escape(outcome)}</div><div class="counts">{escape(" · ".join(counts))}</div>
 {outcome_reason}<div class="advisory">Advisory screening of {escape(join_names(captured) if captured else "no")} photo{"s" if len(captured) != 1 else ""} against {profile_ref}.
 Not a legal compliance finding — confirm on the physical package before any enforcement action.</div></section>

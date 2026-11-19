@@ -1,11 +1,13 @@
 """Evidence contracts use original-image pixel coordinates throughout."""
 
 from datetime import date
-from typing import Literal
+from typing import Literal, get_args
 from pydantic import BaseModel, Field, model_validator
 
 View = Literal["front", "rear", "side"]
-FieldName = Literal["generic_name", "net_quantity", "mrp", "manufacturer", "date", "consumer_care", "country_of_origin"]
+# `date` is manufacture/packing (LMPC 6(1)(d)); `expiry` is best before / use by (FSSAI labelling).
+FieldName = Literal["generic_name", "net_quantity", "mrp", "manufacturer", "date", "expiry", "consumer_care", "country_of_origin"]
+FIELD_NAMES: tuple[FieldName, ...] = get_args(FieldName)
 
 
 class Box(BaseModel):
@@ -103,9 +105,9 @@ class Profile(BaseModel):
 
 
 class AnalysisRequest(BaseModel):
-    origin: Literal["domestic", "imported", "unknown"] = "unknown"
-    as_of: date
-    use_jev: bool = False
+    origin: Literal["domestic", "imported", "unknown"] | None = Field(default=None, description="Omit to read origin from the label.")
+    as_of: date = Field(default_factory=date.today)
+    use_jev: bool | None = Field(default=None, description="Omit to use Jev whenever TYPESAFE_API_KEY is configured.")
     reuse_ocr: bool = False
 
 
@@ -127,6 +129,7 @@ class DecisionResult(BaseModel):
     answers: dict[str, DecisionAnswer] = Field(default_factory=dict)
     message: str
     usage: dict[str, int] = Field(default_factory=dict)
+    question_set: str | None = None
 
 
 class ViewAnalysis(BaseModel):

@@ -4,9 +4,14 @@ import { Icon, Badge, type Tone } from "@/components/ui";
 
 export function providerLabel(provider: string): string {
   if (provider === "xiaomi") return "Xiaomi-OCR";
-  const detail = provider.match(/^xiaomi_detail_(\d+)$/);
-  if (detail) return `Xiaomi-OCR detail scan ${Number(detail[1]) + 1}`;
+  // "xiaomi_rot270_detail_0": a section scan of the photo turned 270° for sideways print.
+  const scan = provider.match(/^xiaomi(?:_rot(\d+))?(?:_detail_(\d+))?$/);
+  if (scan) {
+    const turned = scan[1] ? `, photo turned ${scan[1]}°` : "";
+    return scan[2] ? `Xiaomi-OCR detail scan ${Number(scan[2]) + 1}${turned}` : `Xiaomi-OCR${turned}`;
+  }
   if (provider === "tesseract") return "Tesseract";
+  if (provider === "jev") return "Jev";
   return provider;
 }
 
@@ -140,18 +145,28 @@ export default function AnalysisEvidence({ analysis }: { analysis: Analysis }) {
 
       <section className="space-y-2 rounded-xl border border-rule bg-sheet p-4 text-sm" aria-labelledby="jev">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 id="jev" className="text-base font-bold">Jev candidate ranking</h2>
+          <h2 id="jev" className="text-base font-bold">Jev ranking and placement</h2>
           <Badge tone={analysis.decision.status === "ok" ? "accent" : "neutral"}>{analysis.decision.status === "ok" ? "Ran" : analysis.decision.status.replaceAll("_", " ")}</Badge>
         </div>
         <p className="text-ink-2">
           <span className="serial text-xs">{analysis.decision.model}</span> {analysis.decision.message}
         </p>
-        {Object.entries(analysis.decision.answers).map(([field, answer]) => {
+        {"name_brand" in analysis.decision.answers && (
+          <p className="text-ink-2">The package name was picked by Jev from verbatim front-panel text.</p>
+        )}
+        {Object.entries(analysis.decision.answers).filter(([key]) => !key.startsWith("name_")).map(([key, answer]) => {
+          // `place_<field>`: Jev chose an OCR line for a declaration no pattern found.
+          const placement = key.startsWith("place_");
+          const field = key.replace(/^place_/, "");
           const evidence = analysis.fields.find((item) => item.field === field)?.evidence;
-          const index = Number(answer.choice.replace("candidate_", ""));
-          const chosen = answer.choice === "none" ? "No reliable candidate" : evidence?.[index]?.value || "Candidate not in evidence list";
+          const placed = evidence?.find((item) => item.provider === "jev");
+          const chosen = answer.choice === "none"
+            ? placement ? "No line states it" : "No reliable candidate"
+            : placement
+              ? placed ? `Placed “${placed.source_text}”` : "Not used: low confidence or no value in the line"
+              : evidence?.[Number(answer.choice.replace("candidate_", ""))]?.value || "Candidate not in evidence list";
           return (
-            <p key={field}>
+            <p key={key}>
               {fieldLabel(field)}: <strong>{chosen}</strong> <span className="text-ink-3">· model confidence {(answer.confidence * 100).toFixed(0)}%</span>
             </p>
           );

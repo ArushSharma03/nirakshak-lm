@@ -9,8 +9,9 @@ import AnalysisEvidence from "@/components/AnalysisEvidence";
 import DeclarationChecks from "@/components/DeclarationChecks";
 import { LoadError, useInspections } from "@/components/InspectionLedger";
 import { ButtonLink, Field, Loading, Notice, Badge, buttonClass, qualityTone, type Tone } from "@/components/ui";
-import { CATEGORY_LABEL, VIEWS, VIEW_LABEL, capturedViews, formatDate, storageLabel } from "@/lib/format";
+import { CATEGORY_LABEL, VIEWS, VIEW_LABEL, capturedViews, fieldLabel, formatDate, hasSetupNotes, storageLabel } from "@/lib/format";
 import { API_BASE } from "@/lib/api";
+import type { Analysis } from "@/lib/analysis";
 import type { ComplianceOutcome, InspectionRecord } from "@/types";
 
 const OUTCOME_TONE: Record<ComplianceOutcome, Tone> = {
@@ -18,6 +19,16 @@ const OUTCOME_TONE: Record<ComplianceOutcome, Tone> = {
   "Potential Non-Compliance": "danger",
   "Compliant within Implemented Checks": "ok",
 };
+
+const ORIGIN_LABEL: Record<Analysis["profile"]["inputs"]["origin"], string> = {
+  domestic: "Domestic", imported: "Imported", unknown: "Unknown",
+};
+
+function labelValue(analysis: Analysis, name: Analysis["fields"][number]["field"]) {
+  const field = analysis.fields.find((f) => f.field === name);
+  if (field?.status === "observed") return field.value;
+  return <span className="text-ink-3">{field?.status === "conflict" ? "Conflicting readings" : "Not read"}</span>;
+}
 
 export default function ReportsHubContent({ inspectionId: urlId }: { inspectionId: string | null }) {
   const router = useRouter();
@@ -106,21 +117,35 @@ function Report({ record }: { record: InspectionRecord }) {
           </div>
         </div>
         <hr className="border-rule" />
-        <div className="grid gap-5 p-5 sm:grid-cols-2">
-          <div className="space-y-1">
-            <span className="field-label">Photo source</span>
-            <p className="text-sm">{record.notes || <span className="text-ink-3">Not recorded at setup.</span>}</p>
-          </div>
-          <div className="space-y-2">
-            <span className="field-label">Setup notes · unverified, not read from the label</span>
-            <div className="grid grid-cols-2 gap-3 text-ink-2">
-              <Field label="Brand">{record.brand || "Blank"}</Field>
-              <Field label="Net quantity">{record.declaredNetQty || "Blank"}</Field>
-              <Field label="MRP">{record.declaredMRP !== null ? `₹${record.declaredMRP.toFixed(2)}` : "Blank"}</Field>
-              <Field label="Inspector">{record.inspectorName || "Blank"}</Field>
+        {analysis && (
+          <div className="space-y-2 p-5">
+            <span className="field-label">Read from the label · unverified OCR, evidence below</span>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+              <Field label="Brand">{record.labelBrand || <span className="text-ink-3">Not read</span>}</Field>
+              {(["net_quantity", "mrp", "date", "expiry"] as const).map((name) => (
+                <Field key={name} label={fieldLabel(name)}>{labelValue(analysis, name)}</Field>
+              ))}
+              <Field label="Origin">{ORIGIN_LABEL[analysis.profile.inputs.origin]}</Field>
             </div>
           </div>
-        </div>
+        )}
+        {hasSetupNotes(record) && (
+          <div className="grid gap-5 border-t border-rule p-5 sm:grid-cols-2">
+            <div className="space-y-1">
+              <span className="field-label">Photo source</span>
+              <p className="text-sm">{record.notes || <span className="text-ink-3">Not recorded at setup.</span>}</p>
+            </div>
+            <div className="space-y-2">
+              <span className="field-label">Setup notes · typed at setup, not read from the label</span>
+              <div className="grid grid-cols-2 gap-3 text-ink-2">
+                <Field label="Brand">{record.brand || "Blank"}</Field>
+                <Field label="Net quantity">{record.declaredNetQty || "Blank"}</Field>
+                <Field label="MRP">{record.declaredMRP !== null ? `₹${record.declaredMRP.toFixed(2)}` : "Blank"}</Field>
+                <Field label="Inspector">{record.inspectorName || "Blank"}</Field>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* Photos */}

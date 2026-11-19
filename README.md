@@ -30,7 +30,19 @@ It is **not** an autonomous legal authority. All outcomes are advisory and must 
 
 Implemented through Week 10: package photo capture, OCR, declaration extraction,
 multi-view fusion, versioned rule profiles, declaration checks, and advisory screening
-classification. Capture and analysis use package photos alone. Verify physical text height
+classification. Capture and analysis use package photos alone: a new inspection asks only
+for up to three photos (filed as front, rear and side), then uploads, analyzes and opens the
+report. The package name and domestic/imported origin are read from the label; origin stays
+unknown when the label does not declare it.
+
+A fresh checkout opens with seven analyzed sample packages from `backend/seed` (photos,
+OCR evidence and reports). They are installed only into an empty store.
+
+When `TYPESAFE_API_KEY` is set in `backend/.env`, every analysis also asks Jev to rank the
+pattern-matched readings and, for declarations no pattern found, to pick which OCR line states
+them. A placed value is copied verbatim from that line (confidence ≥ 0.6) and labelled as
+Jev-placed; Jev never rewrites text and never decides compliance. Only OCR text is sent to
+TypeSafe, never photos. Identical OCR reuses the saved answer instead of paying again. Verify physical text height
 on the package if needed. Replacing or removing a photo invalidates analysis.
 
 The food/grocery profile is a draft. Other categories need manual review. The reports page

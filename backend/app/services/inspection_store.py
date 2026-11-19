@@ -21,6 +21,7 @@ from typing import Optional, List, Dict, Any
 
 from app.core.config import settings
 from app.services.classification import classify
+from app.services.label_facts import label_brand, label_name
 from app.schemas.analysis import Analysis
 
 # In-memory store for fallback/demo mode
@@ -91,9 +92,12 @@ def create_inspection_record(payload: Dict[str, Any]) -> Dict[str, Any]:
     inspection_id = payload.get("id") or f"INS-{datetime.now().year}-{str(uuid.uuid4())[:8].upper()}"
     now_iso = datetime.now(timezone.utc).isoformat()
 
+    typed_name = (payload.get("product_name") or "").strip()
     record = {
         "id": inspection_id,
-        "product_name": payload.get("product_name") or "Generic Commodity Sample",
+        "product_name": typed_name,
+        # A label-sourced name is rewritten by every analysis; a typed name never is.
+        "product_name_source": "inspector" if typed_name else "label",
         "product_category": payload.get("product_category") or "food_grocery",
         "brand": payload.get("brand") or "",
         "declared_net_qty": payload.get("declared_net_qty") or "",
@@ -241,6 +245,7 @@ def attach_inspection_image(
         }
 
     record.pop("analysis", None)
+    record.pop("label_brand", None)
     record["final_outcome"] = "Manual Review Required"
 
     # Update views_captured
@@ -298,6 +303,10 @@ def save_analysis(inspection_id: str, analysis: Analysis):
     record["analysis"] = analysis.model_dump(mode="json")
     record["status"] = "analyzed"
     record["final_outcome"] = analysis.classification.outcome
+    if record.get("product_name_source") == "label":
+        record["product_name"] = label_name(analysis) or ""
+    # Kept apart from the inspector-typed `brand`: this one is read from the front panel.
+    record["label_brand"] = label_brand(analysis) or ""
     _save_persisted_fallback()
     return record
 
@@ -309,6 +318,7 @@ def remove_inspection_image(inspection_id: str, view_type: str):
     record["images"].pop(view_type, None)
     record["views_captured"][view_type] = False
     record.pop("analysis", None)
+    record.pop("label_brand", None)
     record["status"] = "capturing"
     record["final_outcome"] = "Manual Review Required"
     _save_persisted_fallback()

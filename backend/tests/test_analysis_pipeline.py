@@ -182,7 +182,8 @@ def test_jev_opt_out_and_successful_reuse_do_not_call_provider(monkeypatch):
     first = pipeline.analyze_record(record, request)
     assert first.decision.status == "unavailable"
     record["analysis"] = first.model_dump(mode="json")
-    record["analysis"]["decision"].update(status="ok", model=settings.TYPESAFE_MODEL)
+    from app.services.decision import QUESTION_SET
+    record["analysis"]["decision"].update(status="ok", model=settings.TYPESAFE_MODEL, question_set=QUESTION_SET)
     assert pipeline.analyze_record(record, request.model_copy(update={"use_jev": True})).decision.status == "ok"
 
 

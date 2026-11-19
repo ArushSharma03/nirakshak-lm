@@ -4,8 +4,30 @@ import { useCallback, useEffect, useRef, useState, type ChangeEvent } from "reac
 import { Icon, buttonClass } from "@/components/ui";
 
 interface CameraCaptureProps {
-  onCapture: (blob: Blob, previewUrl: string) => void;
+  onCapture: (photos: Blob[]) => void;
+  /** Let the file picker return several photos at once. The camera still takes one. */
+  multiple?: boolean;
   disabled?: boolean;
+  hint?: string;
+}
+
+/** The API stores only JPEG and PNG evidence; re-encode anything else the browser can decode. */
+async function uploadable(file: File): Promise<Blob> {
+  if (file.type === "image/jpeg" || file.type === "image/png") return file;
+  let bitmap: ImageBitmap;
+  try {
+    bitmap = await createImageBitmap(file);
+  } catch {
+    throw new Error(`This browser cannot read ${file.name}. Use a JPEG or PNG photo.`);
+  }
+  const canvas = document.createElement("canvas");
+  canvas.width = bitmap.width;
+  canvas.height = bitmap.height;
+  canvas.getContext("2d")?.drawImage(bitmap, 0, 0);
+  bitmap.close();
+  return new Promise((resolve, reject) =>
+    canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error(`${file.name} could not be converted to JPEG.`))), "image/jpeg", 0.92),
+  );
 }
 
 function cameraErrorMessage(error: unknown): string {
@@ -29,7 +51,7 @@ function cameraErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : "The camera could not be started.";
 }
 
-export default function CameraCapture({ onCapture, disabled = false }: CameraCaptureProps) {
+export default function CameraCapture({ onCapture, multiple = false, disabled = false, hint = "Fill the frame with this panel. Keep small text in focus and avoid glare." }: CameraCaptureProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [cameraOn, setCameraOn] = useState(false);
@@ -131,19 +153,23 @@ export default function CameraCapture({ onCapture, disabled = false }: CameraCap
       (blob) => {
         if (!blob) return;
         setCameraOn(false);
-        onCapture(blob, URL.createObjectURL(blob));
+        onCapture([blob]);
       },
       "image/jpeg",
       0.92,
     );
   };
 
-  const upload = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const upload = async (event: ChangeEvent<HTMLInputElement>) => {
+    const files = [...(event.target.files ?? [])];
     event.target.value = "";
-    if (file) {
-      setCameraOn(false);
-      onCapture(file, URL.createObjectURL(file));
+    if (files.length === 0) return;
+    setCameraOn(false);
+    setErrorMsg("");
+    try {
+      onCapture(await Promise.all(files.map(uploadable)));
+    } catch (cause) {
+      setErrorMsg(cause instanceof Error ? cause.message : "The photo could not be read.");
     }
   };
 
@@ -156,8 +182,8 @@ export default function CameraCapture({ onCapture, disabled = false }: CameraCap
   const uploadButton = (
     <label className={`${cameraOn ? buttonClass.secondary : buttonClass.primary} cursor-pointer ${disabled ? "pointer-events-none opacity-45" : ""}`}>
       <Icon name="upload" />
-      Upload photo
-      <input type="file" accept="image/*" onChange={upload} disabled={disabled} className="sr-only" />
+      {multiple ? "Upload photos" : "Upload photo"}
+      <input type="file" accept="image/*" multiple={multiple} onChange={(event) => void upload(event)} disabled={disabled} className="sr-only" />
     </label>
   );
 
@@ -165,9 +191,7 @@ export default function CameraCapture({ onCapture, disabled = false }: CameraCap
     return (
       <div className="grid min-h-64 place-items-center rounded-xl border-2 border-dashed border-rule-strong bg-sheet px-6 py-10 text-center">
         <div className="space-y-4">
-          <p className="mx-auto max-w-sm text-sm text-ink-2">
-            Fill the frame with this panel. Keep small text in focus and avoid glare.
-          </p>
+          <p className="mx-auto max-w-sm text-sm text-ink-2">{hint}</p>
           <div className="flex flex-wrap justify-center gap-2">
             {uploadButton}
             <button type="button" disabled={disabled} onClick={() => setCameraOn(true)} className={buttonClass.secondary}>

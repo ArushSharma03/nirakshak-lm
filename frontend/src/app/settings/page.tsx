@@ -11,9 +11,9 @@ import type { SystemStatus } from "@/types";
 const PIPELINE: [string, string][] = [
   ["Photo optics", "Sharpness, exposure, contrast, glare and resolution of each original photo, scored 0–100. Advisory only."],
   ["Enhanced copy", "Bilateral denoise and CLAHE produce a second image for viewing. The original is kept unchanged as evidence."],
-  ["Transcription", "Xiaomi-OCR reads each panel, with additional detail scans. Tesseract adds line geometry only where its text matches."],
+  ["Transcription", "Xiaomi-OCR reads each panel, with enlarged detail scans, and reads the photo turned when a coding print runs sideways. Tesseract adds line geometry only where its text matches."],
   ["Extraction", "Declarations are matched to the selected rule profile and marked read, conflicting or not found, with source text for each."],
-  ["Candidate ranking", "Jev can rank conflicting readings. Off by default because it uses paid credits."],
+  ["Jev", "When a TypeSafe key is set, Jev ranks readings, places OCR lines no pattern matched, and picks the brand and product name. It only chooses existing text."],
 ];
 
 export default function SystemPage() {

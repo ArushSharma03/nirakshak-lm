@@ -61,7 +61,7 @@ def test_instructional_text_and_later_numbers_are_not_declarations(text):
 def test_same_line_declarations_end_at_next_heading():
     result = fields([OCRLine(text="Manufactured by: Sample Foods Ltd MRP: Rs 50 Net quantity: 100g")])
     assert result["manufacturer"].value == "Sample Foods Ltd"
-    assert result["mrp"].value == "rs 50"
+    assert result["mrp"].value == "Rs 50"
     assert result["net_quantity"].value == "100g"
     assert fields([OCRLine(text="Mfg. By: See's Foods Ltd MRP: see side panel")])["manufacturer"].value == "See's Foods Ltd"
 
@@ -137,7 +137,7 @@ def test_xiaomi_cutoff_retains_only_complete_lines(monkeypatch, last_token, text
     image.save(stream, format="JPEG", exif=exif)
     raw = stream.getvalue()
     result = ocr.xiaomi_ocr(raw)
-    assert seen_sizes == [(40, 80)]
+    assert seen_sizes == [(120, 240)]  # EXIF-rotated 40x80, then enlarged 3x for small print
     assert cv2.imdecode(np.frombuffer(raw, np.uint8), cv2.IMREAD_COLOR).shape[:2] == (80, 40)
     assert result.status == status
     assert result.raw_text == text
@@ -271,5 +271,5 @@ def test_missing_price_gets_a_primary_read_even_when_quantity_was_already_found(
     monkeypatch.setattr(pipeline, "detail_regions", details)
     result = pipeline.analyze_record({"product_category": "food_grocery", "images": {"rear": {"filepath": str(image)}}}, AnalysisRequest(as_of="2026-11-17"))
     by_field = {f.field: f for f in result.fields}
-    assert by_field["net_quantity"].value == "100g" and by_field["mrp"].value == "rs 50"
+    assert by_field["net_quantity"].value == "100g" and by_field["mrp"].value == "Rs 50"
     assert {c.provider for c in by_field["mrp"].evidence} == {"xiaomi_detail_0", "tesseract"}

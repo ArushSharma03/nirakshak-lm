@@ -14,6 +14,15 @@ The first run takes a while. The torch wheel and the Xiaomi-OCR-0 checkpoint
 together are several GB. Later runs skip anything already up to date and start
 in seconds. Press Ctrl+C to stop both servers.
 
+With an NVIDIA GPU the script picks a CUDA build of PyTorch by itself, from the
+driver's CUDA version (13.0+ → `cu130`, 12.6+ → `cu126`, otherwise `cpu`).
+The OCR device is then set from what the installed torch can actually use.
+
+On first start, an empty store is filled with the sample inspections in
+`backend\seed` (seven real packages with their photos and analyses). A store
+that already holds records is never changed. To replace the samples with your
+current inspections, run `python -m app.services.seed export` in `backend`.
+
 ## What it does
 
 1. Looks for Python 3.13, Node.js 20.9+, Tesseract OCR and, for Xiaomi OCR,
@@ -58,7 +67,7 @@ still needs explicit per-request opt-in.
 
 | Option | Effect |
 |---|---|
-| `-Torch cpu\|cu126\|cu130\|cu132` | PyTorch wheel index. Default `cpu`. Pick a CUDA build your NVIDIA driver supports. It sets `OCR_DEVICE=cuda` (float16). Switching flavour reinstalls torch. |
+| `-Torch auto\|cpu\|cu126\|cu130\|cu132` | PyTorch wheel index. Default `auto`: a CUDA build the NVIDIA driver supports, else `cpu`. `OCR_DEVICE` follows what the installed torch can use (`cuda` uses float16). Switching flavour reinstalls torch. |
 | `-Languages eng+hin` | Tesseract languages; any `tessdata` codes joined by `+`. |
 | `-NoXiaomi` | Skips torch/transformers and the model; runs with `XIAOMI_OCR_ENABLED=false` (Tesseract geometry only). |
 | `-SkipModelDownload` | Do not prefetch the checkpoint; the first analysis downloads it. |
@@ -81,8 +90,11 @@ scripts\windows\dev.cmd -SkipSetup -NoBrowser
 
 ## Troubleshooting
 
-- **"installed but not found"**: winget updated PATH for new terminals only.
-  Open a new terminal and run the script again.
+- **"installed but not found"**: the script reloads PATH from the registry
+  before each step, so a tool installed by an earlier run in the same terminal
+  is found. If one still is not, open a new terminal and run again.
+- **"Port 8000 is in use by …"**: the message names the process and PID. It is
+  usually an earlier run of this script; stop it with `Stop-Process -Id <PID>`.
 - **pip path-length errors**: enable `LongPathsEnabled`, or clone the repo
   closer to the drive root. The script warns when long paths are off and the
   path is long.
@@ -97,10 +109,19 @@ scripts\windows\dev.cmd -SkipSetup -NoBrowser
 
 ## Validation status
 
-The script was written and checked on Linux. No Windows runtime was available,
-so these steps have **not** run on Windows: winget installs, Tesseract
-discovery and the tessdata copy, venv creation, Windows torch wheels, `npm ci`,
-`taskkill` shutdown and the full launch. What was checked:
+Run end to end on Windows 11 with PowerShell 7 and an RTX 3050 laptop GPU
+(driver CUDA 13.4), on 2026-11-18/19, starting with only Python 3.14 present.
+The script installed Python 3.13, Node.js and Tesseract with winget, created the
+venv, installed the `cu130` torch wheels, ran `npm ci`, downloaded the
+Xiaomi-OCR-0 checkpoint, passed `-RunTests`, and launched both servers with OCR on
+`cuda`. Three bugs found there are fixed: winget output leaked into the
+returned tool path, winget's "already installed" exit code (`0x8A15002B`) was
+treated as a failure, and the Tesseract self-test rejected `500g` read without a
+space. A rerun from a terminal whose PATH predated the installs found every tool,
+detected the GPU without `-Torch`, and installed the sample inspections into an
+empty store.
+
+Earlier checks, from the original Linux authoring:
 
 - PowerShell 7.7 parses the script with zero errors. PSScriptAnalyzer 1.25
   reports only style warnings.

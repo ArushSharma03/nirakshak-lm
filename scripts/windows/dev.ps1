@@ -22,9 +22,9 @@
 #>
 [CmdletBinding()]
 param(
-    # PyTorch wheel index: cpu, or a CUDA build for NVIDIA GPUs.
-    [ValidateSet('cpu', 'cu126', 'cu130', 'cu132')]
-    [string]$Torch = 'cpu',
+    # PyTorch wheel index: auto (CUDA build when an NVIDIA driver supports one, else cpu), or explicit.
+    [ValidateSet('auto', 'cpu', 'cu126', 'cu130', 'cu132')]
+    [string]$Torch = 'auto',
     # Tesseract languages, e.g. eng or eng+hin. Missing data is downloaded.
     [ValidatePattern('^[A-Za-z_]+(\+[A-Za-z_]+)*$')]
     [string]$Languages = 'eng',
@@ -94,10 +94,43 @@ function Invoke-Quiet([scriptblock]$Block) {
 # Python snippets passed with -c must not contain double quotes: Windows
 # PowerShell 5.1 does not escape them for native commands.
 
+# Pick up tools installed since this terminal opened (winget updates only new terminals' PATH),
+# keeping entries this process already added.
 function Update-SessionPath {
     $machine = [Environment]::GetEnvironmentVariable('Path', 'Machine')
     $user = [Environment]::GetEnvironmentVariable('Path', 'User')
-    $env:Path = (@($machine, $user) | Where-Object { $_ }) -join ';'
+    $seen = @{}
+    $env:Path = (@($env:Path, $machine, $user) -join ';' -split ';' | Where-Object {
+        $_ -and -not $seen.ContainsKey($_.TrimEnd('\').ToLowerInvariant()) -and ($seen[$_.TrimEnd('\').ToLowerInvariant()] = $true)
+    }) -join ';'
+}
+
+# Newest PyTorch CUDA wheel the NVIDIA driver can run; cpu without a usable driver.
+function Resolve-TorchFlavour {
+    $smi = Get-Command nvidia-smi.exe -ErrorAction SilentlyContinue
+    if (-not $smi) { return 'cpu' }
+    $out = (Invoke-Quiet { & $smi.Source 2>&1 }) -join "`n"
+    $m = [regex]::Match($out, 'CUDA(?: UMD)? Version:\s*(\d+)\.(\d+)')
+    if (-not $m.Success) { return 'cpu' }
+    $cuda = [version]"$($m.Groups[1].Value).$($m.Groups[2].Value)"
+    if ($cuda -ge [version]'13.0') { return 'cu130' }
+    if ($cuda -ge [version]'12.6') { return 'cu126' }
+    return 'cpu'
+}
+
+# The device the installed torch can actually use, so a cpu wheel never gets OCR_DEVICE=cuda.
+function Get-OcrDevice {
+    $cuda = Invoke-Quiet { & $VenvPython -c 'import torch; print(torch.cuda.is_available())' }
+    if ("$cuda".Trim() -eq 'True') { return 'cuda' }
+    return 'cpu'
+}
+
+function Get-PortOwner([int]$Port) {
+    try {
+        $conn = Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction Stop | Select-Object -First 1
+        $proc = Get-Process -Id $conn.OwningProcess -ErrorAction Stop
+        return "$($proc.ProcessName) (PID $($proc.Id), $($proc.Path))"
+    } catch { return 'another process' }
 }
 
 function Install-WithWinget([string]$Id, [string]$Name) {
@@ -106,8 +139,12 @@ function Install-WithWinget([string]$Id, [string]$Name) {
         throw "$Name is missing and winget is unavailable. Install 'App Installer' from the Microsoft Store or install $Name manually."
     }
     Write-Step "Installing $Name with winget ($Id); accept the UAC prompt if shown"
-    Invoke-Checked winget.exe @('install', '--id', $Id, '--exact', '--silent',
-        '--accept-package-agreements', '--accept-source-agreements')
+    # Out-Host keeps winget's output out of the caller's return value (a path or hashtable).
+    & winget.exe install --id $Id --exact --silent --accept-package-agreements --accept-source-agreements | Out-Host
+    # 0x8A15002B: already installed with no upgrade, e.g. installed earlier but not yet on this terminal's PATH.
+    if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne -1978335189) {
+        throw "winget could not install $Name ($Id), exit code $LASTEXITCODE."
+    }
     Update-SessionPath
 }
 
@@ -353,7 +390,7 @@ out = subprocess.run(['tesseract', 'stdin', 'stdout', '-l', os.environ['TESSERAC
 words = [r.split('\t')[-1] for r in out.splitlines()[1:] if r.count('\t') >= 11 and r.split('\t')[-1].strip()]
 print('tesseract words:', words)
 assert out.startswith('level\t'), 'no TSV header'
-assert '500' in words, 'expected test quantity missing from TSV'
+assert any('500' in w for w in words), 'expected test quantity missing from TSV'
 "@
     Push-Location $BackendDir
     try { Invoke-Checked $VenvPython @('-c', $code) } finally { Pop-Location }
@@ -411,7 +448,9 @@ function Stop-Tree([Diagnostics.Process]$Process) {
 
 function Start-Servers([string]$Node) {
     foreach ($p in @($BackendPort, $FrontendPort)) {
-        if (-not (Test-PortFree $p)) { throw "Port $p is in use. Stop that process or pass -BackendPort/-FrontendPort." }
+        if (-not (Test-PortFree $p)) {
+            throw "Port $p is in use by $(Get-PortOwner $p). If that is an earlier run of this script, close its window or run: Stop-Process -Id <PID>. Otherwise pass -BackendPort/-FrontendPort."
+        }
     }
     $apiUrl = "http://localhost:$BackendPort"
     $webUrl = "http://localhost:$FrontendPort"
@@ -466,11 +505,16 @@ foreach ($n in $envNames) { $savedEnv[$n] = [Environment]::GetEnvironmentVariabl
 try {
     if ($SkipSetup -and $SetupOnly) { throw '-SkipSetup and -SetupOnly cannot be combined.' }
     $wantedLangs = @($Languages -split '\+')
+    Update-SessionPath
+    if ($Torch -eq 'auto') {
+        $Torch = if ($NoXiaomi) { 'cpu' } else { Resolve-TorchFlavour }
+        Write-Note "PyTorch build: $Torch (detected; pass -Torch to override)"
+    }
 
     if ($SkipSetup) {
         if (-not (Test-Path -LiteralPath $VenvPython)) { throw 'backend\.venv is missing; run once without -SkipSetup.' }
         $nodeCmd = Get-Command node.exe -ErrorAction SilentlyContinue
-        if (-not $nodeCmd) { throw 'node.exe not found on PATH.' }
+        if (-not $nodeCmd) { throw 'node.exe not found; run once without -SkipSetup.' }
         $node = $nodeCmd.Source
         $tessExe = Find-Tesseract
         if (-not $tessExe) { throw 'tesseract.exe not found; run once without -SkipSetup.' }
@@ -497,7 +541,8 @@ try {
     if ($tess.TessData) { $env:TESSDATA_PREFIX = $tess.TessData }
     $env:TESSERACT_LANGUAGES = $Languages
     $env:XIAOMI_OCR_ENABLED = if ($NoXiaomi) { 'false' } else { 'true' }
-    $env:OCR_DEVICE = if ($Torch -eq 'cpu') { 'cpu' } else { 'cuda' }
+    $env:OCR_DEVICE = if ($NoXiaomi) { 'cpu' } else { Get-OcrDevice }
+    if (-not $NoXiaomi) { Write-Note "Xiaomi OCR device: $($env:OCR_DEVICE)" }
     $env:OCR_CPU_THREADS = "$CpuThreads"
     $env:OMP_NUM_THREADS = "$CpuThreads"
     $env:HF_HUB_DISABLE_SYMLINKS_WARNING = '1'

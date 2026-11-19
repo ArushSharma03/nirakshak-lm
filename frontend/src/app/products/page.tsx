@@ -38,7 +38,7 @@ export default function ProductsPage() {
     <div className="page-stack">
       <TopBarContent
         title="Product catalog"
-        lede="Packages you have inspected, grouped by the name given at setup. Built from the inspections stored on the API; it is not a product registry."
+        lede="Packages you have inspected, grouped by the name read from the label (or typed on older records). Built from the inspections stored on the API; it is not a product registry."
         actions={
           <ButtonLink href="/inspections/new">
             <Icon name="plus" />

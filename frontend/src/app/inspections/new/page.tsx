@@ -2,127 +2,96 @@
 
 import { TopBarContent } from "@/components/layout/TopBarContent";
 
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { ProductCategory } from "@/types";
-import { createInspection } from "@/lib/api";
-import { CATEGORY_LABEL, errorText } from "@/lib/format";
-import { Icon, Notice, buttonClass, inputClass } from "@/components/ui";
+import CameraCapture from "@/components/CameraCapture";
+import { createInspection, uploadInspectionView } from "@/lib/api";
+import { analyzeInspection } from "@/lib/analysis";
+import { VIEWS, VIEW_LABEL, errorText } from "@/lib/format";
+import { ButtonLink, Notice, buttonClass } from "@/components/ui";
+
+type Run =
+  | { kind: "idle" }
+  | { kind: "running"; stage: string; previews: string[] }
+  | { kind: "failed"; message: string; previews: string[]; inspectionId: string | null };
 
 export default function NewInspectionPage() {
   const router = useRouter();
-  const [productName, setProductName] = useState("");
-  const [category, setCategory] = useState<ProductCategory>("food_grocery");
-  const [notes, setNotes] = useState("");
-  const [brand, setBrand] = useState("");
-  const [declaredNetQty, setDeclaredNetQty] = useState("");
-  const [declaredMRP, setDeclaredMRP] = useState("");
-  const [location, setLocation] = useState("");
-  const [inspectorName, setInspectorName] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [run, setRun] = useState<Run>({ kind: "idle" });
 
-  async function handleSubmit(event: FormEvent) {
-    event.preventDefault();
-    setSubmitting(true);
-    setError(null);
+  async function start(photos: Blob[]) {
+    if (photos.length > VIEWS.length) {
+      setRun({ kind: "failed", message: `Choose up to ${VIEWS.length} photos: front, rear and side.`, previews: [], inspectionId: null });
+      return;
+    }
+    const previews = photos.map((photo) => URL.createObjectURL(photo));
+    const stage = (label: string) => setRun({ kind: "running", stage: label, previews });
+    let inspectionId: string | null = null;
     try {
-      const mrp = declaredMRP.trim() ? Number(declaredMRP) : null;
-      const record = await createInspection({
-        productName,
-        productCategory: category,
-        notes,
-        brand,
-        declaredNetQty,
-        declaredMRP: mrp !== null && Number.isFinite(mrp) ? mrp : null,
-        location,
-        inspectorName,
-      });
-      router.push(`/inspect?id=${encodeURIComponent(record.id)}`);
+      stage("Creating the inspection");
+      inspectionId = (await createInspection()).id;
+      for (const [index, photo] of photos.entries()) {
+        stage(`Uploading the ${VIEW_LABEL[VIEWS[index]].toLowerCase()} photo`);
+        await uploadInspectionView(inspectionId, VIEWS[index], photo);
+      }
+      stage("Reading the label");
+      await analyzeInspection(inspectionId, {});
+      router.push(`/reports?id=${encodeURIComponent(inspectionId)}`);
     } catch (cause) {
-      setError(errorText(cause, "Could not create the inspection."));
-      setSubmitting(false);
+      setRun({ kind: "failed", message: errorText(cause, "Check that the API is online."), previews, inspectionId });
     }
   }
 
+  const previews = run.kind === "idle" ? [] : run.previews;
+
   return (
     <div className="page-stack">
-            <TopBarContent
+      <TopBarContent
         title="New inspection"
-        lede="Name the package so you can find it later. Nothing typed here counts as label evidence; declarations are read from the photos."
+        lede="Add photos of the package. The name, origin and every declaration are read from the label."
       />
 
-      <form onSubmit={handleSubmit} className="overflow-hidden rounded-xl border border-rule bg-sheet shadow-[0_1px_2px_rgb(15_23_42/0.04)]">
-        <fieldset className="grid gap-5 p-5 sm:grid-cols-2">
-          <legend className="float-left mb-1 w-full text-sm font-semibold text-ink sm:col-span-2">Package</legend>
-          <label className="block text-sm font-medium sm:col-span-2">
-            Package name
-            <input required value={productName} onChange={(e) => setProductName(e.target.value)} placeholder="e.g. Parle-G biscuits 70 g, shelf sample 2" className={inputClass} />
-          </label>
-          <label className="block text-sm font-medium">
-            Category
-            <select value={category} onChange={(e) => setCategory(e.target.value as ProductCategory)} className={inputClass}>
-              {Object.entries(CATEGORY_LABEL).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-            <span className="mt-1 block text-xs font-normal text-ink-3">Picks the rule profile. Only food and grocery has rule data so far.</span>
-          </label>
-          <label className="block text-sm font-medium">
-            Photo source
-            <input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="e.g. Shelf photos, phone camera" className={inputClass} />
-            <span className="mt-1 block text-xs font-normal text-ink-3">Shown on the report as provenance. Say if images are catalog or web copies.</span>
-          </label>
-        </fieldset>
+      {run.kind !== "running" && (
+        <CameraCapture
+          multiple
+          onCapture={(photos) => void start(photos)}
+          hint="Take or upload up to three photos. They are filed as front, rear and side in that order. One clear photo of the declaration panel is enough."
+        />
+      )}
 
-        <hr className="border-rule" />
+      {previews.length > 0 && (
+        <ul className="grid gap-3 sm:grid-cols-3">
+          {previews.map((url, index) => (
+            <li key={url} className="overflow-hidden rounded-xl border border-rule bg-sheet">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={url} alt={`${VIEW_LABEL[VIEWS[index]]} panel`} className="aspect-[4/3] w-full bg-ground object-contain" />
+              <p className="px-3 py-2 text-sm font-semibold">{VIEW_LABEL[VIEWS[index]]}</p>
+            </li>
+          ))}
+        </ul>
+      )}
 
-        <fieldset className="grid gap-5 p-5 sm:grid-cols-2">
-          <legend className="float-left mb-1 w-full text-sm sm:col-span-2">
-            <span className="font-semibold text-ink">Optional setup notes</span>
-            <span className="block text-ink-3">
-              For your reference only. Leave anything you have not checked blank. These values are separate from photo evidence.
-            </span>
-          </legend>
-          <label className="block text-sm font-medium">
-            Brand or manufacturer
-            <input value={brand} onChange={(e) => setBrand(e.target.value)} className={inputClass} />
-          </label>
-          <label className="block text-sm font-medium">
-            Net quantity on the pack
-            <input value={declaredNetQty} onChange={(e) => setDeclaredNetQty(e.target.value)} placeholder="e.g. 70 g" className={inputClass} />
-          </label>
-          <label className="block text-sm font-medium">
-            MRP on the pack (₹)
-            <input type="number" inputMode="decimal" step="0.01" min="0" value={declaredMRP} onChange={(e) => setDeclaredMRP(e.target.value)} className={inputClass} />
-          </label>
-          <label className="block text-sm font-medium">
-            Location
-            <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. Store, shelf or lab desk" className={inputClass} />
-          </label>
-          <label className="block text-sm font-medium sm:col-span-2">
-            Inspector
-            <input value={inspectorName} onChange={(e) => setInspectorName(e.target.value)} className={inputClass} />
-          </label>
-        </fieldset>
+      {run.kind === "running" && (
+        <p role="status" className="rounded-xl border border-rule bg-sheet p-5 text-sm text-ink-2">
+          <span className="block font-semibold text-ink">{run.stage}…</span>
+          OCR runs on the server. On CPU, or on the first run while model weights download, this can take several minutes. Keep this tab open.
+        </p>
+      )}
 
-        <div className="flex flex-col gap-3 border-t border-rule bg-ground/50 p-5 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-ink-2">Next: photograph the front, rear and side panels.</p>
-          <button type="submit" disabled={submitting} className={buttonClass.primary}>
-            {submitting ? "Creating…" : "Create and start photos"}
-            {!submitting && <Icon name="arrowRight" />}
-          </button>
-        </div>
-      </form>
-
-      {error && (
-        <div>
-          <Notice tone="danger" title="The inspection was not created">
-            {error} Nothing was saved. Check that the API is online and try again.
-          </Notice>
-        </div>
+      {run.kind === "failed" && (
+        <Notice
+          tone="danger"
+          title="The inspection did not finish"
+          action={
+            run.inspectionId ? (
+              <ButtonLink href={`/inspect?id=${encodeURIComponent(run.inspectionId)}`} variant="secondary">Continue in guided capture</ButtonLink>
+            ) : (
+              <button type="button" onClick={() => setRun({ kind: "idle" })} className={buttonClass.secondary}>Try again</button>
+            )
+          }
+        >
+          {run.message} {run.inspectionId ? "Photos that uploaded are stored; continue to retry analysis." : "Nothing was saved."}
+        </Notice>
       )}
     </div>
   );

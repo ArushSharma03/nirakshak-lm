@@ -9,7 +9,7 @@ import { Card, EmptyState, Loading, Meter } from "@/components/ui";
 import { CATEGORY_LABEL, VIEWS, VIEW_LABEL, fieldLabel } from "@/lib/format";
 import type { InspectionRecord, ProductCategory } from "@/types";
 
-const FIELD_ORDER = ["generic_name", "net_quantity", "mrp", "manufacturer", "date", "consumer_care", "country_of_origin"];
+const FIELD_ORDER = ["generic_name", "net_quantity", "mrp", "manufacturer", "date", "expiry", "consumer_care", "country_of_origin"];
 
 function summarize(records: InspectionRecord[]) {
   const analyzed = records.filter((r) => r.analysis);
