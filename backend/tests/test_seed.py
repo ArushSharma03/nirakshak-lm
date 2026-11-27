@@ -1,7 +1,9 @@
 """The shipped sample inspections install into an empty store and serve like captured ones."""
 
 import hashlib
+from io import BytesIO
 from pathlib import Path
+from zipfile import ZipFile
 
 import pytest
 from fastapi.testclient import TestClient
@@ -35,6 +37,27 @@ def test_seed_installs_on_first_start_with_original_photos_and_rebuilt_copies(em
         fields = {f["field"]: f["value"] for f in potata["analysis"]["fields"]}
         assert fields["date"] == "08 AUG 2026" and fields["expiry"] == "07 AUG 2027"
         assert client.get(f"/inspections/{potata['id']}/report").status_code == 200
+
+
+def test_report_downloads_and_rejects_changed_evidence(empty_store):
+    with TestClient(app) as client:
+        record = next(r for r in client.get("/inspections/").json() if r["id"] == "INS-2026-579CF222")
+        url = f"/inspections/{record['id']}/report"
+        pdf = client.get(url, params={"format": "pdf"})
+        assert pdf.status_code == 200 and pdf.content.startswith(b"%PDF-")
+        assert pdf.headers["content-type"] == "application/pdf"
+        assert pdf.headers["content-disposition"].endswith('.pdf"')
+        word = client.get(url, params={"format": "docx"})
+        assert word.status_code == 200 and word.headers["content-disposition"].endswith('.docx"')
+        with ZipFile(BytesIO(word.content)) as archive:
+            document = archive.read("word/document.xml")
+            assert record["id"].encode() in document
+            assert b"07 AUG 2027" in document
+            assert any(name.startswith("word/media/") for name in archive.namelist())
+            assert record["analysis"]["views"]["rear"]["file_hash"].encode() in document
+        Path(record["images"]["rear"]["filepath"]).write_bytes(b"changed")
+        for format in ("html", "pdf", "docx"):
+            assert client.get(url, params={"format": format}).status_code == 409
 
 
 def test_seed_never_touches_a_store_with_records(empty_store):

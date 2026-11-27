@@ -13,7 +13,7 @@ import copy
 from threading import Lock
 import cv2
 import numpy as np
-from typing import List, Optional
+from typing import List, Literal, Optional
 from fastapi import APIRouter, File, Form, UploadFile, HTTPException, Response, status
 from fastapi.responses import FileResponse, HTMLResponse
 
@@ -30,6 +30,7 @@ from app.services.inspection_store import (
 from app.schemas.analysis import AnalysisRequest
 from app.services.analysis import analyze_record
 from app.services.report import render_report
+from app.services.report_export import export_report, REPORT_TYPES
 from app.services.inspection_store import save_analysis, remove_inspection_image
 
 router = APIRouter(prefix="/inspections", tags=["Inspections"])
@@ -172,7 +173,8 @@ def run_inspection_checks(inspection_id: str, request: CheckRequest | None = Non
 
 
 @router.get("/{inspection_id}/report", response_class=HTMLResponse)
-def get_inspection_report(inspection_id: str, download: bool = True):
+def get_inspection_report(inspection_id: str, download: bool = True,
+                          format: Literal["html", "pdf", "docx"] = "html"):
     """Download an offline, printable report with all saved evidence."""
     record = copy.deepcopy(get_inspection_record(inspection_id))
     if record is None:
@@ -180,11 +182,13 @@ def get_inspection_report(inspection_id: str, download: bool = True):
     if not record.get("analysis"):
         raise HTTPException(status_code=409, detail="Analyze the photos before generating a report.")
     try:
-        html = render_report(record, Analysis.model_validate(record["analysis"]))
+        analysis = Analysis.model_validate(record["analysis"])
+        content = render_report(record, analysis) if format == "html" else export_report(record, analysis, format)
     except (ValueError, FileNotFoundError) as error:
         raise HTTPException(status_code=409, detail=str(error))
     disposition = "attachment" if download else "inline"
-    return HTMLResponse(html, headers={"Content-Disposition": f'{disposition}; filename="{record["id"]}.html"',
+    return Response(content, media_type=REPORT_TYPES[format], headers={
+        "Content-Disposition": f'{disposition}; filename="{record["id"]}.{format}"',
         "Cache-Control": "no-store", "Content-Security-Policy": "default-src 'none'; img-src data:; style-src 'unsafe-inline'"})
 
 

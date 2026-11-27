@@ -50,7 +50,9 @@ export default function ReportsHubContent({ inspectionId: urlId }: { inspectionI
           <Link href={`/inspect?id=${encodeURIComponent(selected.id)}`} className={buttonClass.secondary}>Photos and re-run</Link>
           {selected.analysis && <>
             <a href={`${reportUrl}?download=false`} target="_blank" rel="noreferrer" className={buttonClass.secondary}>Printable report</a>
-            <a href={reportUrl} className={buttonClass.secondary}>Download report</a>
+            <a href={reportUrl} className={buttonClass.secondary}>HTML</a>
+            <a href={`${reportUrl}?format=pdf`} className={buttonClass.secondary}>Download PDF</a>
+            <a href={`${reportUrl}?format=docx`} className={buttonClass.secondary}>Download Word</a>
           </>}
         </>}
       />
