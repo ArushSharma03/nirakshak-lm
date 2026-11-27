@@ -64,3 +64,16 @@ def test_seed_never_touches_a_store_with_records(empty_store):
     store._MEMORY_INSPECTIONS["INS-MINE"] = {"id": "INS-MINE"}
     assert install_seed() == 0
     assert list(store._MEMORY_INSPECTIONS) == ["INS-MINE"]
+
+
+def test_mobile_creation_is_idempotent_after_restarting_the_store(empty_store):
+    client = TestClient(app)
+    payload = {"client_request_id": "fbba4b78-5193-4569-b485-b1e59df79980"}
+    created = client.post("/inspections/", json=payload)
+    assert created.status_code == 201
+    store._MEMORY_INSPECTIONS = {}
+    store._load_persisted_fallback()
+    retried = client.post("/inspections/", json=payload)
+    assert retried.status_code == 201
+    assert retried.json() == created.json()
+    assert len(client.get("/inspections/").json()) == 1

@@ -17,6 +17,7 @@ It is **not** an autonomous legal authority. All outcomes are advisory and must 
 | Layer | Technology |
 |---|---|
 | Frontend | Next.js (React) + TypeScript |
+| Android | Native app with CameraX guided capture |
 | Backend | Python FastAPI |
 | Computer Vision | OpenCV photo quality and preprocessing |
 | OCR | Xiaomi-OCR-0 transcription + Tesseract geometry |
@@ -51,6 +52,8 @@ photos and saved evidence. Analytics summarizes advisory screening outcomes and 
 See [Week 10 behavior and verification](docs/week-10.md) and
 [setup and OCR limitations](docs/week-8-usage.md).
 See [Week 12 validation](docs/week-12.md) for the benchmark and physical capture acceptance protocol.
+The [Android app](android/README.md) guides the user around the packet, takes photos automatically,
+and submits them to the same inspection pipeline.
 
 ---
 

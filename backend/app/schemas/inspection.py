@@ -58,6 +58,9 @@ class InspectionCreate(BaseModel):
     user_id: Optional[uuid.UUID] = Field(
         None, description="Optional ID of the inspector creating this inspection."
     )
+    client_request_id: uuid.UUID | None = Field(
+        None, description="Optional stable identifier for retrying inspection creation."
+    )
     product_name: Optional[str] = Field(
         None, description="Generic product name."
     )
