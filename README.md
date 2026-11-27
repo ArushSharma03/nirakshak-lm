@@ -50,6 +50,7 @@ offers a printable view, PDF and Word downloads, and a standalone HTML copy with
 photos and saved evidence. Analytics summarizes advisory screening outcomes and individual checks.
 See [Week 10 behavior and verification](docs/week-10.md) and
 [setup and OCR limitations](docs/week-8-usage.md).
+See [Week 12 validation](docs/week-12.md) for the benchmark and physical capture acceptance protocol.
 
 ---
 
