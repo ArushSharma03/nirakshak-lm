@@ -14,6 +14,18 @@ backend/.venv/bin/python evaluation/week12_benchmark.py --out /tmp/nirik-week12.
 
 The runner uses a temporary store and the normal creation, photo upload, analysis, readback and export endpoints. It disables Jev and times local API processing separately from image download. It records conflicts, incorrect readings and unread fields separately. A correct result requires an observed value matching one of the frozen reference spellings after normalizing punctuation, spacing and case.
 
+## Results
+
+Xiaomi-OCR-0 and English Tesseract matched all five annotated readings across three package variants on an AMD Ryzen 5 5600H. Each inspection required manual review. The median elapsed analysis time was 115.8 s, with a range of 80.5–116.5 s. This run includes first-use model initialization on the first case. PDF export took 0.09–0.15 s and Word export took 0.06–0.10 s.
+
+| Catalogue photo | Printed fields scored | Analysis |
+| --- | --- | --- |
+| Tata Salt, front and rear | 1 kg | 115.8 s |
+| Haldiram’s Bhujia, rear | 400 g, India | 80.5 s |
+| Haldiram’s Bhujia, rear | 1 kg, India | 116.5 s |
+
+This small sample measures quantity and explicit origin only. See the [machine-readable results](../evaluation/week12-results.json) and [presentation](week-12-presentation.pptx).
+
 ## Physical capture acceptance
 
 The repository contains seven previously photographed packages. Those records check saved-evidence compatibility and report layout. Run the following acceptance test on a physical Android phone with the backend reachable before using the app for an inspection.
