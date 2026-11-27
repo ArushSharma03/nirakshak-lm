@@ -307,19 +307,18 @@ public final class ScanActivity extends ComponentActivity {
     private void showPermission() {
         LinearLayout layout = screen(Screen.PERMISSION, true);
         toolbar(layout, "Camera access", true);
-        space(layout, 30);
-        layout.addView(copy("Allow the camera to scan the packet", 32, TEXT, true));
-        space(layout, 12);
-        layout.addView(copy("Nirikshak needs camera access for automatic package photos.", 17, MUTED, false));
-        space(layout, 24);
+        space(layout, 14);
+        LinearLayout access = card(layout, 17);
+        access.addView(copy("Allow automatic package photos", 28, TEXT, true));
+        space(access, 12);
         if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-            layout.addView(button("Allow camera", true, () -> cameraPermission.launch(Manifest.permission.CAMERA)));
+            access.addView(button("Allow camera", true, () -> cameraPermission.launch(Manifest.permission.CAMERA)));
         } else {
-            layout.addView(button("Open app settings", true, () -> startActivity(new Intent(
+            access.addView(button("Open app settings", true, () -> startActivity(new Intent(
                     Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", getPackageName(), null)))));
+            space(access, 8);
+            access.addView(button("Continue after allowing", false, this::continueScan));
         }
-        space(layout, 8);
-        layout.addView(button("Continue after allowing", false, this::continueScan));
     }
 
     private void openCamera() {
@@ -677,24 +676,27 @@ public final class ScanActivity extends ComponentActivity {
 
     private void showSubmission(Exception failure, String message) {
         LinearLayout layout = screen(Screen.SUBMISSION, true);
-        toolbar(layout, "Package analysis", true);
-        space(layout, 43);
-        layout.addView(copy(failure == null ? "Reading your package" : "Analysis paused", 36, TEXT, true));
-        space(layout, 15);
+        toolbar(layout, "Analysis", true);
+        space(layout, 14);
+        LinearLayout status = card(layout, 17);
+        status.addView(copy(failure == null ? "Reading your package" : "Analysis paused", 28, TEXT, true));
+        space(status, 10);
+        if (failure != null) {
+            status.addView(button("Retry analysis", true, this::submit));
+            space(status, 10);
+        }
         networkStatus = copy(failure == null ? message : errorMessage(failure), 17, MUTED, false);
         networkStatus.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
-        layout.addView(networkStatus);
-        space(layout, 16);
+        status.addView(networkStatus);
+        space(status, 12);
         if (failure == null) {
             ProgressBar progress = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
             progress.setIndeterminate(true);
             progress.setIndeterminateTintList(ColorStateList.valueOf(ACCENT));
             progress.setContentDescription("Analysis in progress");
-            layout.addView(progress, new LinearLayout.LayoutParams(-1, dp(5)));
+            status.addView(progress, new LinearLayout.LayoutParams(-1, dp(5)));
         } else {
-            layout.addView(copy("Your photos are saved on this phone.", 15, MUTED, false));
-            space(layout, 16);
-            layout.addView(button("Retry analysis", true, this::submit));
+            status.addView(copy("Your photos are saved on this phone.", 15, MUTED, false));
         }
     }
 
@@ -882,10 +884,6 @@ public final class ScanActivity extends ComponentActivity {
         space(layout, 14);
         LinearLayout header = card(layout, 17);
         header.addView(copy(displayName(saved), 29, TEXT, true));
-        space(header, 7);
-        TextView identity = copy(selectedId, 12, MUTED, false);
-        identity.setTextIsSelectable(true);
-        header.addView(identity);
         space(header, 10);
         JSONObject analysis = saved.optJSONObject("analysis");
         boolean analyzed = analysis != null || saved.optBoolean("analyzed");
@@ -895,16 +893,22 @@ public final class ScanActivity extends ComponentActivity {
             space(header, 6);
             header.addView(copy("Offline · last saved copy", 14, AMBER, false));
         }
+        if (analyzed) {
+            space(header, 12);
+            header.addView(button("View full report", true, () -> showReport(selectedId)));
+            space(header, 7);
+            addShareButton(header, selectedId);
+        }
         JSONObject classification = analysis == null ? null : analysis.optJSONObject("classification");
         if (classification != null) {
-            space(header, 6);
+            space(header, 10);
             header.addView(copy(classification.optString("reason"), 14, MUTED, false));
         }
+        space(header, 8);
+        TextView identity = copy(selectedId, 12, MUTED, false);
+        identity.setTextIsSelectable(true);
+        header.addView(identity);
         if (!analyzed) return;
-        space(layout, 12);
-        layout.addView(button("View full report", true, () -> showReport(selectedId)));
-        space(layout, 7);
-        addShareButton(layout, selectedId);
         renderChecks(layout, analysis);
         JSONArray fields = analysis == null ? null : analysis.optJSONArray("fields");
         if (fields == null || fields.length() == 0) return;
@@ -1017,12 +1021,19 @@ public final class ScanActivity extends ComponentActivity {
 
     private void showReport(String id) {
         LinearLayout layout = screen(Screen.REPORT, false);
-        toolbar(layout, "Inspection report", true);
-        space(layout, 8);
-        addShareButton(layout, id);
+        LinearLayout bar = toolbar(layout, "Inspection report", true);
+        ImageButton share = iconButton(R.drawable.ic_share, "Share PDF");
+        bindShareAction(share, id);
+        bar.addView(share, new LinearLayout.LayoutParams(dp(48), dp(48)));
         space(layout, 10);
+        ScrollView feedback = new ScrollView(this);
+        LinearLayout messages = new LinearLayout(this);
+        messages.setOrientation(LinearLayout.VERTICAL);
+        feedback.addView(messages, new ScrollView.LayoutParams(-1, -2));
+        layout.addView(feedback, new LinearLayout.LayoutParams(-1, 0, 1));
         TextView state = copy("Loading report…", 16, MUTED, false);
-        layout.addView(state);
+        state.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
+        messages.addView(state);
         long generation = resultGeneration;
         network.execute(() -> {
             String key = id + ".html";
@@ -1039,8 +1050,8 @@ public final class ScanActivity extends ComponentActivity {
                     runOnUiThread(() -> {
                         if (isDestroyed() || resultGeneration != generation) return;
                         state.setText(errorMessage(failure));
-                        space(layout, 8);
-                        layout.addView(button("Retry report", true, () -> showReport(id)));
+                        space(messages, 8);
+                        messages.addView(button("Retry report", true, () -> showReport(id)));
                     });
                     return;
                 }
@@ -1050,12 +1061,11 @@ public final class ScanActivity extends ComponentActivity {
             boolean cached = offline;
             runOnUiThread(() -> {
                 if (isDestroyed() || resultGeneration != generation) return;
+                layout.removeView(feedback);
                 if (cached) {
-                    state.setText("Offline · last opened copy");
-                    state.setTextColor(AMBER);
-                    state.setPadding(0, 0, 0, dp(8));
-                } else {
-                    layout.removeView(state);
+                    TextView notice = copy("Offline · last opened copy", 14, AMBER, false);
+                    notice.setPadding(0, 0, 0, dp(8));
+                    layout.addView(notice);
                 }
                 displayReport(layout, document);
             });
@@ -1069,7 +1079,8 @@ public final class ScanActivity extends ComponentActivity {
         report.getSettings().setBlockNetworkLoads(true);
         report.getSettings().setBuiltInZoomControls(true);
         report.getSettings().setDisplayZoomControls(false);
-        report.getSettings().setTextZoom(Math.round(getResources().getConfiguration().fontScale * 100));
+        float fontScale = getResources().getConfiguration().fontScale;
+        report.getSettings().setTextZoom(Math.round(fontScale * 100));
         report.setBackgroundColor(Color.WHITE);
         report.setOutlineProvider(new android.view.ViewOutlineProvider() {
             @Override public void getOutline(View view, android.graphics.Outline outline) {
@@ -1085,16 +1096,25 @@ public final class ScanActivity extends ComponentActivity {
                 + ".evidence>*,.photos figure{min-width:0}.checks,.integrity{table-layout:fixed}"
                 + ".integrity td:nth-child(n){width:auto}.integrity code{overflow-wrap:anywhere}"
                 + ".checks td:nth-child(4),.checks th:nth-child(4){text-align:start}"
-                + "pre{overflow-wrap:anywhere}.masthead{flex-wrap:wrap}}</style>";
+                + "pre{overflow-wrap:anywhere}.masthead{flex-wrap:wrap}}"
+                + (fontScale >= 1.6f
+                        ? "body{margin:0;padding:15px}.masthead{flex-wrap:wrap}"
+                        + ".checks,.integrity{display:block;overflow-x:auto;table-layout:auto}"
+                        + ".checks td,.integrity td{min-width:7em}.photos{grid-template-columns:1fr}"
+                        : "") + "</style>";
         report.loadDataWithBaseURL(null, html.replace("<head>", "<head>" + csp)
                 .replace("</head>", mobileCss + "</head>"), "text/html", "UTF-8", null);
     }
 
     private void addShareButton(LinearLayout layout, String id) {
         Button share = button("Share PDF", false, () -> {});
+        bindShareAction(share, id);
+        layout.addView(share);
+    }
+
+    private void bindShareAction(View share, String id) {
         share.setOnClickListener(view -> {
-            share.setEnabled(false);
-            share.setText("Preparing PDF…");
+            setShareBusy(share, true);
             long generation = resultGeneration;
             network.execute(() -> {
                 try {
@@ -1116,8 +1136,7 @@ public final class ScanActivity extends ComponentActivity {
                     Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".reports", file, id + ".pdf");
                     runOnUiThread(() -> {
                         if (isDestroyed() || resultGeneration != generation) return;
-                        share.setEnabled(true);
-                        share.setText("Share PDF");
+                        setShareBusy(share, false);
                         Intent send = new Intent(Intent.ACTION_SEND).setType("application/pdf")
                                 .putExtra(Intent.EXTRA_STREAM, uri)
                                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -1126,14 +1145,19 @@ public final class ScanActivity extends ComponentActivity {
                 } catch (Exception failure) {
                     runOnUiThread(() -> {
                         if (isDestroyed() || resultGeneration != generation) return;
-                        share.setEnabled(true);
-                        share.setText("Share PDF");
+                        setShareBusy(share, false);
                         showMessage(errorMessage(failure));
                     });
                 }
             });
         });
-        layout.addView(share);
+    }
+
+    private void setShareBusy(View share, boolean busy) {
+        String label = busy ? "Preparing PDF…" : "Share PDF";
+        share.setEnabled(!busy);
+        if (share instanceof Button button) button.setText(label);
+        else share.setContentDescription(label);
     }
 
     private void destroyReport() {
@@ -1162,13 +1186,7 @@ public final class ScanActivity extends ComponentActivity {
         LinearLayout row = new LinearLayout(this);
         row.setGravity(Gravity.CENTER_VERTICAL);
         if (back) {
-            ImageButton previous = new ImageButton(this);
-            previous.setImageResource(R.drawable.ic_back);
-            previous.setScaleType(ImageView.ScaleType.CENTER);
-            previous.setPadding(0, 0, 0, 0);
-            previous.setBackground(new android.graphics.drawable.RippleDrawable(
-                    ColorStateList.valueOf(0x33cdf78b), buttonSurface(false), null));
-            previous.setContentDescription("Back");
+            ImageButton previous = iconButton(R.drawable.ic_back, "Back");
             previous.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
             row.addView(previous, new LinearLayout.LayoutParams(dp(48), dp(48)));
             View spacer = new View(this);
@@ -1182,6 +1200,18 @@ public final class ScanActivity extends ComponentActivity {
         row.setMinimumHeight(dp(48));
         layout.addView(row);
         return row;
+    }
+
+    private ImageButton iconButton(int icon, String label) {
+        ImageButton button = new ImageButton(this);
+        button.setImageResource(icon);
+        button.setScaleType(ImageView.ScaleType.CENTER);
+        button.setPadding(0, 0, 0, 0);
+        button.setBackground(new android.graphics.drawable.RippleDrawable(
+                ColorStateList.valueOf(0x33cdf78b), buttonSurface(false), null));
+        button.setContentDescription(label);
+        button.setTooltipText(label);
+        return button;
     }
 
     private LinearLayout card(LinearLayout parent, int padding) {
