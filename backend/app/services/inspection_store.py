@@ -89,7 +89,13 @@ def create_inspection_record(payload: Dict[str, Any]) -> Dict[str, Any]:
     Create a new inspection record.
     Uses PostgreSQL if available, otherwise saves to the persistent local fallback store.
     """
-    inspection_id = payload.get("id") or f"INS-{datetime.now().year}-{str(uuid.uuid4())[:8].upper()}"
+    request_id = payload.get("client_request_id")
+    if request_id is not None:
+        inspection_id = f"INS-MOBILE-{request_id.hex.upper()}"
+        if inspection_id in _MEMORY_INSPECTIONS:
+            return _MEMORY_INSPECTIONS[inspection_id]
+    else:
+        inspection_id = payload.get("id") or f"INS-{datetime.now().year}-{str(uuid.uuid4())[:8].upper()}"
     now_iso = datetime.now(timezone.utc).isoformat()
 
     typed_name = (payload.get("product_name") or "").strip()

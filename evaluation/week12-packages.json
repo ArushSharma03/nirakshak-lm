@@ -1,0 +1,46 @@
+[
+  {
+    "name": "Tata Salt (1 kg)",
+    "source": "https://www.bigbasket.com/pd/241600/tata-salt-iodized-1-kg-pouch/",
+    "views": {
+      "front": {
+        "url": "https://www.bbassets.com/media/uploads/p/xxl/241600-2_10-tata-salt-iodized.jpg",
+        "sha256": "1063bed68a3b61eef78dd24316d2d62cf2f05fdc2e7d4699aab17acc03f84a37"
+      },
+      "rear": {
+        "url": "https://www.bbassets.com/media/uploads/p/xxl/241600-4_10-tata-salt-iodized.jpg",
+        "sha256": "a5470e07ecc53c138832517d4bc60a97cf4406518a005af2819602991d444c2b"
+      }
+    },
+    "expected": {
+      "net_quantity": ["1 kg", "1000 g"]
+    }
+  },
+  {
+    "name": "Haldiram's Bhujia (400 g artwork)",
+    "source": "https://www.bigbasket.com/pd/70000801/haldirams-namkeen-bhujia-del-200-g-pouch/",
+    "views": {
+      "rear": {
+        "url": "https://www.bbassets.com/media/uploads/p/xxl/70000801-2_3-haldirams-namkeen-bhujia-del.jpg",
+        "sha256": "d891515299ff55c59283e91f9fb79dc270208256a3417f2e183b7a1c5af175f7"
+      }
+    },
+    "expected": {
+      "net_quantity": ["400 g"],
+      "country_of_origin": ["India"]
+    }
+  },
+  {
+    "name": "Haldiram's Bhujia (1 kg artwork)",
+    "views": {
+      "rear": {
+        "url": "https://www.bbassets.com/media/uploads/p/xxl/70000835-2_4-haldirams-namkeen-bhujia-del.jpg",
+        "sha256": "e3335d8e9d8e9a5a2cf38ee4e295691a4d39a03b8bc637bc0924526e9896e272"
+      }
+    },
+    "expected": {
+      "net_quantity": ["1 kg", "1000 g"],
+      "country_of_origin": ["India"]
+    }
+  }
+]

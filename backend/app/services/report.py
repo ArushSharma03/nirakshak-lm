@@ -182,8 +182,7 @@ def hint_lines(field: str, runs: list[OCRResult], quoted: set[str]) -> list[str]
     return found
 
 
-def photo_figures(record: dict, analysis: Analysis) -> tuple[list[str], list[str]]:
-    figures, integrity = [], []
+def verified_photos(record: dict, analysis: Analysis):
     for view, result in analysis.views.items():
         photo = record.get("images", {}).get(view)
         if not photo:
@@ -191,6 +190,12 @@ def photo_figures(record: dict, analysis: Analysis) -> tuple[list[str], list[str
         raw = Path(photo["filepath"]).read_bytes()
         if hashlib.sha256(raw).hexdigest() != result.file_hash:
             raise ValueError(f"{view.capitalize()} photo changed. Analyze the current photos again.")
+        yield view, photo, raw, result.file_hash
+
+
+def photo_figures(record: dict, analysis: Analysis) -> tuple[list[str], list[str]]:
+    figures, integrity = [], []
+    for view, photo, raw, file_hash in verified_photos(record, analysis):
         media = "image/png" if raw.startswith(b"\x89PNG") else "image/jpeg"
         data = base64.b64encode(raw).decode("ascii")
         quality = photo.get("quality_assessment") or {}
@@ -204,7 +209,7 @@ def photo_figures(record: dict, analysis: Analysis) -> tuple[list[str], list[str
                        f"<figcaption>{escape(caption)}</figcaption></figure>")
         original = photo.get("original_filename") or photo.get("filename") or ""
         integrity.append(f"<tr><td>{escape(view.capitalize())}</td><td>{escape(original)}</td>"
-                         f"<td>{escape(optics or '—')}</td><td><code>{escape(result.file_hash)}</code></td></tr>")
+                         f"<td>{escape(optics or '—')}</td><td><code>{escape(file_hash)}</code></td></tr>")
     return figures, integrity
 
 

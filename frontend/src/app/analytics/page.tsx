@@ -13,6 +13,17 @@ const FIELD_ORDER = ["generic_name", "net_quantity", "mrp", "manufacturer", "dat
 
 function summarize(records: InspectionRecord[]) {
   const analyzed = records.filter((r) => r.analysis);
+  const outcomes = {
+    "Compliant within Implemented Checks": 0,
+    "Potential Non-Compliance": 0,
+    "Manual Review Required": 0,
+    "Legacy analysis without classification": 0,
+  };
+  const checks = { pass: 0, fail: 0, insufficient_evidence: 0, not_applicable: 0 };
+  for (const { analysis } of analyzed) {
+    outcomes[analysis?.classification?.outcome ?? "Legacy analysis without classification"]++;
+    for (const check of analysis?.checks?.results ?? []) checks[check.status]++;
+  }
 
   const fields = FIELD_ORDER.map((field) => {
     const tally = { observed: 0, conflict: 0, missing: 0 };
@@ -58,7 +69,7 @@ function summarize(records: InspectionRecord[]) {
     analyzed: analyzed.filter((r) => r.productCategory === key).length,
   }));
 
-  return { analyzed, fields, optics, providers: [...providers.entries()], jevRan, categories };
+  return { analyzed, fields, optics, providers: [...providers.entries()], jevRan, categories, outcomes, checks };
 }
 
 function Legend({ items }: { items: [string, string][] }) {
@@ -105,6 +116,30 @@ export default function AnalyticsPage() {
                 <span className="mt-0.5 block text-xs text-ink-3">{detail}</span>
               </div>
             ))}
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Card title="Screening outcomes">
+              <ul className="space-y-3">
+                {Object.entries(data.outcomes).map(([label, count]) => (
+                  <li key={label} className="space-y-1">
+                    <div className="flex justify-between gap-3 text-sm"><span>{label}</span><span className="tabular">{count}</span></div>
+                    <Meter value={count} max={Math.max(1, data.analyzed.length)} />
+                  </li>
+                ))}
+              </ul>
+            </Card>
+            <Card title="Declaration checks">
+              <dl className="divide-y divide-rule text-sm">
+                {([
+                  ["Passed", data.checks.pass], ["Flagged", data.checks.fail],
+                  ["Need evidence", data.checks.insufficient_evidence], ["Inapplicable", data.checks.not_applicable],
+                ] as const).map(([label, count]) => (
+                  <div key={label} className="flex justify-between gap-3 py-2"><dt>{label}</dt><dd className="tabular">{count}</dd></div>
+                ))}
+              </dl>
+              <p className="mt-3 text-xs text-ink-3">Each declaration can have several checks. An individual pass is an advisory screening result.</p>
+            </Card>
           </div>
 
           <Card

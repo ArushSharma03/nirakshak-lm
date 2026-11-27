@@ -1,0 +1,132 @@
+{
+  "runtime": {
+    "platform": "Linux-7.3.6-1-cachyos-bore-lto-x86_64-with-glibc2.44",
+    "cpu": "",
+    "python": "3.13.14",
+    "ocr_device": "cpu",
+    "xiaomi_enabled": true,
+    "tesseract_languages": "eng"
+  },
+  "counts": {
+    "match": 5
+  },
+  "median_analysis_seconds": 115.773,
+  "cases": [
+    {
+      "name": "Tata Salt (1 kg)",
+      "fields": {
+        "net_quantity": {
+          "expected": [
+            "1 kg",
+            "1000 g"
+          ],
+          "actual": "1 kg",
+          "result": "match"
+        }
+      },
+      "outcome": "Manual Review Required",
+      "ocr_runs": {
+        "xiaomi:ok": 2,
+        "tesseract:ok": 2,
+        "xiaomi_detail_0:ok": 1
+      },
+      "upload_seconds": 0.119,
+      "analysis_seconds": 115.773,
+      "exports": {
+        "html": {
+          "seconds": 0.014,
+          "bytes": 554858
+        },
+        "pdf": {
+          "seconds": 0.151,
+          "bytes": 432544
+        },
+        "docx": {
+          "seconds": 0.094,
+          "bytes": 333120
+        }
+      }
+    },
+    {
+      "name": "Haldiram's Bhujia (400 g artwork)",
+      "fields": {
+        "net_quantity": {
+          "expected": [
+            "400 g"
+          ],
+          "actual": "400 g",
+          "result": "match"
+        },
+        "country_of_origin": {
+          "expected": [
+            "India"
+          ],
+          "actual": "India",
+          "result": "match"
+        }
+      },
+      "outcome": "Manual Review Required",
+      "ocr_runs": {
+        "xiaomi:ok": 1,
+        "tesseract:ok": 1
+      },
+      "upload_seconds": 0.096,
+      "analysis_seconds": 80.495,
+      "exports": {
+        "html": {
+          "seconds": 0.01,
+          "bytes": 405201
+        },
+        "pdf": {
+          "seconds": 0.092,
+          "bytes": 299531
+        },
+        "docx": {
+          "seconds": 0.064,
+          "bytes": 238672
+        }
+      }
+    },
+    {
+      "name": "Haldiram's Bhujia (1 kg artwork)",
+      "fields": {
+        "net_quantity": {
+          "expected": [
+            "1 kg",
+            "1000 g"
+          ],
+          "actual": "1Kg",
+          "result": "match"
+        },
+        "country_of_origin": {
+          "expected": [
+            "India"
+          ],
+          "actual": "India",
+          "result": "match"
+        }
+      },
+      "outcome": "Manual Review Required",
+      "ocr_runs": {
+        "xiaomi:ok": 1,
+        "tesseract:ok": 1
+      },
+      "upload_seconds": 0.047,
+      "analysis_seconds": 116.488,
+      "exports": {
+        "html": {
+          "seconds": 0.01,
+          "bytes": 330240
+        },
+        "pdf": {
+          "seconds": 0.099,
+          "bytes": 274478
+        },
+        "docx": {
+          "seconds": 0.068,
+          "bytes": 218091
+        }
+      }
+    }
+  ]
+}

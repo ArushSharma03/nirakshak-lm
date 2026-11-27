@@ -17,6 +17,7 @@ It is **not** an autonomous legal authority. All outcomes are advisory and must 
 | Layer | Technology |
 |---|---|
 | Frontend | Next.js (React) + TypeScript |
+| Android | Native app with CameraX guided capture |
 | Backend | Python FastAPI |
 | Computer Vision | OpenCV photo quality and preprocessing |
 | OCR | Xiaomi-OCR-0 transcription + Tesseract geometry |
@@ -24,11 +25,11 @@ It is **not** an autonomous legal authority. All outcomes are advisory and must 
 | Information Extraction | Regex, keyword matching, spatial analysis |
 | Compliance Engine | Versioned rule-as-data (Python) |
 | Database | PostgreSQL / SQLite (future) |
-| Reports | Printable, self-contained HTML |
+| Reports | Printable HTML, PDF, Word |
 
 ## Current Implementation Status
 
-Implemented through Week 10: package photo capture, OCR, declaration extraction,
+Implemented through Week 11: package photo capture, OCR, declaration extraction,
 multi-view fusion, versioned rule profiles, declaration checks, and advisory screening
 classification. Capture and analysis use package photos alone: a new inspection asks only
 for up to three photos (filed as front, rear and side), then uploads, analyzes and opens the
@@ -46,9 +47,13 @@ TypeSafe, never photos. Identical OCR reuses the saved answer instead of paying 
 on the package if needed. Replacing or removing a photo invalidates analysis.
 
 The food/grocery profile is a draft. Other categories need manual review. The reports page
-offers a printable view and a downloadable HTML file with the original photos and saved
-evidence. See [Week 10 behavior and verification](docs/week-10.md) and
+offers a printable view, PDF and Word downloads, and a standalone HTML copy with the original
+photos and saved evidence. Analytics summarizes advisory screening outcomes and individual checks.
+See [Week 10 behavior and verification](docs/week-10.md) and
 [setup and OCR limitations](docs/week-8-usage.md).
+See [Week 12 validation](docs/week-12.md) for the benchmark and physical capture acceptance protocol.
+The [Android app](android/README.md) guides the user around the packet, takes photos automatically,
+and submits them to the same inspection pipeline.
 
 ---
 
