@@ -141,6 +141,10 @@ final class InspectionApi {
                 if (!success) throw new ApiError(code, new String(content, StandardCharsets.UTF_8));
                 return content;
             }
+        } catch (ApiError error) {
+            throw error;
+        } catch (IOException error) {
+            throw new ConnectionError(error);
         } finally {
             connection.disconnect();
         }
@@ -173,6 +177,12 @@ final class InspectionApi {
 
     private interface Body {
         void write(OutputStream output) throws IOException;
+    }
+
+    static final class ConnectionError extends IOException {
+        ConnectionError(IOException cause) {
+            super(cause);
+        }
     }
 
     static final class ApiError extends IOException {

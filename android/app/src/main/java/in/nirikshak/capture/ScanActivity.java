@@ -781,8 +781,10 @@ public final class ScanActivity extends ComponentActivity {
             space(item, 4);
             item.addView(copy(status, 14, outcomeColor(status), true));
             String timestamp = row.optString("timestamp");
-            item.addView(copy(timestamp.substring(0, Math.min(10, timestamp.length())), 13, MUTED, false));
-            item.setContentDescription(name + ", " + status);
+            String date = timestamp.substring(0, Math.min(10, timestamp.length()));
+            String reference = id.substring(Math.max(0, id.length() - 8));
+            item.addView(copy(date + "   ·   " + reference, 13, MUTED, false));
+            item.setContentDescription(name + ", " + status + ", " + date + ", " + reference);
             item.setFocusable(true);
             item.setOnClickListener(view -> {
                 fromHistory = true;
@@ -957,8 +959,11 @@ public final class ScanActivity extends ComponentActivity {
     }
 
     private static String displayName(JSONObject saved) {
-        String name = saved.optString("product_name");
-        return name.trim().isEmpty() || name.equals("Generic Commodity Sample") ? "Package inspection" : name;
+        String name = saved.optString("product_name").trim();
+        if (!name.isEmpty() && !name.equals("Generic Commodity Sample")
+                && !name.matches("(?i)\\d+(?:[.,]\\d+)?\\s*(?:mg|g|kg|ml|cl|l)?")) return name;
+        String brand = saved.optString("brand").trim();
+        return brand.isEmpty() ? "Package inspection" : brand;
     }
 
     private static String outcomeLabel(JSONObject saved) {
@@ -981,6 +986,7 @@ public final class ScanActivity extends ComponentActivity {
     private void showReport(String id) {
         LinearLayout layout = screen(Screen.REPORT, false);
         toolbar(layout, "Inspection report", true);
+        space(layout, 8);
         addShareButton(layout, id);
         space(layout, 10);
         TextView state = copy("Loading report…", 16, MUTED, false);
@@ -1102,7 +1108,7 @@ public final class ScanActivity extends ComponentActivity {
     }
 
     private static String errorMessage(Exception failure) {
-        if (failure instanceof java.net.SocketTimeoutException
+        if (failure instanceof InspectionApi.ConnectionError || failure instanceof java.net.SocketTimeoutException
                 || failure instanceof java.net.ConnectException || failure instanceof java.net.UnknownHostException) {
             return BuildConfig.API_BASE.startsWith("http://127.0.0.1")
                     ? "Server unreachable. Reconnect USB and restore port forwarding, then retry."
