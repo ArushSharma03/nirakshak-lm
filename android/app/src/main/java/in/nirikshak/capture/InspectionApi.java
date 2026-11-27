@@ -1,6 +1,7 @@
 package in.nirikshak.capture;
 
 import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -73,11 +74,24 @@ final class InspectionApi {
     }
 
     JSONObject inspection(String id) throws IOException, JSONException {
-        return json("GET", "/inspections/" + id, null, READ_TIMEOUT);
+        return json("GET", inspectionPath(id), null, READ_TIMEOUT);
     }
 
     String report(String id) throws IOException {
-        return request("GET", "/inspections/" + id + "/report?download=false", null, 0, null, READ_TIMEOUT);
+        return request("GET", inspectionPath(id) + "/report?download=false", null, 0, null, READ_TIMEOUT);
+    }
+
+    JSONArray inspections() throws IOException, JSONException {
+        return new JSONArray(request("GET", "/inspections/", null, 0, null, READ_TIMEOUT));
+    }
+
+    byte[] pdf(String id) throws IOException {
+        return requestBytes("GET", inspectionPath(id) + "/report?format=pdf", null, 0, null, READ_TIMEOUT);
+    }
+
+    static String inspectionPath(String id) {
+        if (!id.matches("[A-Za-z0-9_-]{1,96}")) throw new IllegalArgumentException("Invalid inspection ID.");
+        return "/inspections/" + id;
     }
 
     private JSONObject json(String method, String path, String content, int timeout) throws IOException, JSONException {
@@ -101,6 +115,10 @@ final class InspectionApi {
     }
 
     private String request(String method, String path, String type, long length, Body body, int timeout) throws IOException {
+        return new String(requestBytes(method, path, type, length, body, timeout), StandardCharsets.UTF_8);
+    }
+
+    private byte[] requestBytes(String method, String path, String type, long length, Body body, int timeout) throws IOException {
         if (base.isEmpty()) throw new IOException("This build needs an HTTPS inspection server.");
         HttpURLConnection connection = (HttpURLConnection) new URL(base + path).openConnection();
         try {
@@ -119,8 +137,8 @@ final class InspectionApi {
             int code = connection.getResponseCode();
             boolean success = code >= 200 && code < 300;
             try (InputStream stream = success ? connection.getInputStream() : connection.getErrorStream()) {
-                String content = stream == null ? "" : read(stream);
-                if (!success) throw new ApiError(code, content);
+                byte[] content = stream == null ? new byte[0] : read(stream);
+                if (!success) throw new ApiError(code, new String(content, StandardCharsets.UTF_8));
                 return content;
             }
         } finally {
@@ -128,12 +146,12 @@ final class InspectionApi {
         }
     }
 
-    private static String read(InputStream stream) throws IOException {
+    private static byte[] read(InputStream stream) throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         byte[] buffer = new byte[8192];
         int count;
         while ((count = stream.read(buffer)) != -1) output.write(buffer, 0, count);
-        return new String(output.toByteArray(), StandardCharsets.UTF_8);
+        return output.toByteArray();
     }
 
     private static String sha256(File file) throws IOException {
@@ -157,7 +175,7 @@ final class InspectionApi {
         void write(OutputStream output) throws IOException;
     }
 
-    private static final class ApiError extends IOException {
+    static final class ApiError extends IOException {
         final int code;
 
         ApiError(int code, String response) {

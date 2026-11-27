@@ -79,6 +79,11 @@ final class ScanDraft {
         return available;
     }
 
+    void remove(Panel panel) throws IOException {
+        Files.deleteIfExists(image(panel).toPath());
+        signature(panel).delete();
+    }
+
     List<byte[]> signatures() {
         List<byte[]> samples = new ArrayList<>();
         for (Panel panel : panels()) {
