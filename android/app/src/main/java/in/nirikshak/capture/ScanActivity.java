@@ -64,6 +64,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.FormatStyle;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -728,35 +733,41 @@ public final class ScanActivity extends ComponentActivity {
     }
 
     private void showHistory() {
-        LinearLayout layout = screen(Screen.HISTORY, true);
+        LinearLayout layout = screen(Screen.HISTORY, false);
         LinearLayout bar = toolbar(layout, "Inspections", true);
-        bar.addView(button("Refresh", false, this::showHistory), new LinearLayout.LayoutParams(-2, -2));
-        space(layout, 14);
+        ImageButton refresh = iconButton(R.drawable.ic_refresh, "Refresh inspections");
+        refresh.setOnClickListener(view -> showHistory());
+        bar.addView(refresh, new LinearLayout.LayoutParams(dp(48), dp(48)));
+        space(layout, 16);
         EditText search = new EditText(this);
         search.setSingleLine(true);
         search.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-        search.setHint("Search package or inspection ID");
+        search.setHint("Search packages or IDs");
         search.setContentDescription("Search saved inspections");
         search.setText(historyQuery);
-        search.setTextSize(16);
+        search.setTextSize(15);
         search.setTextColor(TEXT);
         search.setHintTextColor(MUTED);
         search.setPadding(dp(14), dp(10), dp(14), dp(10));
         search.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_search, 0, 0, 0);
         search.setCompoundDrawablePadding(dp(10));
         search.setMinimumHeight(dp(48));
-        search.setBackground(surface(ELEVATED, 14, LINE));
+        search.setBackground(surface(RECESSED, 12, LINE));
         search.setOnFocusChangeListener((view, focused) ->
-                search.setBackground(surface(ELEVATED, 14, focused ? ACCENT : LINE)));
+                search.setBackground(surface(RECESSED, 12, focused ? ACCENT : LINE)));
         layout.setFocusableInTouchMode(true);
         layout.requestFocus();
         layout.addView(search);
         space(layout, 12);
-        TextView state = copy("Loading inspections…", 14, MUTED, false);
+        TextView state = copy("Loading inspections…", 13, MUTED, false);
+        state.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
         layout.addView(state);
+        ScrollView list = new ScrollView(this);
+        list.setFillViewport(true);
         LinearLayout rows = new LinearLayout(this);
         rows.setOrientation(LinearLayout.VERTICAL);
-        layout.addView(rows);
+        list.addView(rows, new ScrollView.LayoutParams(-1, -2));
+        layout.addView(list, new LinearLayout.LayoutParams(-1, 0, 1));
         long generation = resultGeneration;
         network.execute(() -> {
             JSONArray records;
@@ -782,13 +793,14 @@ public final class ScanActivity extends ComponentActivity {
             boolean cached = offline;
             runOnUiThread(() -> {
                 if (isDestroyed() || resultGeneration != generation) return;
-                state.setText(cached ? "Offline · showing the last loaded list" : available.length() + " saved inspections");
-                renderHistory(rows, available);
+                state.setText(cached ? "Offline · last loaded inspections" : "");
+                state.setVisibility(cached ? View.VISIBLE : View.GONE);
                 search.addTextChangedListener(new android.text.TextWatcher() {
                     @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
                     @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
                         historyQuery = s.toString();
                         renderHistory(rows, available);
+                        list.scrollTo(0, 0);
                     }
                     @Override public void afterTextChanged(android.text.Editable text) {}
                 });
@@ -812,36 +824,116 @@ public final class ScanActivity extends ComponentActivity {
         return rows;
     }
 
+    private record HistoryRow(JSONObject record, String id, String name, String date, String time, String status,
+                              boolean unnamed) {}
+
     private void renderHistory(LinearLayout rows, JSONArray records) {
         rows.removeAllViews();
         String filter = historyQuery.trim().toLowerCase(Locale.ROOT);
+        DateTimeFormatter dayFormat = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
+        DateTimeFormatter timeFormat = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
+        var days = new java.util.LinkedHashMap<String, List<HistoryRow>>();
+        var titles = new java.util.HashMap<String, Integer>();
         for (int i = 0; i < records.length(); i++) {
             JSONObject row = records.optJSONObject(i);
             String id = row.optString("id");
             String name = displayName(row);
-            if (!(name + " " + row.optString("brand") + " " + id).toLowerCase(Locale.ROOT).contains(filter)) continue;
-            space(rows, 9);
-            LinearLayout item = card(rows, 15);
-            item.setBackground(new android.graphics.drawable.RippleDrawable(ColorStateList.valueOf(0x33cdf78b),
-                    surface(SURFACE, 16, LINE), null));
-            String status = row.optBoolean("analyzed") ? outcomeLabel(row) : "Awaiting analysis";
-            item.addView(copy(name, 18, TEXT, true));
-            space(item, 4);
-            addOutcome(item, status);
-            String timestamp = row.optString("timestamp");
-            String date = timestamp.substring(0, Math.min(10, timestamp.length()));
+            if (!(name + " " + row.optString("product_name") + " " + row.optString("brand") + " " + id)
+                    .toLowerCase(Locale.ROOT).contains(filter)) continue;
             String reference = id.substring(Math.max(0, id.length() - 8));
-            space(item, 7);
-            item.addView(metadata(date + "  ·  " + reference));
-            makeNavigationRow(item, name + ", " + status + ", " + date + ", " + reference, () -> {
-                fromHistory = true;
-                loadInspection(id, false, row);
-            });
+            boolean unnamed = name.equals("Package inspection");
+            if (unnamed) name = "Inspection " + reference;
+            String status = row.optBoolean("analyzed") ? outcomeLabel(row) : "Awaiting analysis";
+            String timestamp = row.optString("timestamp");
+            String date = timestamp.length() >= 10 ? timestamp.substring(0, 10) : "Unknown date";
+            String time = "";
+            try {
+                var captured = OffsetDateTime.parse(timestamp).atZoneSameInstant(ZoneId.systemDefault());
+                date = dayFormat.format(captured);
+                time = timeFormat.format(captured);
+            } catch (DateTimeParseException ignored) {
+                // Older saved entries can still be grouped by their recorded date.
+            }
+            days.computeIfAbsent(date, key -> new java.util.ArrayList<>())
+                    .add(new HistoryRow(row, id, name, date, time, status, unnamed));
+            titles.merge(name, 1, Integer::sum);
+        }
+
+        for (var group : days.values()) {
+            HistoryRow first = group.get(0);
+            String sharedStatus = group.size() > 1 && group.stream().allMatch(row -> first.status().equals(row.status()))
+                    ? first.status() : null;
+            space(rows, rows.getChildCount() == 0 ? 4 : 18);
+            LinearLayout heading = new LinearLayout(this);
+            heading.setGravity(Gravity.CENTER_VERTICAL);
+            heading.setPadding(dp(2), dp(8), dp(2), dp(8));
+            heading.setBackground(surface(RECESSED, 8, RECESSED));
+            boolean stack = sharedStatus != null && getResources().getConfiguration().fontScale >= 1.5f;
+            if (stack) heading.setOrientation(LinearLayout.VERTICAL);
+            TextView date = copy(first.date(), 13, TEXT, true);
+            date.setPadding(dp(8), 0, dp(8), 0);
+            ViewCompat.setAccessibilityHeading(date, true);
+            heading.addView(date, stack ? new LinearLayout.LayoutParams(-1, -2)
+                    : new LinearLayout.LayoutParams(0, -2, 1));
+            if (sharedStatus != null) {
+                TextView summary = copy(shortOutcome(sharedStatus), 12, MUTED, false);
+                summary.setPadding(stack ? dp(8) : 0, stack ? dp(2) : 0, dp(8), 0);
+                heading.addView(summary);
+            }
+            rows.addView(heading);
+            for (int i = 0; i < group.size(); i++) {
+                HistoryRow row = group.get(i);
+                boolean duplicate = titles.getOrDefault(row.name(), 0) > 1;
+                addHistoryRow(rows, row, sharedStatus, duplicate);
+                if (i + 1 < group.size()) divider(rows);
+            }
         }
         if (rows.getChildCount() == 0) {
             space(rows, 20);
             rows.addView(copy(filter.isEmpty() ? "No saved inspections yet." : "No inspections match that search.", 16, MUTED, false));
         }
+    }
+
+    private void addHistoryRow(LinearLayout rows, HistoryRow row, String sharedStatus, boolean duplicate) {
+        LinearLayout item = new LinearLayout(this);
+        item.setGravity(Gravity.CENTER_VERTICAL);
+        item.setPadding(dp(8), dp(10), dp(6), dp(10));
+        item.setMinimumHeight(dp(54));
+        item.setBackground(new android.graphics.drawable.RippleDrawable(ColorStateList.valueOf(0x24c5ef92), null,
+                new android.graphics.drawable.ColorDrawable(Color.WHITE)));
+        rows.addView(item, new LinearLayout.LayoutParams(-1, -2));
+
+        LinearLayout text = new LinearLayout(this);
+        text.setOrientation(LinearLayout.VERTICAL);
+        text.addView(copy(row.name(), 16, TEXT, true));
+        var details = new java.util.ArrayList<String>(2);
+        if (row.unnamed() && !row.time().isEmpty()) details.add(row.time());
+        if (duplicate) details.add(row.id().substring(Math.max(0, row.id().length() - 8)));
+        if (sharedStatus == null) details.add(shortOutcome(row.status()));
+        if (!details.isEmpty()) text.addView(copy(String.join(" · ", details), 13, MUTED, false));
+        LinearLayout.LayoutParams label = new LinearLayout.LayoutParams(0, -2, 1);
+        label.setMarginEnd(dp(10));
+        item.addView(text, label);
+        ImageView arrow = new ImageView(this);
+        arrow.setImageResource(R.drawable.ic_chevron);
+        arrow.setColorFilter(MUTED);
+        arrow.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+        item.addView(arrow, new LinearLayout.LayoutParams(dp(18), dp(18)));
+        makeNavigationRow(item, row.name() + ", " + row.status() + ", " + row.date()
+                + (row.time().isEmpty() ? "" : ", " + row.time()), () -> {
+            fromHistory = true;
+            loadInspection(row.id(), false, row.record());
+        });
+    }
+
+    private static String shortOutcome(String status) {
+        return status.equals("Manual review required") ? "Review required" : status;
+    }
+
+    private void divider(LinearLayout rows) {
+        View line = new View(this);
+        line.setBackgroundColor(LINE);
+        rows.addView(line, new LinearLayout.LayoutParams(-1, dp(1)));
     }
 
     private void loadInspection(String id, boolean openReport, JSONObject summary) {
@@ -899,44 +991,58 @@ public final class ScanActivity extends ComponentActivity {
         selectedId = saved.optString("id");
         LinearLayout layout = screen(Screen.RESULT, true);
         toolbar(layout, "Inspection", true);
-        space(layout, 14);
-        LinearLayout header = card(layout, 20);
-        header.addView(copy(displayName(saved), 29, TEXT, true));
-        space(header, 10);
+        space(layout, 18);
+        TextView title = copy(displayName(saved), 27, TEXT, true);
+        title.setLetterSpacing(-0.02f);
+        ViewCompat.setAccessibilityHeading(title, true);
+        layout.addView(title);
+        space(layout, 7);
         JSONObject analysis = saved.optJSONObject("analysis");
         boolean analyzed = analysis != null || saved.optBoolean("analyzed");
         String outcome = analyzed ? outcomeLabel(saved) : "Awaiting analysis";
-        addOutcome(header, outcome);
+        layout.addView(copy(outcome, 15, outcomeColor(outcome), true));
         if (offlineResult) {
-            space(header, 6);
-            header.addView(copy("Offline · last saved copy", 14, AMBER, false));
+            space(layout, 6);
+            layout.addView(copy("Offline · last saved copy", 14, AMBER, false));
         }
         if (analyzed) {
-            space(header, 12);
-            header.addView(button("View full report", true, () -> showReport(selectedId)));
-            space(header, 7);
-            addShareButton(header, selectedId);
+            space(layout, 14);
+            LinearLayout actions = new LinearLayout(this);
+            actions.setGravity(Gravity.CENTER_VERTICAL);
+            actions.addView(button("View report", true, () -> showReport(selectedId)),
+                    new LinearLayout.LayoutParams(0, -2, 1));
+            ImageButton share = iconButton(R.drawable.ic_share, "Share PDF");
+            bindShareAction(share, selectedId);
+            LinearLayout.LayoutParams shareLayout = new LinearLayout.LayoutParams(dp(54), dp(54));
+            shareLayout.setMarginStart(dp(8));
+            actions.addView(share, shareLayout);
+            layout.addView(actions);
         }
         JSONObject classification = analysis == null ? null : analysis.optJSONObject("classification");
         if (classification != null) {
-            space(header, 10);
-            header.addView(copy(classification.optString("reason"), 14, MUTED, false));
+            space(layout, 12);
+            layout.addView(copy(classification.optString("reason"), 14, MUTED, false));
         }
-        space(header, 8);
         TextView identity = metadata(selectedId);
         identity.setTextIsSelectable(true);
-        header.addView(identity);
-        if (!analyzed) return;
-        renderChecks(layout, analysis);
+        if (analyzed) {
+            renderReadings(layout, analysis);
+            renderChecks(layout, analysis);
+        }
+        space(layout, 16);
+        layout.addView(identity);
+    }
+
+    private void renderReadings(LinearLayout layout, JSONObject analysis) {
         JSONArray fields = analysis == null ? null : analysis.optJSONArray("fields");
         if (fields == null || fields.length() == 0) return;
-        space(layout, 20);
-        layout.addView(copy("Label readings", 21, TEXT, true));
-        space(layout, 5);
-        layout.addView(copy("Compare these OCR readings with the printed label.", 14, MUTED, false));
-        space(layout, 9);
-        LinearLayout readings = card(layout, 14);
-        for (int i = 0; fields != null && i < fields.length(); i++) {
+        space(layout, 22);
+        TextView heading = copy("Label readings", 19, TEXT, true);
+        ViewCompat.setAccessibilityHeading(heading, true);
+        layout.addView(heading);
+        space(layout, 6);
+        var unread = new java.util.ArrayList<String>();
+        for (int i = 0; i < fields.length(); i++) {
             JSONObject entry = fields.optJSONObject(i);
             if (entry == null) continue;
             String label = switch (entry.optString("field")) {
@@ -950,19 +1056,66 @@ public final class ScanActivity extends ComponentActivity {
                 case "country_of_origin" -> "Country of origin";
                 default -> entry.optString("field").replace('_', ' ');
             };
-            if (i > 0) {
-                space(readings, 9);
-                View divider = new View(this);
-                divider.setBackgroundColor(LINE);
-                readings.addView(divider, new LinearLayout.LayoutParams(-1, dp(1)));
-                space(readings, 9);
-            }
-            readings.addView(copy(label, 13, MUTED, false));
             boolean observed = "observed".equals(entry.optString("status")) && !entry.isNull("value");
             boolean conflict = "conflict".equals(entry.optString("status"));
-            String reading = observed ? entry.optString("value") : conflict ? "Conflicting readings" : "Not read from photos";
-            readings.addView(copy(reading, 17, observed ? TEXT : conflict ? RED : MUTED, observed || conflict));
+            if (!observed && !conflict) {
+                unread.add(label);
+                continue;
+            }
+            divider(layout);
+            space(layout, 7);
+            layout.addView(copy(label, 13, MUTED, false));
+            String value = observed ? entry.optString("value") : "Conflicting readings";
+            boolean longReading = observed && (value.contains("\n") || value.length() > 96);
+            TextView reading = copy(value, longReading ? 15 : 17, conflict ? RED : TEXT, !longReading);
+            layout.addView(reading);
+            if (longReading) addReadingDisclosure(layout, reading, label);
+            space(layout, 8);
         }
+        if (!unread.isEmpty()) {
+            divider(layout);
+            space(layout, 6);
+            LinearLayout details = new LinearLayout(this);
+            details.setOrientation(LinearLayout.VERTICAL);
+            String label = unread.size() == 1 ? "1 field not read" : unread.size() + " fields not read";
+            Button toggle = button(label + "  +", false, () -> {});
+            details.setVisibility(View.GONE);
+            toggle.setOnClickListener(view -> {
+                boolean expand = details.getVisibility() != View.VISIBLE;
+                details.setVisibility(expand ? View.VISIBLE : View.GONE);
+                toggle.setText(label + (expand ? "  −" : "  +"));
+                ViewCompat.setStateDescription(toggle, expand ? "Expanded" : "Collapsed");
+            });
+            ViewCompat.setStateDescription(toggle, "Collapsed");
+            layout.addView(toggle);
+            for (String field : unread) {
+                TextView line = copy(field, 14, MUTED, false);
+                line.setPadding(dp(8), dp(6), dp(8), 0);
+                details.addView(line);
+            }
+            layout.addView(details);
+        }
+    }
+
+    private void addReadingDisclosure(LinearLayout layout, TextView reading, String field) {
+        reading.setMaxLines(2);
+        reading.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        Button toggle = button("Show full reading", false, () -> {});
+        toggle.setTextColor(ACCENT);
+        toggle.setPadding(0, 0, dp(12), 0);
+        toggle.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+        toggle.setBackground(new android.graphics.drawable.RippleDrawable(ColorStateList.valueOf(0x24c5ef92), null,
+                new android.graphics.drawable.ColorDrawable(Color.WHITE)));
+        layout.addView(toggle, new LinearLayout.LayoutParams(-2, -2));
+        toggle.setContentDescription("Show full reading for " + field);
+        toggle.setOnClickListener(view -> {
+            boolean expand = reading.getMaxLines() == 2;
+            reading.setMaxLines(expand ? Integer.MAX_VALUE : 2);
+            reading.setEllipsize(expand ? null : android.text.TextUtils.TruncateAt.END);
+            String label = expand ? "Show less" : "Show full reading";
+            toggle.setText(label);
+            toggle.setContentDescription(label + " for " + field);
+        });
     }
 
     private void renderChecks(LinearLayout layout, JSONObject analysis) {
@@ -981,34 +1134,25 @@ public final class ScanActivity extends ComponentActivity {
                 case "insufficient_evidence" -> review++;
             }
         }
-        space(layout, 15);
-        LinearLayout section = card(layout, 14);
-        section.addView(copy("Declaration checks", 19, TEXT, true));
-        space(section, 8);
+        space(layout, 21);
+        TextView heading = copy("Declaration checks", 19, TEXT, true);
+        ViewCompat.setAccessibilityHeading(heading, true);
+        layout.addView(heading);
+        space(layout, 6);
+        divider(layout);
         LinearLayout numbers = new LinearLayout(this);
         if (getResources().getConfiguration().fontScale >= 1.5f) {
             numbers.setOrientation(LinearLayout.VERTICAL);
         }
-        section.addView(numbers);
+        layout.addView(numbers);
         checkCount(numbers, passed, "Passed", PASS);
         checkCount(numbers, flagged, "Flagged", RED);
         checkCount(numbers, review, "Need evidence", AMBER);
     }
 
-    private void addOutcome(LinearLayout parent, String outcome) {
-        int color = outcomeColor(outcome);
-        int tint = androidx.core.graphics.ColorUtils.compositeColors(
-                androidx.core.graphics.ColorUtils.setAlphaComponent(color, 24), SURFACE);
-        TextView badge = copy(outcome, 13, color, true);
-        badge.setPadding(dp(10), dp(5), dp(10), dp(5));
-        badge.setBackground(surface(tint, 20, tint));
-        parent.addView(badge, new LinearLayout.LayoutParams(-2, -2));
-    }
-
     private void checkCount(LinearLayout row, int count, String label, int color) {
         LinearLayout cell = new LinearLayout(this);
-        cell.setPadding(dp(10), dp(8), dp(10), dp(8));
-        cell.setBackground(surface(RECESSED, 12, LINE));
+        cell.setPadding(0, dp(8), dp(8), 0);
         if (row.getOrientation() == LinearLayout.VERTICAL) {
             cell.setGravity(Gravity.CENTER_VERTICAL);
             TextView value = copy(String.valueOf(count), 20, color, true);
@@ -1021,7 +1165,7 @@ public final class ScanActivity extends ComponentActivity {
             return;
         }
         cell.setOrientation(LinearLayout.VERTICAL);
-        cell.addView(copy(String.valueOf(count), 23, color, true));
+        cell.addView(copy(String.valueOf(count), 22, count == 0 ? MUTED : color, true));
         cell.addView(copy(label, 13, MUTED, false));
         LinearLayout.LayoutParams tile = new LinearLayout.LayoutParams(0, -2, 1);
         if (row.getChildCount() > 0) tile.setMarginStart(dp(6));
@@ -1145,12 +1289,6 @@ public final class ScanActivity extends ComponentActivity {
                         : "") + "</style>";
         report.loadDataWithBaseURL(null, html.replace("<head>", "<head>" + csp)
                 .replace("</head>", mobileCss + "</head>"), "text/html", "UTF-8", null);
-    }
-
-    private void addShareButton(LinearLayout layout, String id) {
-        Button share = button("Share PDF", false, () -> {});
-        bindShareAction(share, id);
-        layout.addView(share);
     }
 
     private void bindShareAction(View share, String id) {
