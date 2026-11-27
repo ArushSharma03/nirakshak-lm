@@ -10,15 +10,15 @@ final class FrameGuide {
     static final int REQUIRED_STABLE_FRAMES = 6;
 
     enum Prompt {
-        MOVE_CLOSER("Move closer to the packet"),
-        MOVE_LEFT("Move the camera left"),
-        MOVE_RIGHT("Move the camera right"),
-        MOVE_UP("Move the camera up"),
-        MOVE_DOWN("Move the camera down"),
-        MORE_LIGHT("Move the packet into better light"),
-        GLARE("Tilt the packet to reduce glare"),
-        FOCUS("Hold still so the camera can focus"),
-        NEXT_PANEL("Turn to a different panel"),
+        MOVE_CLOSER("Move closer"),
+        MOVE_LEFT("Move camera left"),
+        MOVE_RIGHT("Move camera right"),
+        MOVE_UP("Move camera up"),
+        MOVE_DOWN("Move camera down"),
+        MORE_LIGHT("Find better light"),
+        GLARE("Tilt to avoid glare"),
+        FOCUS("Hold still to focus"),
+        NEXT_PANEL("Show a new panel"),
         STEADY("Hold steady");
 
         final String message;

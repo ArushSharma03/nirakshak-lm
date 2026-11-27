@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -78,7 +80,9 @@ public final class ScanActivity extends ComponentActivity {
     private static final int LINE = Color.rgb(53, 77, 64);
     private static final int AMBER = Color.rgb(255, 213, 141);
     private static final int RED = Color.rgb(255, 170, 161);
-    private static final ViewGroup.LayoutParams MATCH = new FrameLayout.LayoutParams(-1, -1);
+    private static FrameLayout.LayoutParams fillFrame() {
+        return new FrameLayout.LayoutParams(-1, -1);
+    }
 
     private enum Screen { HOME, HISTORY, PERMISSION, CAMERA, SUBMISSION, RESULT, REPORT }
 
@@ -199,7 +203,8 @@ public final class ScanActivity extends ComponentActivity {
         root.setBackgroundColor(BACKGROUND);
         ViewCompat.setOnApplyWindowInsetsListener(root, (view, windowInsets) -> {
             Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
-            view.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+            int keyboard = windowInsets.getInsets(WindowInsetsCompat.Type.ime()).bottom;
+            view.setPadding(insets.left, insets.top, insets.right, Math.max(insets.bottom, keyboard));
             return windowInsets;
         });
         LinearLayout content = new LinearLayout(this);
@@ -209,9 +214,9 @@ public final class ScanActivity extends ComponentActivity {
             ScrollView holder = new ScrollView(this);
             holder.setFillViewport(true);
             holder.addView(content, new ScrollView.LayoutParams(-1, -2));
-            root.addView(holder, MATCH);
+            root.addView(holder, fillFrame());
         } else {
-            root.addView(content, MATCH);
+            root.addView(content, fillFrame());
         }
         setContentView(root);
         ViewCompat.requestApplyInsets(root);
@@ -230,12 +235,13 @@ public final class ScanActivity extends ComponentActivity {
         heroBackground.setStroke(dp(1), LINE);
         ImageView logo = new ImageView(this);
         logo.setImageResource(R.drawable.ic_package);
+        logo.setBackground(surface(BACKGROUND, 13, LINE));
+        logo.setClipToOutline(true);
+        logo.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
         hero.addView(logo, new LinearLayout.LayoutParams(dp(46), dp(46)));
         space(hero, 18);
-        hero.addView(copy("Scan a package", 34, TEXT, true));
-        space(hero, 8);
-        hero.addView(copy("Turn the package as directed. Photos are taken automatically when each panel is clear and steady.", 16, MUTED, false));
-        space(hero, 20);
+        hero.addView(copy("Scan a package", 30, TEXT, true));
+        space(hero, 14);
         boolean active = draft != null && draft.inspectionId().isEmpty();
         if (active) {
             hero.addView(panelStrip(draft.panels(), null));
@@ -254,6 +260,8 @@ public final class ScanActivity extends ComponentActivity {
             }
             continueScan();
         }));
+        space(hero, 12);
+        hero.addView(copy("Turn the package as directed. Photos are taken automatically when each panel is clear and steady.", 16, MUTED, false));
         space(layout, 18);
         LinearLayout records = card(layout, 16);
         records.addView(copy("Inspections", 21, TEXT, true));
@@ -320,11 +328,11 @@ public final class ScanActivity extends ComponentActivity {
             return;
         }
         LinearLayout layout = screen(Screen.CAMERA, false);
-        LinearLayout cameraBar = toolbar(layout, "Package scan", true);
+        LinearLayout cameraBar = toolbar(layout, "Scan", true);
         torch = button("Light", false, this::toggleTorch);
         torch.setVisibility(View.GONE);
         torch.setContentDescription("Turn flashlight on");
-        cameraBar.addView(torch, new LinearLayout.LayoutParams(dp(74), dp(48)));
+        cameraBar.addView(torch, new LinearLayout.LayoutParams(-2, -2));
         space(layout, 7);
         panelHolder = new LinearLayout(this);
         layout.addView(panelHolder, new LinearLayout.LayoutParams(-1, -2));
@@ -335,8 +343,8 @@ public final class ScanActivity extends ComponentActivity {
         preview = new PreviewView(this);
         preview.setImplementationMode(PreviewView.ImplementationMode.COMPATIBLE);
         preview.setScaleType(PreviewView.ScaleType.FILL_CENTER);
-        area.addView(preview, MATCH);
-        area.addView(new GuideOverlay(), MATCH);
+        area.addView(preview, fillFrame());
+        area.addView(new GuideOverlay(), fillFrame());
         scanControls = new LinearLayout(this);
         scanControls.setOrientation(LinearLayout.VERTICAL);
         scanControls.setPadding(dp(14), dp(10), dp(14), dp(12));
@@ -353,15 +361,24 @@ public final class ScanActivity extends ComponentActivity {
             row.addView(guidance, help);
             layout.addView(row, new LinearLayout.LayoutParams(-1, 0, 1));
         } else {
+            int availableHeight = getResources().getConfiguration().screenHeightDp;
+            int guidanceHeight = Math.max(120, availableHeight * 38 / 100);
             layout.addView(area, new LinearLayout.LayoutParams(-1, 0, 1));
             space(layout, 12);
-            layout.addView(scanControls);
+            ScrollView guidance = new ScrollView(this) {
+                @Override protected void onMeasure(int width, int height) {
+                    int limit = Math.min(MeasureSpec.getSize(height), dp(guidanceHeight));
+                    super.onMeasure(width, MeasureSpec.makeMeasureSpec(limit, MeasureSpec.AT_MOST));
+                }
+            };
+            guidance.addView(scanControls, new ScrollView.LayoutParams(-1, -2));
+            layout.addView(guidance, new LinearLayout.LayoutParams(-1, -2));
         }
 
-        panelDirection = copy("", 14, MUTED, false);
-        scanControls.addView(panelDirection);
-        space(scanControls, 4);
-        prompt = copy("Starting camera…", 22, TEXT, true);
+        prompt = copy("Starting camera…", 19, TEXT, true);
+        if (prompt.getTextSize() > dp(30)) {
+            prompt.setTextSize(android.util.TypedValue.COMPLEX_UNIT_DIP, 30);
+        }
         prompt.setMinimumHeight(dp(51));
         prompt.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
         scanControls.addView(prompt);
@@ -371,6 +388,9 @@ public final class ScanActivity extends ComponentActivity {
         stability.setProgressBackgroundTintList(ColorStateList.valueOf(LINE));
         stability.setContentDescription("Automatic capture progress");
         scanControls.addView(stability, new LinearLayout.LayoutParams(-1, dp(5)));
+        space(scanControls, 7);
+        panelDirection = copy("", 14, MUTED, false);
+        scanControls.addView(panelDirection);
         skip = button("Skip side and analyze", false, this::completeCapture);
         LinearLayout.LayoutParams skipParams = new LinearLayout.LayoutParams(-1, -2);
         skipParams.topMargin = dp(7);
@@ -686,7 +706,7 @@ public final class ScanActivity extends ComponentActivity {
     private void showHistory() {
         LinearLayout layout = screen(Screen.HISTORY, true);
         LinearLayout bar = toolbar(layout, "Inspections", true);
-        bar.addView(button("Refresh", false, this::showHistory), new LinearLayout.LayoutParams(dp(84), dp(48)));
+        bar.addView(button("Refresh", false, this::showHistory), new LinearLayout.LayoutParams(-2, -2));
         space(layout, 14);
         EditText search = new EditText(this);
         search.setSingleLine(true);
@@ -944,6 +964,9 @@ public final class ScanActivity extends ComponentActivity {
         section.addView(copy("Declaration checks", 19, TEXT, true));
         space(section, 8);
         LinearLayout numbers = new LinearLayout(this);
+        if (getResources().getConfiguration().fontScale >= 1.6f) {
+            numbers.setOrientation(LinearLayout.VERTICAL);
+        }
         section.addView(numbers);
         checkCount(numbers, passed, "Passed", ACCENT);
         checkCount(numbers, flagged, "Flagged", RED);
@@ -952,6 +975,15 @@ public final class ScanActivity extends ComponentActivity {
 
     private void checkCount(LinearLayout row, int count, String label, int color) {
         LinearLayout cell = new LinearLayout(this);
+        if (row.getOrientation() == LinearLayout.VERTICAL) {
+            cell.setGravity(Gravity.CENTER_VERTICAL);
+            TextView value = copy(String.valueOf(count), 20, color, true);
+            value.setPadding(0, 0, dp(12), 0);
+            cell.addView(value);
+            cell.addView(copy(label, 14, MUTED, false), new LinearLayout.LayoutParams(0, -2, 1));
+            row.addView(cell, new LinearLayout.LayoutParams(-1, -2));
+            return;
+        }
         cell.setOrientation(LinearLayout.VERTICAL);
         cell.addView(copy(String.valueOf(count), 23, color, true));
         cell.addView(copy(label, 13, MUTED, false));
@@ -1037,6 +1069,7 @@ public final class ScanActivity extends ComponentActivity {
         report.getSettings().setBlockNetworkLoads(true);
         report.getSettings().setBuiltInZoomControls(true);
         report.getSettings().setDisplayZoomControls(false);
+        report.getSettings().setTextZoom(Math.round(getResources().getConfiguration().fontScale * 100));
         report.setBackgroundColor(Color.WHITE);
         report.setOutlineProvider(new android.view.ViewOutlineProvider() {
             @Override public void getOutline(View view, android.graphics.Outline outline) {
@@ -1046,10 +1079,13 @@ public final class ScanActivity extends ComponentActivity {
         report.setClipToOutline(true);
         layout.addView(report, new LinearLayout.LayoutParams(-1, 0, 1));
         String csp = "<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; img-src data:; style-src 'unsafe-inline'\">";
-        String mobileCss = "<style>@media(max-width:640px){body{margin:0;padding:15px}"
+        String mobileCss = "<style>@media(max-width:760px){body{margin:0;padding:15px;overflow-wrap:anywhere}"
                 + ".evidence,.outcome,.signoff{grid-template-columns:1fr}.photos{grid-template-columns:repeat(auto-fit,minmax(90px,1fr))}"
                 + ".photos img,.photos.n2 img,.photos.n3 img{max-height:150px}td.cite,th{white-space:normal}"
-                + ".integrity td:nth-child(n){width:auto}pre{overflow-wrap:anywhere}.masthead{flex-wrap:wrap}}</style>";
+                + ".evidence>*,.photos figure{min-width:0}.checks,.integrity{table-layout:fixed}"
+                + ".integrity td:nth-child(n){width:auto}.integrity code{overflow-wrap:anywhere}"
+                + ".checks td:nth-child(4),.checks th:nth-child(4){text-align:start}"
+                + "pre{overflow-wrap:anywhere}.masthead{flex-wrap:wrap}}</style>";
         report.loadDataWithBaseURL(null, html.replace("<head>", "<head>" + csp)
                 .replace("</head>", mobileCss + "</head>"), "text/html", "UTF-8", null);
     }
@@ -1126,16 +1162,23 @@ public final class ScanActivity extends ComponentActivity {
         LinearLayout row = new LinearLayout(this);
         row.setGravity(Gravity.CENTER_VERTICAL);
         if (back) {
-            Button previous = button("←", false, () -> getOnBackPressedDispatcher().onBackPressed());
-            previous.setTextSize(19);
+            ImageButton previous = new ImageButton(this);
+            previous.setImageResource(R.drawable.ic_back);
+            previous.setScaleType(ImageView.ScaleType.CENTER);
+            previous.setPadding(0, 0, 0, 0);
+            previous.setBackground(new android.graphics.drawable.RippleDrawable(
+                    ColorStateList.valueOf(0x33cdf78b), buttonSurface(false), null));
             previous.setContentDescription("Back");
+            previous.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
             row.addView(previous, new LinearLayout.LayoutParams(dp(48), dp(48)));
             View spacer = new View(this);
             row.addView(spacer, new LinearLayout.LayoutParams(dp(12), 1));
         }
         TextView heading = copy(title, 19, TEXT, true);
         ViewCompat.setAccessibilityHeading(heading, true);
-        row.addView(heading, new LinearLayout.LayoutParams(0, -2, 1));
+        LinearLayout.LayoutParams headingLayout = new LinearLayout.LayoutParams(0, -2, 1);
+        headingLayout.setMarginEnd(dp(8));
+        row.addView(heading, headingLayout);
         row.setMinimumHeight(dp(48));
         layout.addView(row);
         return row;
@@ -1152,14 +1195,17 @@ public final class ScanActivity extends ComponentActivity {
 
     private LinearLayout panelStrip(List<ScanDraft.Panel> done, ScanDraft.Panel current) {
         LinearLayout row = new LinearLayout(this);
+        boolean showMark = getResources().getConfiguration().fontScale < 1.6f;
         for (ScanDraft.Panel item : ScanDraft.Panel.values()) {
             boolean completed = done.contains(item);
-            TextView state = copy((completed ? "✓  " : "") + item.title, 14,
+            TextView state = copy((completed && showMark ? "✓  " : "") + item.title, 14,
                     item == current ? BACKGROUND : completed ? ACCENT : MUTED, true);
             state.setGravity(Gravity.CENTER);
             state.setBackground(surface(item == current ? ACCENT : SURFACE, 12, LINE));
             state.setContentDescription(item.title + (completed ? " captured" : item == current ? " current panel" : ""));
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, dp(39), 1);
+            state.setPadding(dp(4), dp(6), dp(4), dp(6));
+            state.setMinimumHeight(dp(39));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, -2, 1);
             if (item != ScanDraft.Panel.FRONT) params.setMargins(dp(7), 0, 0, 0);
             row.addView(state, params);
         }
@@ -1170,22 +1216,39 @@ public final class ScanActivity extends ComponentActivity {
         Button view = new Button(this);
         view.setText(label);
         view.setAllCaps(false);
+        view.setSingleLine(false);
         view.setTextSize(15);
         view.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         view.setMinHeight(dp(48));
+        view.setPadding(dp(12), dp(8), dp(12), dp(8));
         view.setMinimumWidth(dp(48));
-        view.setTextColor(primary ? BACKGROUND : TEXT);
+        view.setTextColor(new ColorStateList(new int[][]{new int[]{-android.R.attr.state_enabled}, new int[]{}},
+                new int[]{MUTED, primary ? BACKGROUND : TEXT}));
         view.setBackground(new android.graphics.drawable.RippleDrawable(
                 ColorStateList.valueOf(primary ? 0x22000000 : 0x33cdf78b),
-                surface(primary ? ACCENT : SURFACE, 14, primary ? ACCENT : LINE), null));
+                buttonSurface(primary), null));
         view.setOnClickListener(ignored -> action.run());
         return view;
+    }
+
+    private Drawable buttonSurface(boolean primary) {
+        android.graphics.drawable.StateListDrawable states = new android.graphics.drawable.StateListDrawable();
+        states.addState(new int[]{-android.R.attr.state_enabled}, surface(SURFACE, 14, LINE));
+        states.addState(new int[]{}, surface(primary ? ACCENT : SURFACE, 14, primary ? ACCENT : LINE));
+        return states;
     }
 
     private TextView copy(String text, int size, int color, boolean bold) {
         TextView view = new TextView(this);
         view.setText(text);
+        if (size >= 24 && getResources().getConfiguration().fontScale >= 1.8f) {
+            size = 22;
+        }
         view.setTextSize(size);
+        if (android.os.Build.VERSION.SDK_INT >= 29) {
+            view.setBreakStrategy(android.graphics.text.LineBreaker.BREAK_STRATEGY_HIGH_QUALITY);
+        }
+        view.setHyphenationFrequency(android.text.Layout.HYPHENATION_FREQUENCY_NORMAL);
         view.setTextColor(color);
         view.setGravity(Gravity.CENTER_VERTICAL);
         if (bold) view.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
